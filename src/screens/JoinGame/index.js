@@ -2,11 +2,20 @@
 import React, { Component } from 'react';
 import { NavButton, Container, Text, Wrapper, PageHeading } from '../../components/general';
 import { GameLink } from './components';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
+import { dispatchJoinGameEvent } from '../../socket/sender'; 
 
-const games = ['a', 'b', 'c', 'd', 'e', 'f'];
-
-export default class JoinGame extends Component {
+class JoinGame extends Component {
   render() {
+    const { gamesToJoin, username } = this.props;
+    const gameNamesList = gamesToJoin.map(gamename => 
+      <GameLink 
+        key={gamename} 
+        name={gamename}        
+        joinGame={() => dispatchJoinGameEvent(username, gamename)} 
+      />)
+
     return (
       <React.Fragment>
 
@@ -22,7 +31,7 @@ export default class JoinGame extends Component {
 
         <Container>
           <Wrapper>
-            {games.map(name => <GameLink key={name} name={name} />)}
+            {gameNamesList}
           </Wrapper>
         </Container>
 
@@ -30,3 +39,22 @@ export default class JoinGame extends Component {
     )
   }
 }
+
+
+function mapStateToProps(state) {
+	return {
+    username: state.user.username,
+    gamesToJoin: state.game.gamesToJoin
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+		
+	}, dispatch);
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(JoinGame);

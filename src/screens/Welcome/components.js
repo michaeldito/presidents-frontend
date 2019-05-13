@@ -6,3 +6,11 @@ export const Header = styled.h1`
 	color: red;
 	font-size: 68px;
 `;
+
+export const WelcomeWrapper = styled.div`
+	width: 400px;
+  margin: auto;
+  justify-content: Center;
+	align-items: center;
+  display: flex;
+`;

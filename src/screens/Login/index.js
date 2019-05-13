@@ -44,8 +44,10 @@ class Login extends Component {
 
         <Container>
           <Wrapper>
-            <Input placeholder='username' name='username' onChange={this.handleInputChange} />
-            <Input placeholder='password' name='password' onChange={this.handleInputChange} type='password' />
+            <form autoComplete='off'>
+              <Input placeholder='username' name='username' onChange={this.handleInputChange} />
+              <Input autoComplete='off' placeholder='password' name='password' onChange={this.handleInputChange} type='password' />
+            </form>
           </Wrapper>
         </Container>
         <Container>

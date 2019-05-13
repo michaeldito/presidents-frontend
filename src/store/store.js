@@ -1,3 +1,4 @@
+
 const ranks = ['2','3' ,'4' ,'5' ,'6' ,'7' ,'8' ,'9' ,'10' ,'J', 'Q', 'K', 'A'];
 const suites = ['H', 'D', 'C', 'S'];
 const numPlayers = 4;
@@ -86,6 +87,7 @@ const playerNames = ['p1', 'p2', 'p3', 'p4'];
 
 export default {
   game: {
+    gamesToJoin: [],
     gameName: 'larry prez',
     status: 'NOT_STARTED', 
     playersOrder: playerNames,
@@ -111,8 +113,8 @@ export default {
     ]
   },
   user: {
-    username: '',
-    loggedIn: false,
+    username: 'dito',
+    loggedIn: true,
     hand: []
   },
   stats: {

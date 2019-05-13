@@ -1,26 +1,26 @@
 
 import React, { Component } from 'react';
 import { NavButton, Container, PageHeading, Text } from '../../components/general';
-import { Input, Wrapper, Checkbox, Message, StatCheckBoxWrapper } from './components';
+import { Input, Wrapper, StatCheckBoxWrapper } from './components';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
+import { createGame } from '../../actions';
 
-export default class CreateGame extends Component {
+class CreateGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      numDecks: 1,
-      showStats: false
+      name: ''
     }
   }
 
   createGame = (event) => {
-    const { name, numDecks, showStats } = this.state;
+    const { name } = this.state;
     event.preventDefault();
-    console.log(`${name}-${numDecks}-${showStats}`);
+    this.props.createGame({name, createdBy: this.props.username});
   }
 
   handleInputChange = event => {
-    console.log('handlin change')
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -66,3 +66,20 @@ export default class CreateGame extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+	return {
+    username: state.user.username
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+		createGame
+	}, dispatch);
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(CreateGame);
