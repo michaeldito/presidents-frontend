@@ -88,7 +88,7 @@ const playerNames = ['p1', 'p2', 'p3', 'p4'];
 export default {
   game: {
     gamesToJoin: [],
-    gameName: 'larry prez',
+    name: 'larry prez',
     status: 'NOT_STARTED', 
     playersOrder: playerNames,
     whoseTurnIdx: nextPlayerIdx('NOT_STARTED', 0, 0, numPlayers, playerHands),

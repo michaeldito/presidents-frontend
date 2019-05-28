@@ -9,7 +9,6 @@ import store from './store'
 
 import * as serviceWorker from './serviceWorker';
 
-
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true; // needed for redux chrom devtools
 
 ReactDOM.render(

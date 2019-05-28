@@ -79,7 +79,7 @@ export default class App extends Component {
       <React.Fragment>
         {Routes}
         <Modal />
-        <GameSocket />
+        {/* <GameSocket /> */}
       </React.Fragment>
     )
   }
