@@ -1,16 +1,9 @@
 
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import * as Screens from './screens'
+import * as Pages from './pages'
 import routes from './config/routes';
-import Modal from './components/Modal';
 import axios from 'axios';
-import GameSocket from './socket/receiver';
-
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons'
-
-library.add(faUserCircle)
 
 
 // Indicate to the API that all requests for this app are AJAX
@@ -43,7 +36,7 @@ export default class App extends Component {
   render() {
     const { user } = this.props;
     const Routes = routes.map(route => {
-      const CurrentComponent = Screens[route.name] || Screens.Welcome;
+      const CurrentComponent = Pages[route.name] || Pages.LandingPage;
       // if (route.private) {
       //   return (
       //     <PrivateRoute
@@ -78,8 +71,6 @@ export default class App extends Component {
     return (
       <React.Fragment>
         {Routes}
-        <Modal />
-        {/* <GameSocket /> */}
       </React.Fragment>
     )
   }

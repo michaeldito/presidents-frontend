@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.18",
     "@fortawesome/free-solid-svg-icons": "^5.8.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "antd": "^3.23.6",
     "axios": "^0.18.0",
     "cardsJS": "^1.1.1",
     "chai": "^4.2.0",
@@ -43,9 +44,11 @@
   "scripts": {
     "start": "serve -s build -l 4000",
     "build": "react-scripts build",
+    "app": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gcloud app deploy"
+    "deploy": "gcloud app deploy",
+    "count:src": "find src -name '*.js' | xargs wc -l"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -1,16 +1,46 @@
 export default [
 	{
-		text: 'Welcome',
-		name: 'Welcome',
+		text: 'Landing Page',
+		name: 'LandingPage',
 		route: '/',
 		private: true,
 		exact: true,
 	},
 	{
+		text: 'Inbox',
+		name: 'Inbox',
+		route: '/inbox',
+		private: false
+	},
+	{
+		text: 'Dashboard',
+		name: 'Dashboard',
+		route: '/dashboard',
+		private: false
+	},
+	{
+		text: 'Search',
+		name: 'Search',
+		route: '/search',
+		private: false
+	},
+	{
+		text: 'Friends',
+		name: 'Friends',
+		route: '/friends',
+		private: false
+	},
+	{
+		text: 'Profile',
+		name: 'Profile',
+		route: '/profile',
+		private: false
+	},
+	{
 		text: 'Create Game',
 		name: 'CreateGame',
 		route: '/create-game',
-		private: true
+		private: false
 	},
 	{
 		text: 'Join Game',
@@ -31,9 +61,9 @@ export default [
 		publicOnly: true,
 	},
 	{
-		text: 'Create Account',
-		name: 'CreateAccount',
-		route: '/create-account',
+		text: 'Register',
+		name: 'Register',
+		route: '/register',
 		publicOnly: true,
 	}
 ]
