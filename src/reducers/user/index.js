@@ -1,13 +1,12 @@
 export default function userReducer(state = {}, action) {
-  if (action.type === 'LOGIN_USER') {
+  if (action.type === 'LOGIN') {
     const user  = action.payload.data;
-    console.log(user)
-    let newState = Object.assign({}, { ...user });
+    let newState = Object.assign({}, user);
     return newState;
   }
-  else if (action.type === 'CREATE_ACCOUNT') {
+  else if (action.type === 'REGISTER') {
     const user  = action.payload.data;
-    let newState = Object.assign({}, { ...user });
+    let newState = Object.assign({}, user);
     return newState;
   }
   return state;

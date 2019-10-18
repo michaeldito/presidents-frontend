@@ -43,12 +43,6 @@ export default [
 		private: false
 	},
 	{
-		text: 'Join Game',
-		name: 'JoinGame',
-		route: '/join-game',
-		private: true
-	},
-	{
 		text: 'Game',
 		name: 'Game',
 		route: '/game',

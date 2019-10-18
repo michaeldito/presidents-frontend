@@ -10,24 +10,42 @@ import {
   Dropdown,
   Menu,
   Icon,
-  Card,
-  Typography,
+  Row, Col
 } from 'antd';
+import Sidebar from '../../components/Sidebar';
 import {SearchTable} from '../../components';
 
-import {NavLink} from 'react-router-dom';
+import {getGamesToJoin} from '../../actions';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
 
-const { Header, Sider, Content } = Layout;
+const { Content } = Layout;
+
+const configs = [
+  {name: 'Presidents'},
+  {name: 'War'},
+  {name: 'Go Fish'}
+];
 
 class Search extends React.Component {
-  state = {
-    collapsed: false,
-  };
-
+  constructor(props) {
+    super(props);
+    this.props.getGamesToJoin();
+    this.state = {
+      collapsed: false,
+      name: ''
+    };
+  }
+  
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+  
   onCollapse = collapsed => {
     console.log(collapsed);
     this.setState({ collapsed });
   };
+
 
   handleSubmit = e => {
     e.preventDefault();
@@ -40,8 +58,6 @@ class Search extends React.Component {
 
 
   render() {
-    const { getFieldDecorator } = this.props.form;
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -57,158 +73,86 @@ class Search extends React.Component {
     }
     const menu = (
       <Menu onClick={handleMenuClick}>
-        <Menu.Item key="1">
-          <Icon type="user" />
-          Presidents
+      {configs.map((config, idx) =>
+        <Menu.Item key={idx} onClick={() => this.setState({name: config.name})}>
+          {config.name}
         </Menu.Item>
-        <Menu.Item key="2">
-          <Icon type="user" />
-          War
-        </Menu.Item>
-        <Menu.Item key="3">
-          <Icon type="user" />
-          Go Fish
-        </Menu.Item>
+      )}
       </Menu>
     );
 
     return (
       <Layout>
 
-        <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
-
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-
-          <Menu.Item key="0">
-            <Icon type="dashboard" />
-            <span>
-              <NavLink
-                key={`/dashboard`}
-                to={`/dashboard`}
-              >
-              Home
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="1">
-            <Icon type="play-circle" />
-            <span>
-              <NavLink
-                key={`/game`}
-                to={`/game`}
-              >
-                Game Name
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="2">
-            <Icon type="plus-circle" />
-            <span>
-              <NavLink
-                  key={`/create-game`}
-                  to={`/create-game`}
-              >
-                New
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="7">
-            <Icon type="message" />
-            <span>
-              <NavLink
-                  key={`/inbox`}
-                  to={`/inbox`}
-              >
-                Inbox
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="12">
-            <Icon type="team" />
-            <span>
-              <NavLink
-                key={`/friends`}
-                to={`/friends`}
-              >
-                Friends
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="13">
-            <Icon type="search" />
-            <span>
-              <NavLink
-                key={`/search`}
-                to={`/search`}
-              >
-                Search
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="9">
-            <Icon type="profile" />
-            <span>
-              <NavLink
-                key={`/create-game`}
-                to={`/create-game`}>
-                  Profile
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-        </Menu>
-
-        </Sider>
-
+        <Sidebar />
 
         <Content>
 
           <PageHeader onBack={() => null} title="Search" />
 
-          <Layout style={{float: 'left'}}>
+          <Layout>
 
-            <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+            <Row>
 
-              <Form.Item label="type">
-                <Dropdown overlay={menu}>
-                  <Button style={{width: '100%'}}>
-                    Game Type
-                    <Icon type="down" />
-                  </Button>
-                </Dropdown>
-              </Form.Item>
+            <Col span={4}>
 
-              <Form.Item label="name">
-                {getFieldDecorator('name', {
-                  rules: [
-                    {
-                      type: 'name',
-                      message: 'name is required!',
-                    }
-                  ],
-                })(<Input />)}
-              </Form.Item>
+              <Form {...formItemLayout} onSubmit={this.handleSubmit}>
 
-            </Form>
+                <Form.Item label="type">
+                  <Dropdown overlay={menu}>
+                    <Button style={{width: '100%'}}>
+                      {this.state.name}
+                      <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                </Form.Item>
 
+                <Form.Item label="name">
+                  <Input onChange={(c) => this.handleChange(c)} />
+                </Form.Item>
+
+              </Form>
+
+              </Col>
+
+            </Row>
+
+            <Row>
+
+              <Col>
+
+                <SearchTable data={this.props.data} alreadyJoinedGames={this.props.user.gamesPlayed}/>
+              
+              </Col>
+
+            </Row>
 
           </Layout>
 
-          <SearchTable />
 
         </Content>
-
-
 
       </Layout>
     );
   }
 }
 
-export default Form.create({ name: 'search' })(Search);
+let SearchComponent = Form.create({ name: 'search' })(Search);
+
+function mapStateToProps(state) {
+	return {
+    user: state.user,
+    data: state.game.allGameData
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+		getGamesToJoin
+	}, dispatch);
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(SearchComponent);

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import 'antd/dist/antd.css';
 import {
   Form,
@@ -10,44 +11,58 @@ import {
   Dropdown,
   Menu,
   Icon,
-  Card,
-  Typography,
+  Row, Col
 } from 'antd';
-import {NavLink} from 'react-router-dom';
+import Sidebar from '../../components/Sidebar';
 
-const { Header, Sider, Content } = Layout;
+import {createGame} from '../../actions';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
 
+import { Redirect} from 'react-router-dom';
+
+const { Content } = Layout;
 
 const configs = [
   {name: 'Presidents'},
-  {name: 'War'},
-  {name: 'Go Fish'}
 ];
 
 class CreateGame extends React.Component {
-  state = {
-    collapsed: false,
-    name: ''
-  };
-
-  onCollapse = collapsed => {
-    console.log(collapsed);
-    this.setState({ collapsed });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+      gameType: '',
+      name: '',
+      redirected: false
+    };
+  }
+  
+  handleChange(event) {
+    console.log(event.target.name)
+    this.setState({ [event.target.name]: event.target.value });
+  }
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
+    const { gameType, name } = this.state;
+    console.log({ gameType, name } )
+    this.props.createGame({
+      name,
+      gameType,
+      createdBy: this.props.user._id
     });
   };
 
-
+  redirect = () => {
+    if (this.props.wasGameCreated) {
+      this.setState({redirected: true});
+      return <Redirect to={`/game`}/>;
+    }
+    return null;
+  }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
       labelCol: {
@@ -59,170 +74,95 @@ class CreateGame extends React.Component {
         sm: { span: 16 },
       },
     };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 16,
-          offset: 8,
-        },
-      },
-    };
     function handleMenuClick(e) {
       console.log('click', e);
     }
     const menu = (
       <Menu onClick={handleMenuClick}>
       {configs.map((config, idx) =>
-        <Menu.Item key={idx} onClick={() => this.setState({name: config.name})}>
+        <Menu.Item key={idx} onClick={() => this.setState({gameType: config.name})}>
           {config.name}
         </Menu.Item>
       )}
       </Menu>
     );
 
-    return (
+    // let redirect = this.props.wasGameCreated && ! this.state.redirected ? this.redirect() : null;
+
+
+    return (      
       <Layout>
 
-        <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
+        {/* {redirect} */}
 
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-
-          <Menu.Item key="0">
-            <Icon type="dashboard" />
-            <span>
-              <NavLink
-                key={`/dashboard`}
-                to={`/dashboard`}
-              >
-              Home
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="1">
-            <Icon type="play-circle" />
-            <span>
-              <NavLink
-                key={`/game`}
-                to={`/game`}
-              >
-                Game Name
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="2">
-            <Icon type="plus-circle" />
-            <span>
-              <NavLink
-                  key={`/create-game`}
-                  to={`/create-game`}
-              >
-                New
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="7">
-            <Icon type="message" />
-            <span>
-              <NavLink
-                  key={`/inbox`}
-                  to={`/inbox`}
-              >
-                Inbox
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="12">
-            <Icon type="team" />
-            <span>
-              <NavLink
-                key={`/friends`}
-                to={`/friends`}
-              >
-                Friends
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="13">
-            <Icon type="search" />
-            <span>
-              <NavLink
-                key={`/search`}
-                to={`/search`}
-              >
-                Search
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-          <Menu.Item key="9">
-            <Icon type="profile" />
-            <span>
-              <NavLink
-                key={`/profile`}
-                to={`/profile`}>
-                  Profile
-              </NavLink>
-            </span>
-          </Menu.Item>
-
-        </Menu>
-
-        </Sider>
-
+        <Sidebar />
 
         <Content>
 
           <PageHeader onBack={() => null} title="Create Game" />
 
-          <Layout style={{float: 'left'}}>
+          <Layout>
 
-            <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+            <Row>
 
-              <Form.Item label="type">
-                <Dropdown overlay={menu}>
-                  <Button style={{width: '100%'}}>
-                    {this.state.name}
-                    <Icon type="down" />
+            <Col span={4}>
+
+              <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+
+                <Form.Item label="type">
+                  <Dropdown overlay={menu}>
+                      <Button style={{width: '100%'}}>
+                        {this.state.gameType}
+                        <Icon type="down" />
+                      </Button>
+                  </Dropdown>
+                </Form.Item>
+
+                <Form.Item label="name">
+                  <Form.Item>
+                    <Input name='name' onChange={(c) => this.handleChange(c)} />
+                  </Form.Item>
+                </Form.Item>
+
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                  <Button type="primary" htmlType="submit" style={{margin: 'auto'}}>
+                    Create
                   </Button>
-                </Dropdown>
-              </Form.Item>
+                </div>
 
-              <Form.Item label="name">
-                {getFieldDecorator('name', {
-                  rules: [
-                    {
-                      type: 'name',
-                      message: 'name is required!',
-                    }
-                  ],
-                })(<Input />)}
-              </Form.Item>
 
-              <Form.Item {...tailFormItemLayout}>
-                <Button type="primary" htmlType="submit">
-                  Create
-                </Button>
-              </Form.Item>
+              </Form>
 
-            </Form>
+              </Col>
+
+            </Row>
 
           </Layout>
 
-        </Content>
 
+        </Content>
 
       </Layout>
     );
   }
 }
 
-export default Form.create({ name: 'create' })(CreateGame);
+let CreateGameComponent = Form.create({ name: 'search' })(CreateGame);
+
+function mapStateToProps(state) {
+	return {
+    user: state.user,
+    wasGameCreated: state.game.wasGameCreated
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+		createGame
+	}, dispatch);
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(CreateGameComponent);
