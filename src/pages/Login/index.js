@@ -23,12 +23,12 @@ class NormalLoginForm extends React.Component {
   }
   handleSubmit = e => {
     e.preventDefault();
-    //this.props.form.validateFields((err, values) => {
-    //  if (!err) {
-    //    console.log('Received values of form: ', values);
-        this.props.login('mike', 'dito');
-    //  }
-    //});
+    this.props.form.validateFields((err, values) => {
+     if (!err) {
+        console.log('Received values of form: ', values);
+        this.props.login(values.username, values.password);
+     }
+    });
   };
 
   render() {

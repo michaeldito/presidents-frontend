@@ -16,7 +16,7 @@ export default class PlayerSquare extends React.Component {
     let title = (
       <Layout.Content>
         <Badge
-          count={seatPosition}
+          count={`${seatPosition + 1}`}
           style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }}
         />
         <Typography.Title level={4}>{player.user.username}</Typography.Title>

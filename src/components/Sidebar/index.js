@@ -8,6 +8,8 @@ const { Sider } = Layout;
 
 // TODO:
 // convert to function
+// create file with {menu items}
+// import and map over array to create menu items
 export default class SideBar extends React.Component {
   state = {
     collapsed: false,

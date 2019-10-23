@@ -29,7 +29,7 @@ export class InfoSquare extends React.Component {
                   {handToBeat.map((card, idx) => 
                     <span key={idx} style={{margin: '10px'}}>
                       <Tag type="dis">
-                        {card.cardRank.value} {card.suit.character}
+                        {card.cardRank.character} {card.suit.character}
                       </Tag>
                     </span>
                   )}

@@ -41,7 +41,7 @@ class Game extends React.Component {
       <Layout style={{ minHeight: '100vh' }}>
         <Sidebar />
         <Layout>
-          <PageHeader onBack={() => null} title='Presidents' subTitle={this.name()}>
+          <PageHeader onBack={() => null} title='Presidents' subTitle={`${this.name()} - ${this.statusValue()}`}>
 					{
 						this.statusValue() === 'NOT_STARTED' ? 
 						<Button onClick={() => this.submit()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#52c41a'}} type=''>Start</Button>
@@ -53,9 +53,7 @@ class Game extends React.Component {
 						<div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff', minHeight: 180 }}>
 
 							<Typography.Title level={4}>Your Hand</Typography.Title>
-							<PlayersHand cards={playersHand}/>
-							<Button style={{margin: 10}} type='danger'>Play Cards</Button>
-							<Button style={{margin: 10}} type='danger'>Drink a drink</Button>
+							<PlayersHand cards={playersHand} gameId={game._id} playCards={this.props.playCards}/>
 
 						<div style={{ minHeight: 10 }} />
 							<Typography.Title level={4}>Cards Remaining</Typography.Title>

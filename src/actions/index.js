@@ -36,7 +36,6 @@ export const START_GAME = 'START_GAME';
 export function getGame(id) {
 
   return async (dispatch, getState) => {
-
     const request = await axios.get(`presidents/${id}`);
     const userId = getState().user._id;
 
@@ -70,7 +69,6 @@ export function createGame(payload) {
 export function joinGame(id) {
 
   return async (dispatch, getState) => {
-
     const userId = getState().user._id;
     const payload = { userId };
     const request = await axios.put(`/presidents/${id}/join`, payload);
@@ -87,14 +85,14 @@ export function joinGame(id) {
 export function playCards(id, cardsPlayed) {
 
   return async (dispatch, getState) => {
-    const user = getState().user._id;
+    const user = getState().user;
     const wasPassed = false;
-
     const request = await axios.put(`presidents/${id}/processTurn`, {user, cardsPlayed, wasPassed});
 
     return dispatch({ 
       type: PLAY_CARDS, 
-      payload: request
+      payload: request,
+      userId: user._id
     });
 
   }
@@ -105,7 +103,6 @@ export function pass(id) {
   return async (dispatch, getState) => {
     const user = getState().user._id;
     const wasPassed = false;
-
     const request = await axios.put(`presidents/${id}/processTurn`, {user, cardsPlayed: [], wasPassed});
 
     return dispatch({ 
@@ -120,7 +117,6 @@ export function giveDrink(id, toUser) {
 
   return async (dispatch, getState) => {
     const fromUser = getState().user._id;
-
     const request = await axios.put(`presidents/${id}/giveDrink`, {fromUser, toUser});
 
     return dispatch({ 
@@ -135,7 +131,6 @@ export function drinkDrink(id) {
 
   return async (dispatch, getState) => {
     const user = getState().user._id;
-
     const request = await axios.put(`presidents/${id}/giveDrink`, {user});
 
     return dispatch({ 
@@ -147,10 +142,16 @@ export function drinkDrink(id) {
 }
 
 export function startGame(id) {
-  const request = axios.put(`/presidents/${id}/initialize`);
 
-  return {
-    type: START_GAME,
-    payload: request
+  return async (dispatch, getState) => {
+    const userId = getState().user._id;
+    const request = await axios.put(`/presidents/${id}/initialize`);
+
+    return dispatch({
+      type: START_GAME,
+      payload: request,
+      userId
+    });
+
   }
 }
