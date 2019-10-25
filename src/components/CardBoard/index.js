@@ -35,7 +35,9 @@ export default class CardBoard extends React.Component {
       let value = card.cardRank.value;
       let rankChar = card.cardRank.character;
       let suitChar = card.suit.character;
-      return { value, rankChar, suitChar, color };
+      let played = card.played;
+
+      return { value, rankChar, suitChar, color, played };
     });
 
     let cardsByValue = groupBy(cards, card => card.value)
@@ -45,7 +47,7 @@ export default class CardBoard extends React.Component {
     let cardComponents = cardsByValue.map((group, idx) => 
       <Col span={4} key={idx}>
         <Text strong style={{padding: '5px'}}>{group[0].rankChar}</Text>
-        {group.map((card, idx) => <Text key={idx} code style={{backgroundColor: card.color}}>{card.suitChar}</Text>)}
+        {group.map((card, idx) => card.played ? null : <Text key={idx} code style={{backgroundColor: card.color}}>{card.suitChar}</Text>)}
       </Col>
     );
 

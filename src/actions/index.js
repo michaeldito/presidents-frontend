@@ -31,7 +31,23 @@ export const PASS = 'PASS';
 export const GIVE_DRINK ='GIVE_DRINK';
 export const DRINK_DRINK = 'DRINK_DRINK';
 export const START_GAME = 'START_GAME';
+export const UPDATE_GAME = 'UPDATE_GAME';
 
+export function updateGame(game) {
+
+  return (dispatch, getState) => {
+    const userId = getState().user._id;
+
+    return dispatch({
+      type: UPDATE_GAME,
+      payload: {
+        data: game
+      },
+      userId
+    });
+
+  }
+}
 
 export function getGame(id) {
 

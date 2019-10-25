@@ -1,17 +1,17 @@
 import { deepCopy } from '../../utils';
 
 function computedState(game, userId) {
-  // cardBoardCards = [all cards played by players marked + all unplayed cards unmarked]
-  let cardBoardCards = []
+  // cardsRemaining = [all cards played by players marked + all unplayed cards unmarked]
+  let cardsRemaining = []
   for (let player of game.players) {
     for (let card of player.hand) {
-      cardBoardCards.push({...card, played: true});
+      cardsRemaining.push({...card, played: false});
     }
   }
   for (let card of game.config.deck) {
-    let hasCardBeenPlayed = cardBoardCards.find(cp => cp.shortHand === card.shortHand);
-    if (! hasCardBeenPlayed) {
-      cardBoardCards.push({...card, played: false});
+    let hasCardBeenPlayed = cardsRemaining.find(cp => cp.shortHand === card.shortHand);
+    if (hasCardBeenPlayed) {
+      cardsRemaining.push({...card, played: true});
     }
   }
 
@@ -19,11 +19,11 @@ function computedState(game, userId) {
   let player = game.players.find(player => player.user._id === userId);
   const playersHand = player.hand;
 
-  game.status = game.status.value;
+  // game.status = game.status.value;
 
   return {
     ...game,
-    cardBoardCards,
+    cardsRemaining,
     playersHand
   };
 }
@@ -62,6 +62,12 @@ export default function gameReducer(state = {}, action) {
     return computedState(game, userId)
     
   } else if (action.type === 'PLAY_CARDS') {
+
+    let game = action.payload.data;
+    const { userId } = action;
+    return computedState(game, userId)
+  }
+  else if (action.type === 'UPDATE_GAME') {
 
     let game = action.payload.data;
     const { userId } = action;

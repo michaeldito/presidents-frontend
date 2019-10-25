@@ -1,18 +1,70 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import socket from 'socket.io-client'
 import 'antd/dist/antd.css';
 import { Layout, PageHeader, Typography, Button } from 'antd';
 import { PlayersHand, CardBoard, Sidebar } from '../../components';
 import { GameArea } from './components';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import { playCards, pass, giveDrink, drinkDrink, startGame } from '../../actions';
+import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame } from '../../actions';
 
 const { Content } = Layout;
 
+// const io = socket('http://localhost:8080');
+
 class Game extends React.Component {
+	constructor(props) {
+		super(props);
+
+		// io.on('connect', () => {
+		// 	console.log('[GameSocket] connected');
+		// });
+
+		// io.on('disconnect', () => {
+		// 	console.log('[GameSocket] disconnected');
+		// });
+
+
+	}
+
+	// componentWillReceiveProps(props) {
+
+	// 	io.on('error', data => {
+	// 		console.log(`[GameSocket] error`);
+	// 		console.log(data.error);
+	// 	});
+
+	// 	io.on('game refresh', data => {
+	// 		const { updateGame, game } = props;
+	// 		console.log('[GameSocket] game refresh');
+	// 		console.dir(data);
+	// 		updateGame(game);
+	// 	});
+
+	// 	io.on('drink given', data => {
+	// 		const { updateGame, game } = props;
+	// 		console.log('[GameSocket] drink given');
+	// 		console.dir(data);
+	// 		updateGame(game);
+	// 	});
+
+	// 	io.on('drink drunk', data => {
+	// 		const { updateGame, game } = props;
+	// 		console.log('[GameSocket] drink dunk');
+	// 		console.dir(data);
+	// 		updateGame(game);
+	// 	});
+
+	// 	io.on('rematch started', data => {
+	// 		const { updateGame, game } = props;
+	// 		console.log('[GameSocket] rematch started');
+	// 		console.dir(data);
+	// 		updateGame(game);
+	// 	});
+
+	// }
+
 	submit = () => {
 		let id = this.props.game._id;
 		this.props.startGame(id);
@@ -21,7 +73,7 @@ class Game extends React.Component {
 	statusValue = () => {
 		let status = '';
 		if (this.props.game.status !== undefined) {
-			status = this.props.game.status;
+			status = this.props.game.status.value;
 		}
 		return status;
 	}
@@ -35,7 +87,7 @@ class Game extends React.Component {
   render() {
 
     const { game } = this.props;
-		const { playersHand, cardBoardCards } = game;
+		const { playersHand, cardsRemaining } = game;
 
     return (
       <Layout style={{ minHeight: '100vh' }}>
@@ -57,7 +109,7 @@ class Game extends React.Component {
 
 						<div style={{ minHeight: 10 }} />
 							<Typography.Title level={4}>Cards Remaining</Typography.Title>
-							<CardBoard cards={cardBoardCards}/>
+							<CardBoard cards={cardsRemaining}/>
 						</div>
 
             <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff'}}>
@@ -91,7 +143,8 @@ function mapDispatchToProps(dispatch) {
 		pass,
 		giveDrink,
 		drinkDrink,
-		startGame
+		startGame,
+		updateGame
 	}, dispatch);
 }
 

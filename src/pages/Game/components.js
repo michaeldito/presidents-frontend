@@ -75,8 +75,8 @@ export class GameArea extends React.Component {
     let { game } = this.props;
     let { currentPlayer } = game;
 
-    console.log(`[GameArea:render] game: ${JSON.stringify(game, null, 2)}`)
-    console.log(`[GameArea:render] players: ${this.players()}`)
+    //console.log(`[GameArea:render] game: ${JSON.stringify(game, null, 2)}`)
+    //console.log(`[GameArea:render] players: ${this.players()}`)
 
     return (
       <Row type="flex" justify="start">
