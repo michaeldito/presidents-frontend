@@ -114,11 +114,14 @@ export function playCards(id, cardsPlayed) {
   }
 }
 
-export function pass(id) {
+export function pass() {
 
   return async (dispatch, getState) => {
-    const user = getState().user._id;
-    const wasPassed = false;
+    const state = getState();
+    const {user} = state;
+    const id = state.game._id;
+    const wasPassed = true;
+
     const request = await axios.put(`presidents/${id}/processTurn`, {user, cardsPlayed: [], wasPassed});
 
     return dispatch({ 

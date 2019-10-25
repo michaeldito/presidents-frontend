@@ -77,6 +77,7 @@ export default class PlayersHand extends React.Component {
         </Row>
 
         <Button style={{margin: 10}} type='danger' onClick={() => this.playCards()}>Play Cards</Button>
+        <Button style={{margin: 10}} type='danger' onClick={() => this.props.pass()}>Pass</Button>
         <Button style={{margin: 10}} type='danger'>Drink a drink</Button>
 
       </React.Fragment>

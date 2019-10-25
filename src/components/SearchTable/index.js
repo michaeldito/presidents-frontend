@@ -2,7 +2,15 @@ import React from 'react';
 import { Table, Tag } from 'antd';
 import ActionableButton from '../ActionableButton';
 
-
+function calculateColor(value) {
+  switch (value) {
+    case 'NOT_STARTED': return 'green';
+    case 'IN_PROGRESS': return 'blue';
+    case 'FINALIZED': return 'volcano';
+    default: return 'geekblue';
+  }
+}
+  
 
 // TODO:
 // convert to function
@@ -46,7 +54,8 @@ export default class SearchTable extends React.Component {
         dataIndex: 'status',
         key: 'status',
         render: status => {
-          let color = status.value === 'NOT_STARTED' ? 'green' : status.value === 'IN_PROGRESS' || status.value === 'FINALIZED' ? 'volcano' : 'geekblue';
+          let {value} = status;
+          let color = calculateColor(value);
           return (
             <Tag color={color} key={status}>
               {status.value.toUpperCase()}
