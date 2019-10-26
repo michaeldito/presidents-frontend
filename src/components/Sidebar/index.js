@@ -27,86 +27,89 @@ export default class SideBar extends React.Component {
         <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
 
           <Menu.Item key="0">
-            <Icon type="login" />
-            <span>
-              <NavLink
-                key={`/login`}
-                to={`/login`}
-              >
-              Login
-              </NavLink>
-            </span>
+            <NavLink
+              key={`/login`}
+              to={`/login`}
+            >
+              <Icon type="login" />
+              <span>
+                Login
+              </span>
+            </NavLink>
           </Menu.Item>
 
           <Menu.Item key="1">
+            <NavLink
+              key={`/game`}
+              to={`/game`}
+            >
             <Icon type="play-circle" />
             <span>
-              <NavLink
-                key={`/game`}
-                to={`/game`}
-              >
-                Game Name
-              </NavLink>
+              Game Name
             </span>
+            </NavLink>
+
           </Menu.Item>
 
           <Menu.Item key="2">
+            <NavLink
+              key={`/create-game`}
+              to={`/create-game`}
+            >
             <Icon type="plus-circle" />
             <span>
-              <NavLink
-                  key={`/create-game`}
-                  to={`/create-game`}
-              >
                 New
-              </NavLink>
             </span>
+            </NavLink>
+
           </Menu.Item>
 
           <Menu.Item key="7">
+            <NavLink
+              key={`/inbox`}
+              to={`/inbox`}
+            >
             <Icon type="message" />
             <span>
-              <NavLink
-                  key={`/inbox`}
-                  to={`/inbox`}
-              >
-                Inbox
-              </NavLink>
+               Inbox
             </span>
+            </NavLink>
           </Menu.Item>
 
           <Menu.Item key="12">
-            <Icon type="team" />
-            <span>
-              <NavLink
-                key={`/friends`}
-                to={`/friends`}
-              >
+            <NavLink
+              key={`/friends`}
+              to={`/friends`}
+            >
+              <Icon type="team" />
+              <span>
                 Friends
-              </NavLink>
-            </span>
+              </span>
+            </NavLink>
           </Menu.Item>
 
           <Menu.Item key="13">
-            <Icon type="search" />
-            <span>
-              <NavLink
-                key={`/search`}
-                to={`/search`}
-              >
+            <NavLink
+              key={`/search`}
+              to={`/search`}
+            >
+              <Icon type="search" />
+              <span>
                 Search
-              </NavLink>
-            </span>
+              </span>
+            </NavLink>
           </Menu.Item>
 
           <Menu.Item key="9">
-            <Icon type="profile" />
-            <span>
-              <NavLink
-                key={`/profile`}
-                to={`/profile`}>
-                  Profile
-              </NavLink>
-            </span>
+            <NavLink
+              key={`/profile`}
+              to={`/profile`}
+            >
+              <Icon type="profile" />
+              <span>
+                Profile
+              </span>
+            </NavLink>
           </Menu.Item>
 
         </Menu>

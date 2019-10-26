@@ -48,11 +48,11 @@ export default class PlayerSquare extends React.Component {
             </Layout>
           </Layout.Content>
 
-          <Layout.Sider width='50%' theme='light'>
-            <Button type='danger'>Give Drink</Button>
-          </Layout.Sider>
-
         </Layout>
+
+        <Layout>
+            <Button type='default'>Give Drink</Button>
+          </Layout>
         
       </Card>
       

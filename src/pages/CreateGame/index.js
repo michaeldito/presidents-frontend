@@ -38,7 +38,9 @@ class CreateGame extends React.Component {
   }
   
   handleChange(event) {
+    console.log('handling dat change')
     console.log(event.target.name)
+    console.log(event.target.value)
     this.setState({ [event.target.name]: event.target.value });
   }
 
@@ -108,18 +110,17 @@ class CreateGame extends React.Component {
 
               <Form {...formItemLayout} onSubmit={this.handleSubmit}>
 
-                <Form.Item label="type">
+                <Form.Item style={{marginLeft:10}}>
                   <Dropdown overlay={menu}>
                       <Button style={{width: '100%'}}>
-                        {this.state.gameType}
-                        <Icon type="down" />
+                        {this.state.gameType !== '' ? this.state.gameType : 'Select Type'}
                       </Button>
                   </Dropdown>
                 </Form.Item>
 
-                <Form.Item label="name">
+                <Form.Item  style={{marginLeft:10}}>
                   <Form.Item>
-                    <Input name='name' onChange={(c) => this.handleChange(c)} />
+                    <Input name='name' placeholder='Enter Name' onChange={(c) => this.handleChange(c)} />
                   </Form.Item>
                 </Form.Item>
 

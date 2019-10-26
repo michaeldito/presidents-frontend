@@ -16,7 +16,7 @@ export class InfoSquare extends React.Component {
     console.log(`InfoSquare@render] handToBeat: ${handToBeat}`)
     console.log(`InfoSquare@render] handToBeat === undefined: ${handToBeat === undefined}`);
 
-    let title = <Typography.Text type="secondary">hand to beat</Typography.Text>
+    let title = <Typography.Text type="secondary">Hand to Beat</Typography.Text>
     let shouldRender = handToBeat === [] ? false : true;
 
     if (shouldRender) {

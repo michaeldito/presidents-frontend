@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Row, Button } from 'antd';
+import { Row, Col, Button } from 'antd';
 
 
 // TODO:
@@ -56,14 +56,14 @@ export default class PlayersHand extends React.Component {
       let type;
       let cardIsSelected = this.state.selectedCards.find(c => c.shortHand === card.shortHand);
       if (cardIsSelected) {
-        type = 'primary';
+        type = 'danger';
       } else {
         type = 'secondary';
       }
 
       return (
         <div style={{margin: '10px'}} key={idx} onClick={() => this.selectCard(card)}>
-          <Button type={type}>
+          <Button size='large' type={type}>
             {card.cardRank.character} {card.suit.character}
           </Button>
         </div>)
@@ -76,9 +76,9 @@ export default class PlayersHand extends React.Component {
           {cardComponents}
         </Row>
 
-        <Button style={{margin: 10}} type='danger' onClick={() => this.playCards()}>Play Cards</Button>
-        <Button style={{margin: 10}} type='danger' onClick={() => this.props.pass()}>Pass</Button>
-        <Button style={{margin: 10}} type='danger'>Drink a drink</Button>
+        <Button style={{marginRight:10, backgroundColor: '#5cdbd3', color: 'white'}} size='large' onClick={() => this.playCards()}> Play Cards </Button>
+        <Button style={{marginRight:10, backgroundColor: '#fadb14', color: 'white'}} size='large' onClick={() => this.props.pass()}> Pass </Button>
+        <Button style={{marginRight:10, backgroundColor: '#faad14', color: 'white'}} size='large'> Drink </Button>
 
       </React.Fragment>
     )

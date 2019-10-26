@@ -21,15 +21,21 @@ function groupBy(list, keyGetter) {
 // TODO:
 // convert to function
 export default class CardBoard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: true
+    };
+  }
   
   render() {
-    
+
     if (this.props.cards === undefined) {
       return <div></div>
     }
-    
+
     let { cards } = this.props;
-    
+
     cards = cards.map(card => {
       let color = card.color;
       let value = card.cardRank.value;
@@ -44,15 +50,16 @@ export default class CardBoard extends React.Component {
     cardsByValue = Array.from(cardsByValue, ([key, value]) => value)
     cardsByValue = cardsByValue.sort((a, b) => (a[0].value > b[0].value) ? 1 : -1)
 
-    let cardComponents = cardsByValue.map((group, idx) => 
-      <Col span={4} key={idx}>
+    let cardComponents = cardsByValue.map((group, idx) =>
+      // <Col span={4} key={idx}>
+      <div>
         <Text strong style={{padding: '5px'}}>{group[0].rankChar}</Text>
         {group.map((card, idx) => card.played ? null : <Text key={idx} code style={{backgroundColor: card.color}}>{card.suitChar}</Text>)}
-      </Col>
+        </div>
     );
 
     return (
-      <Row>
+      <Row type="flex" justify="start">
         {cardComponents}
       </Row>
     )
