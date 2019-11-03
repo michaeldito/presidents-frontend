@@ -109,7 +109,13 @@ class Game extends React.Component {
 						<div style={{ padding: 20, background: '#fff' }}>
 
 							<Typography.Title level={4}>Your Hand</Typography.Title>
-							<PlayersHand cards={playersHand} gameId={game._id} playCards={this.props.playCards} pass={this.props.pass}/>
+							<PlayersHand 
+								cards={playersHand} 
+								gameId={game._id} 
+								playCards={this.props.playCards} 
+								pass={this.props.pass}
+								drinkDrink={this.props.drinkDrink}
+								/>
 
 							<Divider />
 
@@ -128,7 +134,7 @@ class Game extends React.Component {
 
 					
             <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff'}}>
-              <GameArea game={game} />
+              <GameArea game={game} giveDrink={this.props.giveDrink} />
             </div>
 
           </Content>

@@ -78,7 +78,7 @@ export default class PlayersHand extends React.Component {
 
         <Button style={{marginRight:10, backgroundColor: '#5cdbd3', color: 'white'}} size='large' onClick={() => this.playCards()}> Play Cards </Button>
         <Button style={{marginRight:10, backgroundColor: '#fadb14', color: 'white'}} size='large' onClick={() => this.props.pass()}> Pass </Button>
-        <Button style={{marginRight:10, backgroundColor: '#faad14', color: 'white'}} size='large'> Drink </Button>
+        <Button style={{marginRight:10, backgroundColor: '#faad14', color: 'white'}} size='large' onClick={() => this.props.drinkDrink()}> Drink </Button>
 
       </React.Fragment>
     )

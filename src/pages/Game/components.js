@@ -72,7 +72,7 @@ export class GameArea extends React.Component {
 		return players;
 	}
   render() {
-    let { game } = this.props;
+    let { game, giveDrink } = this.props;
     let { currentPlayer } = game;
 
     //console.log(`[GameArea:render] game: ${JSON.stringify(game, null, 2)}`)
@@ -87,7 +87,10 @@ export class GameArea extends React.Component {
 
         {this.players().map((player, idx) => 
           <Col span={8} key={idx}>
-            <PlayerSquare player={player} currentPlayer={currentPlayer}/>
+            <PlayerSquare 
+              player={player} 
+              currentPlayer={currentPlayer} 
+              giveDrink={giveDrink}/>
           </Col>
         )}
       </Row>

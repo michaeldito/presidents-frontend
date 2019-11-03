@@ -29,47 +29,20 @@ export default class Inbox extends React.Component {
         <Row>
 
           <Col span={6}>
-            <Row>
-            
-              <Col span={12}>
-                <Typography.Text strong>Sent By:</Typography.Text>
-              </Col>
+            <Typography.Text strong>Sent By:</Typography.Text>
+            <Tag> {item.sentBy}</Tag>
+          </Col>
 
-              <Col span={12}>
-                <Tag> {item.sentBy}</Tag>
-              </Col>
 
-            </Row>
+          <Col span={6}>
+            <Typography.Text strong>Status:</Typography.Text>
+            <Tag color='cyan'>{item.status.value}</Tag>
           </Col>
 
           <Col span={6}>
-            <Row>
-            
-              <Col span={12}>
-                <Typography.Text strong>Status:</Typography.Text>
-              </Col>
-
-              <Col span={12}>
-                <Tag color='cyan'>{item.status.value}</Tag>
-              </Col>
-
-            </Row>
+            <Button>JOIN</Button>
+            <Button>GO</Button>
           </Col>
-
-          <Col span={6}>
-            <Row>
-            
-              <Col span={6}>
-                <Button>JOIN</Button>
-              </Col>
-
-              <Col span={6}>
-                <Button>GO</Button>
-              </Col>
-
-            </Row>
-          </Col>
-
         
         </Row>
 

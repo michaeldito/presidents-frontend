@@ -10,7 +10,7 @@ import { Layout, Card, Typography, Tag, Button, Badge } from 'antd';
 export default class PlayerSquare extends React.Component {
   
   render() {
-    let { player, currentPlayer } = this.props;
+    let { player, currentPlayer, giveDrink } = this.props;
     let { seatPosition, drinksDrunk, drinksReceived } = player;
 
     let title = (
@@ -51,7 +51,7 @@ export default class PlayerSquare extends React.Component {
         </Layout>
 
         <Layout>
-            <Button type='default'>Give Drink</Button>
+            <Button type='default' onClick={() => giveDrink(player.user._id)}>Give Drink</Button>
           </Layout>
         
       </Card>

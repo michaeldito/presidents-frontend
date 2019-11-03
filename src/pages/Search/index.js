@@ -9,6 +9,7 @@ import {
   PageHeader,
   Dropdown,
   Menu,
+  Typography,
   Row, Col
 } from 'antd';
 import Sidebar from '../../components/Sidebar';
@@ -99,14 +100,10 @@ class Search extends React.Component {
 
                 <Form.Item style={{marginLeft:10}}>
                   <Dropdown overlay={menu}>
-                    <Button style={{width: '100%'}}>
-                      {this.state.name !== '' ? this.state.name : 'Select Type'}
+                    <Button>
+                        {this.state.name !== '' ? this.state.name : 'Select Type'}
                     </Button>
                   </Dropdown>
-                </Form.Item>
-
-                <Form.Item  style={{marginLeft:10}}>
-                  <Input placeholder='Enter Name' onChange={(c) => this.handleChange(c)} />
                 </Form.Item>
 
               </Form>
