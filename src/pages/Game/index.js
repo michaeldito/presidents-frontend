@@ -1,14 +1,15 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Modal, PageHeader, Typography, Button, Tag, Switch, Divider } from 'antd';
+import { Layout, Modal, PageHeader, Typography, Button, Tag, Switch, Divider, Statistic, Card } from 'antd';
 import { PlayersHand, CardBoard, Sidebar } from '../../components';
 import { GameArea } from './components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame } from '../../actions';
+import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from '../../actions';
 
 const { Content } = Layout;
+
 
 function calculateColor(value) {
   switch (value) {
@@ -25,12 +26,16 @@ class Game extends React.Component {
 
 		this.state = {
 			visible: true,
-			showCardsRemaining: true
+			showCardsRemaining: false,
+			showYourHand: true
 		}
 	}
 
 	toggleCardsRemaining = () => {
 		this.setState({showCardsRemaining: !this.state.showCardsRemaining});
+	}
+	toggleYourHand = () => {
+		this.setState({showYourHand: !this.state.showYourHand});
 	}
 
 	submit = () => {
@@ -46,6 +51,23 @@ class Game extends React.Component {
 		return status;
 	}
 
+	previousTurns = () => {
+		let { game } = this.props;
+		if (game.handToBeat === undefined) {
+			return []
+		}
+
+		let allTurns = [];
+
+		for (let round of game.rounds) {
+			for (let turn of round.turns) {
+				allTurns.push(turn);
+			}
+		}
+
+		return allTurns;
+	}
+
 	name = () => {
 		let name = '';
 		if (this.props.game !== undefined) {
@@ -58,13 +80,19 @@ class Game extends React.Component {
     this.setState({
       visible: false,
     });
-  };
-
-  handleCancel = e => {
-    this.setState({
-      visible: false,
-    });
 	};
+	
+	gameOverResults = () => {
+		let {players} = this.props.game;
+		players = players.map(player => 
+			<div>
+				<p>{player.user.username}</p>
+				<p>{player.nextGameRank.name}</p>
+				<p>{player.nextGameRank.name === 'President' ? 'Winner!' : ''}</p>
+			</div>
+		)
+		return <div>{players}</div>
+	}
 	
   render() {
 
@@ -77,13 +105,11 @@ class Game extends React.Component {
       <Layout style={{ minHeight: '100vh' }}>
 
 			<Modal
-          title="Basic Modal"
+          title="Game Over!"
           visible={this.statusValue() === 'FINALIZED' && this.state.visible}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
-					cancelText='Rematch?'
         >
-				<p>Game over</p>
+				{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
 			</Modal>
 
         <Sidebar />
@@ -100,7 +126,12 @@ class Game extends React.Component {
 					>
 					{
 						this.statusValue() === 'NOT_STARTED' ? 
-						<Button onClick={() => this.submit()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}} type=''>Start</Button>
+						<Button onClick={() => this.submit()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}}>Start</Button>
+						: null
+					}
+					{
+						this.statusValue() === 'FINALIZED' ? 
+						<Button onClick={() => this.props.rematch()} size='large' style={{margin: 10}} type='primary'>Rematch</Button>
 						: null
 					}
 					</PageHeader>
@@ -108,18 +139,27 @@ class Game extends React.Component {
 
 						<div style={{ padding: 20, background: '#fff' }}>
 
-							<Typography.Title level={4}>Your Hand</Typography.Title>
-							<PlayersHand 
-								cards={playersHand} 
-								gameId={game._id} 
-								playCards={this.props.playCards} 
-								pass={this.props.pass}
-								drinkDrink={this.props.drinkDrink}
-								/>
+							<Typography.Title level={4}>
+								Your Hand
+								<Switch style={{marginLeft:10}} size="small" checked={this.state.showYourHand} onClick={() => this.toggleYourHand()}/>
+							</Typography.Title>
+
+
+							{
+								this.state.showYourHand ? 
+									<PlayersHand 
+										cards={playersHand} 
+										gameId={game._id} 
+										playCards={this.props.playCards} 
+										pass={this.props.pass}
+										drinkDrink={this.props.drinkDrink}
+									/> : <div></div>
+							}
 
 							<Divider />
 
-							<div style={{marginTop:10}}> 
+							<div style={{marginTop:10}}>
+
 								<Typography.Title level={4}>
 									Cards Remaining 
 									<Switch style={{marginLeft:10}} size="small" checked={this.state.showCardsRemaining} onClick={() => this.toggleCardsRemaining()}/>
@@ -128,7 +168,39 @@ class Game extends React.Component {
 								{
 									this.state.showCardsRemaining ? <CardBoard cards={cardsRemaining}/> : <div></div>
 								}
+
 							</div>
+
+							<Divider />
+
+							<div style={{marginTop:10}}>
+
+								<Typography.Title level={4}>
+									Previous Turns
+								</Typography.Title>
+
+								<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
+
+									{
+										this.previousTurns().map(turn => {
+											return (
+												<Card size="small" title={turn.user.username}>
+													{
+														turn.cardsPlayed.map(card => 
+															<Button size='large' type='secondary'>
+																{card.cardRank.character} {card.suit.character}
+															</Button>
+														)
+													}
+												</Card>
+											)
+										})
+									}
+
+								</div>
+
+							</div>
+
 
 						</div>
 
@@ -165,7 +237,8 @@ function mapDispatchToProps(dispatch) {
 		giveDrink,
 		drinkDrink,
 		startGame,
-		updateGame
+		updateGame,
+		rematch
 	}, dispatch);
 }
 

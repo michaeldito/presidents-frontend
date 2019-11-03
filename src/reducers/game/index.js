@@ -73,5 +73,12 @@ export default function gameReducer(state = {}, action) {
     const { userId } = action;
     return computedState(game, userId)
   }
+  else if (action.type === 'REMATCH') {
+
+    let game = action.payload.data;
+    const { userId } = action;
+    return computedState(game, userId)
+  }
+
   return state;
 }

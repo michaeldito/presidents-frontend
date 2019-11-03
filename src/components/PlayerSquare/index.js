@@ -15,12 +15,22 @@ export default class PlayerSquare extends React.Component {
 
     let title = (
       <Layout.Content>
+
         <Badge
           count={`${seatPosition + 1}`}
           style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }}
         />
-        <Typography.Title level={4}>{player.user.username}</Typography.Title>
-        <Tag>{player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}</Tag>
+
+        <Layout style={{backgroundColor: 'white'}}>
+          <Typography.Title style={{textAlign: 'center'}} level={4}>{player.user.username}</Typography.Title>
+          <Tag style={{textAlign: 'center'}} color='orange'>{player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}</Tag>
+          
+          {
+            player.nextGameRank !== undefined ? <Tag color='green'>{player.nextGameRank.name}</Tag> : null
+          }
+
+        </Layout>
+
       </Layout.Content>
     );
 
@@ -39,19 +49,16 @@ export default class PlayerSquare extends React.Component {
           style={style}
           >
 
-        <Layout>
+          <Layout style={{backgroundColor: 'white'}}>
+            <Typography.Title level={5} style={{textAlign: 'center'}}>
+              {drinksDrunk}-{drinksReceived.length}
+            </Typography.Title>
+          </Layout>
 
-          <Layout.Content>
-            <Layout style={{backgroundColor: 'white'}}>
-             <Typography.Text type="secondary">drunk: {drinksDrunk}</Typography.Text>
-             <Typography.Text type="secondary">received: {drinksReceived.length}</Typography.Text>
-            </Layout>
-          </Layout.Content>
-
-        </Layout>
-
-        <Layout>
-            <Button type='default' onClick={() => giveDrink(player.user._id)}>Give Drink</Button>
+          <Layout>
+            <Button style={{textOverflow: 'ellipsis'}} type='default' onClick={() => giveDrink(player.user._id)}>
+              Give Drink
+            </Button>
           </Layout>
         
       </Card>

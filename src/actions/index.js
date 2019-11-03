@@ -46,6 +46,7 @@ export const GIVE_DRINK ='GIVE_DRINK';
 export const DRINK_DRINK = 'DRINK_DRINK';
 export const START_GAME = 'START_GAME';
 export const UPDATE_GAME = 'UPDATE_GAME';
+export const REMATCH = 'REAMTCH';
 
 export function updateGame(game) {
 
@@ -169,11 +170,13 @@ export function giveDrink(toUser) {
   }
 }
 
-export function drinkDrink(id) {
+export function drinkDrink() {
 
   return async (dispatch, getState) => {
-    const user = getState().user._id;
-    const request = await axios.put(`presidents/${id}/giveDrink`, {user});
+    const state = getState();
+    const userId = state.user._id;
+    const gameId = state.game._id;
+    const request = await axios.put(`presidents/${gameId}/drinkDrink`, {userId});
 
     return dispatch({ 
       type: DRINK_DRINK, 
@@ -191,6 +194,24 @@ export function startGame(id) {
 
     return dispatch({
       type: START_GAME,
+      payload: request,
+      userId
+    });
+
+  }
+}
+
+export function rematch() {
+
+  return async (dispatch, getState) => {
+    const state = getState();
+    const userId = state.user._id;
+    const gameId = state.game._id;
+    
+    const request = await axios.post(`/presidents/${gameId}/rematch`);
+
+    return dispatch({
+      type: REMATCH,
       payload: request,
       userId
     });

@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import 'antd/dist/antd.css';
 import PlayerSquare from '../../components/PlayerSquare';
-import { Layout, Row, Col, Card, Typography, Tag } from 'antd';
+import { Layout, List, Card, Typography, Tag } from 'antd';
 
 
 // TODO:
@@ -79,21 +79,27 @@ export class GameArea extends React.Component {
     //console.log(`[GameArea:render] players: ${this.players()}`)
 
     return (
-      <Row type="flex" justify="start">
-
-        <Col span={8}>
-          <InfoSquare handToBeat={this.handToBeat()}/>
-        </Col>
-
-        {this.players().map((player, idx) => 
-          <Col span={8} key={idx}>
+      <List
+        grid={{
+          gutter: 16,
+          xs: 1,
+          sm: 2,
+          md: 4,
+          lg: 4,
+          xl: 6,
+          xxl: 3,
+        }}
+        dataSource={game.players}
+        renderItem={player => (
+          <List.Item>
             <PlayerSquare 
               player={player} 
               currentPlayer={currentPlayer} 
-              giveDrink={giveDrink}/>
-          </Col>
+              giveDrink={giveDrink}
+            />
+          </List.Item>
         )}
-      </Row>
+      />
     )
   }
 }

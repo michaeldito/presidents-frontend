@@ -4,6 +4,7 @@ import { createLogger } from 'redux-logger'
 import thunk from 'redux-thunk';
 import rootReducer from './../reducers';
 import socket from 'socket.io-client'
+import { getUser } from '../actions';
 
 const middleware = [promise, createLogger(), thunk]
 
@@ -71,7 +72,7 @@ const addSocketListeners = (dispatch, getState) => {
 		});
 	});
 	
-	io.on('rematch started', data => {
+	io.on('rematch started', async data => {
 
 		console.log(`[socket.io-client] rematch started`);
 		console.log(`[socket.io-client] data`);
@@ -79,13 +80,15 @@ const addSocketListeners = (dispatch, getState) => {
 
 		let userId = getState().user._id;
 
-		dispatch({
+		await dispatch({
 			type: 'UPDATE_GAME',
 			payload: {
 				data: {...data.game}
 			},
 			userId
 		});
+
+		await dispatch(getUser(userId));
   });
 }
 

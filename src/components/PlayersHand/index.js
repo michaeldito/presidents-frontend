@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Typography } from 'antd';
 
 
 // TODO:
@@ -64,7 +64,9 @@ export default class PlayersHand extends React.Component {
       return (
         <div style={{margin: '10px'}} key={idx} onClick={() => this.selectCard(card)}>
           <Button size='large' type={type}>
+            <Typography.Text strong>
             {card.cardRank.character} {card.suit.character}
+            </Typography.Text>
           </Button>
         </div>)
     });
