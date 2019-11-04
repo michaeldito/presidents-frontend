@@ -5,7 +5,8 @@ import App from './App';
 import './index.css';
 import './assets/cards/cards.css';
 import { Provider } from 'react-redux';
-import store from './store'
+import {store, persistor} from './store'
+import { PersistGate } from 'redux-persist/integration/react'
 
 import * as serviceWorker from './serviceWorker';
 
@@ -14,9 +15,11 @@ window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true; // needed for redux chrom de
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router >
-      <App />
-    </Router>
+    <PersistGate loading={<div>loading...</div>} persistor={persistor}>
+      <Router >
+        <App />
+      </Router>
+    </PersistGate>
   </Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

@@ -51,22 +51,6 @@ class Game extends React.Component {
 		return status;
 	}
 
-	previousTurns = () => {
-		let { game } = this.props;
-		if (game.handToBeat === undefined) {
-			return []
-		}
-
-		let allTurns = [];
-
-		for (let round of game.rounds) {
-			for (let turn of round.turns) {
-				allTurns.push(turn);
-			}
-		}
-
-		return allTurns;
-	}
 
 	name = () => {
 		let name = '';
@@ -176,12 +160,12 @@ class Game extends React.Component {
 							<div style={{marginTop:10}}>
 
 								<Typography.Title level={4}>
-									Previous Turns
+									Game Alerts
 								</Typography.Title>
 
 								<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
 
-									{
+									{/* {
 										this.previousTurns().map(turn => {
 											return (
 												<Card size="small" title={turn.user.username}>
@@ -195,7 +179,7 @@ class Game extends React.Component {
 												</Card>
 											)
 										})
-									}
+									} */}
 
 								</div>
 
