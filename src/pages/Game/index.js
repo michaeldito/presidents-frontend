@@ -60,6 +60,10 @@ class Game extends React.Component {
 		return name;
 	}
 
+	handToBeat = () => {
+		return this.props.game !== undefined && this.props.game.handToBeat !== undefined ? this.props.game.handToBeat : { cardRank: { character:'-'}, suit: { character : '-'} }
+	}
+
 	handleOk = e => {
     this.setState({
       visible: false,
@@ -180,6 +184,17 @@ class Game extends React.Component {
 											)
 										})
 									} */}
+
+
+											{
+												this.handToBeat().map(card => 
+													<Card size="small" title="hand to beat">
+														<Button size='large' type='secondary'>{card.cardRank.character} {card.suit.character}</Button>
+													</Card>
+
+												)
+											}
+
 
 								</div>
 
