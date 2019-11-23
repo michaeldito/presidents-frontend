@@ -73,6 +73,14 @@ export function login(username, password) {
   }
 }
 
+export const LOGOUT = 'LOGOUT';
+
+export function logout() {
+  return {
+    type: LOGOUT
+  }
+}
+
 
 
 
@@ -309,7 +317,7 @@ export function drinkDrink() {
 
     } catch (err) {
 
-      dispatch(errorNotification('Drink Not Dranken', 'suck it up'));
+      dispatch(errorNotification('Drink Not Dranken', 'no drink for you'));
 
     }
     

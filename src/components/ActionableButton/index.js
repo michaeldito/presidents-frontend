@@ -13,18 +13,15 @@ class ActionableButton extends React.Component {
   render() {
 
     let {name, id, payload} = this.props;
-    let button = name === 'join' ? 
+    let button = name === 'Join' ? 
       <Button onClick={() => this.props.joinGame(id, payload)}>
-        <Link to='/game'>
           {name}
-        </Link>
       </Button> 
-      : 
-      <Link to='/game'>
+      : name === 'Go' ? 
         <Button onClick={() => this.props.getGame(id)}>
           {name}
         </Button>
-      </Link>
+      : <div></div>
 
     return button;
   }

@@ -28,12 +28,12 @@ export default class SideBar extends React.Component {
 
           <Menu.Item key="0">
             <NavLink
-              key={`/login`}
-              to={`/login`}
+              key={`/dashboard`}
+              to={`/dashboard`}
             >
-              <Icon type="login" />
+              <Icon type="home" />
               <span>
-                Login
+                Home
               </span>
             </NavLink>
           </Menu.Item>
@@ -108,6 +108,18 @@ export default class SideBar extends React.Component {
               <Icon type="profile" />
               <span>
                 Profile
+              </span>
+            </NavLink>
+          </Menu.Item>
+
+          <Menu.Item key="10" /*onClick={() => this.props.logout()}*/>
+            <NavLink
+              key={`/`}
+              to={`/`}
+            >
+              <Icon type="logout" />
+              <span>
+                Logout
               </span>
             </NavLink>
           </Menu.Item>

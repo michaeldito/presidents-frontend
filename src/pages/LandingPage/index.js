@@ -3,15 +3,12 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Button, Card } from 'antd';
 import { NavLink } from 'react-router-dom';
-const { Header } = Layout;
 
 
 export default class LandingPage extends React.Component {
   render() {
     return (
       <Layout>
-
-        <Header>Header</Header>
 
         <div style={{margin:'auto'}}>
         

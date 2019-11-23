@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Row, Col, Button, Typography } from 'antd';
+import { Row, Divider, Button, Typography } from 'antd';
 
 
 // TODO:
@@ -74,13 +74,19 @@ export default class PlayersHand extends React.Component {
     return (
       <React.Fragment>
 
-        <Row type="flex" justify="start">
-          {cardComponents}
-        </Row>
-
         <Button style={{marginRight:10, backgroundColor: '#5cdbd3', color: 'white'}} size='large' onClick={() => this.playCards()}> Play Cards </Button>
         <Button style={{marginRight:10, backgroundColor: '#fadb14', color: 'white'}} size='large' onClick={() => this.props.pass()}> Pass </Button>
         <Button style={{marginRight:10, backgroundColor: '#faad14', color: 'white'}} size='large' onClick={() => this.props.drinkDrink()}> Drink </Button>
+
+        <Divider />
+
+        <Typography.Title style={{cursor: 'pointer'}} level={4} onClick={() => this.toggleYourHand()}>
+          Your Hand
+        </Typography.Title>
+
+        <Row type="flex" justify="start">
+          {cardComponents}
+        </Row>
 
       </React.Fragment>
     )

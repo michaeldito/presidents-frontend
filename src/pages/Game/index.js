@@ -61,7 +61,26 @@ class Game extends React.Component {
 	}
 
 	handToBeat = () => {
-		return this.props.game !== undefined && this.props.game.handToBeat !== undefined ? this.props.game.handToBeat : { cardRank: { character:'-'}, suit: { character : '-'} }
+		if (this.props.game !== undefined && this.props.game.handToBeat !== undefined) {
+
+			let cards = this.props.game.handToBeat.map(card => 
+				<Button size='large' type='secondary'>
+					{card.cardRank.character} {card.suit.character}
+				</Button>
+			);
+
+			return (
+				<Card size="small" title="hand to beat">
+					{cards}
+				</Card>
+			)
+		}
+
+		return (
+			<Card size="small" title="hand to beat">
+				
+			</Card>
+		)
 	}
 
 	handleOk = e => {
@@ -126,14 +145,8 @@ class Game extends React.Component {
           <Content style={{ margin: '0 16px' }}>
 
 						<div style={{ padding: 20, background: '#fff' }}>
-
-							<Typography.Title level={4}>
-								Your Hand
-								<Switch style={{marginLeft:10}} size="small" checked={this.state.showYourHand} onClick={() => this.toggleYourHand()}/>
-							</Typography.Title>
-
-
-							{
+				
+		  				{
 								this.state.showYourHand ? 
 									<PlayersHand 
 										cards={playersHand} 
@@ -144,9 +157,9 @@ class Game extends React.Component {
 									/> : <div></div>
 							}
 
-							<Divider />
+							</div>
 
-							<div style={{marginTop:10}}>
+							{/* <div style={{marginTop:10}}>
 
 								<Typography.Title level={4}>
 									Cards Remaining 
@@ -159,9 +172,9 @@ class Game extends React.Component {
 
 							</div>
 
-							<Divider />
+							<Divider /> */}
 
-							<div style={{marginTop:10}}>
+							<div style={{marginTop:10, padding: 20, background: '#fff'}}>
 
 								<Typography.Title level={4}>
 									Game Alerts
@@ -184,24 +197,12 @@ class Game extends React.Component {
 											)
 										})
 									} */}
-
-
-											{
-												this.handToBeat().map(card => 
-													<Card size="small" title="hand to beat">
-														<Button size='large' type='secondary'>{card.cardRank.character} {card.suit.character}</Button>
-													</Card>
-
-												)
-											}
-
+																							
+									{this.handToBeat()}
 
 								</div>
 
 							</div>
-
-
-						</div>
 
 					
             <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff'}}>

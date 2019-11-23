@@ -92,35 +92,28 @@ class Search extends React.Component {
 
           <Layout>
 
-            <Row>
+            {/* <Row>
 
-            <Col span={4}>
+              <Col span={4}>
 
-              <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
 
-                <Form.Item style={{marginLeft:10}}>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                        {this.state.name !== '' ? this.state.name : 'Select Type'}
-                    </Button>
-                  </Dropdown>
-                </Form.Item>
+                  <Form.Item style={{marginLeft:10}}>
+                    <Dropdown overlay={menu}>
+                      <Button>
+                          {this.state.name !== '' ? this.state.name : 'Select Type'}
+                      </Button>
+                    </Dropdown>
+                  </Form.Item>
 
-              </Form>
+                </Form>
 
               </Col>
 
-            </Row>
+            </Row> */}
 
-            <Row>
+            <SearchTable data={this.props.data} alreadyJoinedGames={this.props.user.gamesPlayed}/>
 
-              <Col>
-
-                <SearchTable data={this.props.data} alreadyJoinedGames={this.props.user.gamesPlayed}/>
-              
-              </Col>
-
-            </Row>
 
           </Layout>
 

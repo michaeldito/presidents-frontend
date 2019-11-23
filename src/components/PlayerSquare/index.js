@@ -56,7 +56,10 @@ export default class PlayerSquare extends React.Component {
           </Layout>
 
           <Layout>
-            <Button style={{textOverflow: 'ellipsis'}} type='default' onClick={() => giveDrink(player.user._id)}>
+            <Button 
+              style={{'overflow': 'hidden', 'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap'}} 
+              type='default' 
+              onClick={() => giveDrink(player.user._id)}>
               Give Drink
             </Button>
           </Layout>

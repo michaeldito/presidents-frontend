@@ -14,5 +14,8 @@ export default function userReducer(state = {}, action) {
     let newState = Object.assign({}, user);
     return newState;
   }
+  else if (action.type === 'LOGOUT') {
+    return {};
+  }
   return state;
 }
