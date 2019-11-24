@@ -23,26 +23,18 @@ class Profile extends React.Component {
     console.log(gamesPlayed)
 
     return (
-      <Layout style={{ minHeight: '100vh' }}>
-      
-        <Sidebar />
-        
-        <Layout>
+      <Layout>
 
-          <PageHeader onBack={() => null} title="Profile"/>
-          
-          <Content style={{ margin: '0 16px' }}>
-            <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff', minHeight: 180 }}>
+        <PageHeader onBack={() => null} title="Profile"/>
+        
+        <Content style={{ margin: '0 16px' }}>
+          <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff', minHeight: 180 }}>
             <Typography>{username}</Typography>
             <Typography>Games Played: {gamesPlayed.length}</Typography>
             <Typography>email: {email}</Typography>
-            </div>
-          
-          </Content>
-          
-        
-        </Layout>
-
+          </div>
+        </Content>
+    
       </Layout>
     );
   }

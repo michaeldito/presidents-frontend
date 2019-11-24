@@ -1,6 +1,5 @@
 import axios from '../config/axios';
 import { notification } from 'antd';
-
 // NOTIFICATION
 
 const openNotificationWithIcon = type => message => description => {
@@ -132,11 +131,25 @@ export function getGame(id) {
     const request = await axios.get(`presidents/${id}`);
     const userId = getState().user._id;
 
-    return dispatch({
-      type: GET_GAME,
-      payload: request,
-      userId
-    });
+    try {
+
+      await dispatch({
+        type: GET_GAME,
+        payload: request,
+        userId
+      });
+
+      dispatch(successNotification('Game Rejoined', 'Good luck'));
+
+      
+
+    }
+    catch (err) {
+
+      console.log(err)
+      dispatch(errorNotification('Unable to create the game', err.response.data));
+
+    }
 
   }
 }
@@ -234,7 +247,7 @@ export function playCards(id, cardsPlayed) {
 
     } catch (err) {
 
-      dispatch(errorNotification('Invalid Turn', err.response.data))
+      dispatch(errorNotification('Invalid Turn', err.response.data));
     
     }
     
@@ -326,17 +339,32 @@ export function drinkDrink() {
 }
 
 export const START_GAME = 'START_GAME';
-export function startGame(id) {
+export function startGame() {
 
   return async (dispatch, getState) => {
-    const userId = getState().user._id;
-    const request = await axios.put(`/presidents/${id}/initialize`);
+    const state = getState();
+    const userId = state.user._id;
+    const id = state.game._id
 
-    return dispatch({
-      type: START_GAME,
-      payload: request,
-      userId
-    });
+
+    try {
+
+      const request = await axios.put(`/presidents/${id}/initialize`);
+
+      dispatch({
+        type: START_GAME,
+        payload: request,
+        userId
+      });
+
+      dispatch(successNotification('Game Started', 'May the best player win'));
+
+    } catch (err) {
+
+      console.log(err);
+      dispatch(errorNotification('Game Not Started', err.response.data));
+
+    }
 
   }
 }

@@ -3,7 +3,6 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Card, Typography, PageHeader, Tag, Row, Col } from 'antd';
 import { NavLink } from 'react-router-dom';
-import Sidebar from '../../components/Sidebar';
 
 
 const friends = [
@@ -61,8 +60,6 @@ export default class Friends extends React.Component {
 
   render() {
 
-
-
     let friendsOf4 = listToMatrix(friends, 4);
     let friendComponents = friendsOf4.map(group => 
       <Row align='middle' gutter={16}>
@@ -85,18 +82,9 @@ export default class Friends extends React.Component {
     )
 
     return (
-      <Layout style={{ minHeight: '100vh' }}>
-               
-        <Sidebar />
-
-        <Layout>
-
-          <PageHeader onBack={() => null} title="Friends"/>
-
-          {friendComponents}
-
-        </Layout>
-
+      <Layout>
+        <PageHeader onBack={() => null} title="Friends"/>
+        {friendComponents}
       </Layout>
     );
   }

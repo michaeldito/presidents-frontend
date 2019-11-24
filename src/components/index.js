@@ -6,4 +6,3 @@ export { default as GameAlert } from './GameAlert';
 export { default as PlayersHand } from './PlayersHand';
 export { default as PlayerSquare } from './PlayerSquare';
 export { default as SearchTable } from './SearchTable';
-export { default as Sidebar } from './Sidebar';

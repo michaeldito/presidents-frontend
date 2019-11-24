@@ -8,11 +8,8 @@ import {
   Layout,
   PageHeader,
   Dropdown,
-  Menu,
-  Icon,
-  Row, Col
+  Menu
 } from 'antd';
-import Sidebar from '../../components/Sidebar';
 
 import {createGame} from '../../actions';
 import { bindActionCreators } from 'redux';
@@ -83,7 +80,6 @@ class CreateGame extends React.Component {
 
         {/* {redirect} */}
 
-        <Sidebar />
 
         <Content>
 

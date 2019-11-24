@@ -12,120 +12,24 @@ import {
   Typography,
   Row, Col
 } from 'antd';
-import Sidebar from '../../components/Sidebar';
 import {SearchTable} from '../../components';
 
 import {getGamesToJoin} from '../../actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 
-const { Content } = Layout;
-
-const configs = [
-  {name: 'Presidents'},
-  {name: 'War'},
-  {name: 'Go Fish'}
-];
 
 class Search extends React.Component {
-  constructor(props) {
-    super(props);
-    this.props.getGamesToJoin();
-    this.state = {
-      collapsed: false,
-      name: ''
-    };
-  }
-  
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-  
-  onCollapse = collapsed => {
-    console.log(collapsed);
-    this.setState({ collapsed });
-  };
-
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  };
-
-
   render() {
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
-    };
-    function handleMenuClick(e) {
-      console.log('click', e);
-    }
-    const menu = (
-      <Menu onClick={handleMenuClick}>
-      {configs.map((config, idx) =>
-        <Menu.Item key={idx} onClick={() => this.setState({name: config.name})}>
-          {config.name}
-        </Menu.Item>
-      )}
-      </Menu>
-    );
-
     return (
       <Layout>
-
-        <Sidebar />
-
-        <Content>
-
-          <PageHeader onBack={() => null} title="Search" />
-
-          <Layout>
-
-            {/* <Row>
-
-              <Col span={4}>
-
-                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-
-                  <Form.Item style={{marginLeft:10}}>
-                    <Dropdown overlay={menu}>
-                      <Button>
-                          {this.state.name !== '' ? this.state.name : 'Select Type'}
-                      </Button>
-                    </Dropdown>
-                  </Form.Item>
-
-                </Form>
-
-              </Col>
-
-            </Row> */}
-
-            <SearchTable data={this.props.data} alreadyJoinedGames={this.props.user.gamesPlayed}/>
-
-
-          </Layout>
-
-
-        </Content>
-
+        <PageHeader onBack={() => null} title="Search" />
+        <SearchTable data={this.props.data} alreadyJoinedGames={this.props.user.gamesPlayed}/>
       </Layout>
     );
   }
 }
 
-let SearchComponent = Form.create({ name: 'search' })(Search);
 
 function mapStateToProps(state) {
 	return {
@@ -143,4 +47,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps,
-)(SearchComponent);
+)(Search);

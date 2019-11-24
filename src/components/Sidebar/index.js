@@ -3,6 +3,9 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom';
+import {getGamesToJoin, logout} from '../../actions';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
 const { Sider } = Layout;
 
 
@@ -10,7 +13,7 @@ const { Sider } = Layout;
 // convert to function
 // create file with {menu items}
 // import and map over array to create menu items
-export default class SideBar extends React.Component {
+class SideBar extends React.Component {
   state = {
     collapsed: false,
   };
@@ -92,6 +95,7 @@ export default class SideBar extends React.Component {
             <NavLink
               key={`/search`}
               to={`/search`}
+              onClick={() => this.props.getGamesToJoin()}
             >
               <Icon type="search" />
               <span>
@@ -112,7 +116,7 @@ export default class SideBar extends React.Component {
             </NavLink>
           </Menu.Item>
 
-          <Menu.Item key="10" /*onClick={() => this.props.logout()}*/>
+          <Menu.Item key="10" onClick={() => this.props.logout()}>
             <NavLink
               key={`/`}
               to={`/`}
@@ -131,3 +135,18 @@ export default class SideBar extends React.Component {
   }
 }
           
+function mapStateToProps(state) {
+	return {};
+}
+
+function mapDispatchToProps(dispatch) {
+	return bindActionCreators({
+    getGamesToJoin,
+    logout
+	}, dispatch);
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(SideBar);

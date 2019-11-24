@@ -1,7 +1,8 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Row, Divider, Button, Typography } from 'antd';
+import { Row, Divider, Button, Typography, Collapse } from 'antd';
+const { Panel } = Collapse;
 
 
 // TODO:
@@ -80,13 +81,15 @@ export default class PlayersHand extends React.Component {
 
         <Divider />
 
-        <Typography.Title style={{cursor: 'pointer'}} level={4} onClick={() => this.toggleYourHand()}>
-          Your Hand
-        </Typography.Title>
+        <Collapse defaultActiveKey={['1']} style={{cursor: 'pointer'}} level={4} onClick={() => this.toggleYourHand()}>
+          <Panel header="Your Hand" key="1">
+          <Row type="flex" justify="start">
+            {cardComponents}
+          </Row>
+          </Panel>
+        </Collapse>
 
-        <Row type="flex" justify="start">
-          {cardComponents}
-        </Row>
+        
 
       </React.Fragment>
     )

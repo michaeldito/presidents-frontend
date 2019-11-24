@@ -1,15 +1,15 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Modal, PageHeader, Typography, Button, Tag, Switch, Divider, Statistic, Card } from 'antd';
-import { PlayersHand, CardBoard, Sidebar } from '../../components';
+import { Layout, Modal, PageHeader, Typography, Button, Tag, Card, Steps } from 'antd';
+import { PlayersHand } from '../../components';
 import { GameArea } from './components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from '../../actions';
-
+import Moment from 'react-moment';
 const { Content } = Layout;
-
+const { Step } = Steps;
 
 function calculateColor(value) {
   switch (value) {
@@ -38,7 +38,7 @@ class Game extends React.Component {
 		this.setState({showYourHand: !this.state.showYourHand});
 	}
 
-	submit = () => {
+	start = () => {
 		let id = this.props.game._id;
 		this.props.startGame(id);
 	}
@@ -60,27 +60,49 @@ class Game extends React.Component {
 		return name;
 	}
 
-	handToBeat = () => {
-		if (this.props.game !== undefined && this.props.game.handToBeat !== undefined) {
+	turnsTaken = () => {
+		if (this.props.game.turnToBeat !== undefined) {
 
-			let cards = this.props.game.handToBeat.map(card => 
-				<Button size='large' type='secondary'>
-					{card.cardRank.character} {card.suit.character}
-				</Button>
-			);
-
-			return (
-				<Card size="small" title="hand to beat">
-					{cards}
-				</Card>
-			)
-		}
-
-		return (
-			<Card size="small" title="hand to beat">
+			let rounds = this.props.game.rounds;
+			let turns = [];
+			rounds.forEach(round => {
+				round.turns.forEach(turn => {
+					turns.push(turn);
+				});
+			});
+			console.log(turns)
+			
+			let users = {};
+			this.props.game.players.forEach(player => { 
+				users[player.user._id] = player.user;
+			});
+			console.log(users)
+			turns = turns.reverse().map(turn => {
+				console.log(turn._id === this.props.game.turnToBeat._id)
+				let style = turn._id === this.props.game.turnToBeat._id ?
+					{
+						border: '2px solid #f5222d', 
+						padding: '10px'
+					} : {
+						padding: '10px'
+					}
 				
-			</Card>
-		)
+				return (
+					<div style={{padding: '5px'}}>
+						<Card size="small" title={users[turn.user].username} style={style}>
+						{
+							turn.wasPassed ? 'Pass' : turn.wasSkipped ? 'Skipped' : 
+							turn.cardsPlayed.map(card =>
+								<Button>{card.cardRank.character} {card.suit.character}</Button>
+							)
+						}
+						</Card>
+					</div>
+				)
+			});
+			
+			return turns;
+		}
 	}
 
 	handleOk = e => {
@@ -107,45 +129,56 @@ class Game extends React.Component {
 		const { playersHand, cardsRemaining } = game;
 
 		let color = calculateColor(this.statusValue());
+		
+		let startTime = new Date(this.props.game.createdAt).toLocaleString().replace(/:\d+ /, ' ');
 
     return (
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout>
 
-			<Modal
-          title="Game Over!"
-          visible={this.statusValue() === 'FINALIZED' && this.state.visible}
-          onOk={this.handleOk}
-        >
-				{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
-			</Modal>
-
-        <Sidebar />
+				<Modal
+						title="Game Over!"
+						visible={this.statusValue() === 'FINALIZED' && this.state.visible}
+						onOk={this.handleOk}
+					>
+					{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
+				</Modal>
 
         <Layout>
           <PageHeader 
 						onBack={() => null} 
-						title={`Presidents - ${this.name()}`}
-						subTitle={
-							<Tag color={color} key={this.statusValue()}>
-								{this.statusValue().toUpperCase()}
-							</Tag>
-						}
-					>
-					{
-						this.statusValue() === 'NOT_STARTED' ? 
-						<Button onClick={() => this.submit()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}}>Start</Button>
-						: null
-					}
-					{
-						this.statusValue() === 'FINALIZED' ? 
-						<Button onClick={() => this.props.rematch()} size='large' style={{margin: 10}} type='primary'>Rematch</Button>
-						: null
-					}
-					</PageHeader>
-          <Content style={{ margin: '0 16px' }}>
+						title={`Presidents`}
+					/>
+				          
+					<Content style={{ margin: '0 16px' }}>
 
 						<div style={{ padding: 20, background: '#fff' }}>
-				
+
+							<Steps current={1}>
+								<Step title="Created" subTitle={startTime}/>
+								<Step title="In Progress" 
+									subTitle={
+										<Moment 
+											date={this.props.game.createdAt}
+											durationFromNow
+										/>
+									}
+									/>
+								<Step title="Complete"/>
+							</Steps>
+
+						</div>
+						
+						<div style={{ marginTop:10, padding: 20, background: '#fff' }}>
+						{
+							this.statusValue() === 'NOT_STARTED' ? 
+							<Button onClick={() => this.start()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}}>Start</Button>
+							: null
+						}
+						{
+							this.statusValue() === 'FINALIZED' ? 
+							<Button onClick={() => this.props.rematch()} size='large' style={{margin: 10}} type='primary'>Rematch</Button>
+							: null
+						}
 		  				{
 								this.state.showYourHand ? 
 									<PlayersHand 
@@ -177,7 +210,7 @@ class Game extends React.Component {
 							<div style={{marginTop:10, padding: 20, background: '#fff'}}>
 
 								<Typography.Title level={4}>
-									Game Alerts
+									Turns Taken
 								</Typography.Title>
 
 								<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
@@ -198,7 +231,7 @@ class Game extends React.Component {
 										})
 									} */}
 																							
-									{this.handToBeat()}
+									{this.turnsTaken()}
 
 								</div>
 

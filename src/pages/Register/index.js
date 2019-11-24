@@ -44,9 +44,6 @@ class RegisterForm extends React.Component {
 
           {this.props.user.registered ? <Redirect to={`/dashboard`}/> : null}
 
-        
-          <Header>Header</Header>
-
           <PageHeader onBack={() => null} title="Register" />
 
           <div style={{margin:'auto'}}>

@@ -26,7 +26,7 @@ export default class PlayerSquare extends React.Component {
           <Tag style={{textAlign: 'center'}} color='orange'>{player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}</Tag>
           
           {
-            player.nextGameRank !== undefined ? <Tag color='green'>{player.nextGameRank.name}</Tag> : null
+            player.nextGameRank !== undefined ? <Tag color='green' style={{textAlign: 'center'}}>{player.nextGameRank.name}</Tag> : null
           }
 
         </Layout>

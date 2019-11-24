@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Button } from 'antd';
 import ActionableButton from '../ActionableButton';
 
 function calculateColor(value) {
@@ -27,11 +27,16 @@ export default class SearchTable extends React.Component {
             {this.props.alreadyJoinedGames.forEach(joinedGameId => {
               //console.log(`${joinedGameId} === ${game.id.toString()} : ${joinedGameId === game.id.toString()}`)
             })}
-            {this.props.alreadyJoinedGames.find(joinedGame => joinedGame === game.id.toString()) 
+            {
+              // if the user has joined and its in progress tell them Go
+              this.props.alreadyJoinedGames.find(joinedGame => joinedGame === game.id.toString()) && game.status.value === 'IN_PROGRESS'
               ? 
               <ActionableButton name='Go' id={game.id.toString()}/>
-              :
-              <ActionableButton name='Join' id={game.id.toString()}/>
+              // if the game hasn't started they can Join
+              : game.status.value === 'NOT_STARTED' ?
+                <ActionableButton name='Join' id={game.id.toString()}/>
+              : // they didnt't join and the game is in progress or over
+                <Button>None</Button>
               }            
           </div>
         ),

@@ -2,7 +2,6 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Card, Typography, PageHeader, Button, Tag, Row, Col } from 'antd';
-import Sidebar from '../../components/Sidebar';
 
 const items = [
   { sentBy: 'me', status: { value: 'NOT_STARTED'}, game: { name: 'idk'} },
@@ -50,17 +49,9 @@ export default class Inbox extends React.Component {
     );
 
     return (
-      <Layout style={{ minHeight: '100vh' }}>
-                
-        <Sidebar />
-
-        <Layout>
-
-          <PageHeader onBack={() => null} title="Inbox"/>
-
-          {inboxItems}
-
-        </Layout>
+      <Layout>
+        <PageHeader onBack={() => null} title="Inbox"/>
+        {inboxItems}
       </Layout>
     );
   }
