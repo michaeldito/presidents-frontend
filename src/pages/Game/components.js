@@ -86,6 +86,7 @@ export const GameArea = ({ game, giveDrink, roomName, token, videoLogout }) => {
     };
 
     if (token) {
+      console.log('connecting to twilio video chat')
       Video.connect(token, {
         name: roomName
       }).then(room => {
@@ -96,7 +97,9 @@ export const GameArea = ({ game, giveDrink, roomName, token, videoLogout }) => {
         room.on('participantDisconnected', participantDisconnected);
         participantConnected(room.localParticipant);
         room.participants.forEach(participantConnected);
-      });
+      }).catch(err =>{
+        console.log(err)
+      })
       console.log('after video setup')
       return () => {
         setRoom(currentRoom => {
