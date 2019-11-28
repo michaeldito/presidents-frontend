@@ -27,8 +27,8 @@ export const persistor = persistStore(store)
 
 // SOCKET
 
-// const io = socket('https://larry-presidents.herokuapp.com');
-const io = socket('http://localhost:8080');
+const io = socket('https://larry-presidents.herokuapp.com');
+// const io = socket('http://localhost:8080');
 
 const addSocketListeners = (dispatch, getState) => {
 	io.on('game refresh', data => {
