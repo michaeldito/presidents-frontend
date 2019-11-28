@@ -15,7 +15,7 @@ const { Sider } = Layout;
 // import and map over array to create menu items
 class SideBar extends React.Component {
   state = {
-    collapsed: false,
+    collapsed: true,
   };
 
   onCollapse = collapsed => {

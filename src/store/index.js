@@ -7,7 +7,8 @@ import socket from 'socket.io-client'
 import { getUser } from '../actions';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
- 
+import { loadingBarMiddleware } from 'react-redux-loading-bar'
+
 const persistConfig = {
   key: 'root',
   storage,
@@ -15,7 +16,7 @@ const persistConfig = {
  
 const persistedReducer = persistReducer(persistConfig, rootReducer)
  
-const middleware = [promise, createLogger(), thunk]
+const middleware = [promise, createLogger(), thunk, loadingBarMiddleware()]
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -7,6 +7,7 @@ import routes from './config/routes';
 import axios from 'axios';
 import { Layout} from 'antd';
 import Sidebar from './components/Sidebar';
+import LoadingBar from 'react-redux-loading-bar'
 
 // Indicate to the API that all requests for this app are AJAX
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -68,7 +69,9 @@ class App extends Component {
     return (
       <React.Fragment>
 
-        {PublicRoutes}
+        <LoadingBar />
+        
+        {! user.loggedIn ? PublicRoutes : null}
 
         {user.loggedIn ? <AppPresentation>
           <Sidebar />

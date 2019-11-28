@@ -1,9 +1,10 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Modal, PageHeader, Typography, Button, Tag, Card, Steps } from 'antd';
-import { PlayersHand } from '../../components';
-import { GameArea } from './components';
+import axios from '../../config/axios';
+import { Layout, Modal, PageHeader, Typography, Button, List, Avatar, Card, Steps, Drawer, Divider } from 'antd';
+import { PlayersHand, VideoConnection } from '../../components';
+import { GameArea, ChatApp, YouTubeSearch } from './components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from '../../actions';
@@ -20,22 +21,46 @@ function calculateColor(value) {
   }
 }
 
+function stepNumber(value) {
+	switch (value) {
+    case 'NOT_STARTED': return 0;
+    case 'IN_PROGRESS': return 1;
+    case 'FINALIZED': return 2;
+    default: return 0;
+  }
+}
+
 class Game extends React.Component {
 	constructor(props){
 		super(props);
 
 		this.state = {
 			visible: true,
-			showCardsRemaining: false,
-			showYourHand: true
+			drawerOpen: false,
+			showYourHand: true,
+			placement: 'right'
 		}
 	}
 
-	toggleCardsRemaining = () => {
-		this.setState({showCardsRemaining: !this.state.showCardsRemaining});
-	}
-	toggleYourHand = () => {
-		this.setState({showYourHand: !this.state.showYourHand});
+	toggleDrawer = () => {
+    this.setState({
+      visible: ! this.state.visible
+    });
+	};
+	
+	getVideoToken = async () => {
+		let payload = {
+			identity: encodeURIComponent(this.props.username),
+			room: this.props.game._id
+		};
+		console.log(`payload: ${JSON.stringify(payload)}`)
+		const token = await axios.post('/video/token', payload);
+		this.setState({token: token.data});
+		console.log(`token: ${this.state.token}`)
+	};
+
+	videoLogout = () => {
+		this.setState({token: null})
 	}
 
 	start = () => {
@@ -60,6 +85,14 @@ class Game extends React.Component {
 		return name;
 	}
 
+	users = () => {
+		let users = {};
+		this.props.game.players.forEach(player => { 
+			users[player.user._id] = player.user;
+		});
+		return users;
+	}
+
 	turnsTaken = () => {
 		if (this.props.game.turnToBeat !== undefined) {
 
@@ -72,14 +105,14 @@ class Game extends React.Component {
 			});
 			console.log(turns)
 			
-			let users = {};
-			this.props.game.players.forEach(player => { 
-				users[player.user._id] = player.user;
-			});
-			console.log(users)
+			let users = this.users();
+			console.log(users);
+
 			turns = turns.reverse().map(turn => {
-				console.log(turn._id === this.props.game.turnToBeat._id)
-				let style = turn._id === this.props.game.turnToBeat._id ?
+				//console.log(turn._id === this.props.game.turnToBeat._id);
+				let turnToBeat = this.props.game.turnToBeat;
+
+				let style = turnToBeat !== null && turn._id === turnToBeat._id ?
 					{
 						border: '2px solid #f5222d', 
 						padding: '10px'
@@ -105,6 +138,32 @@ class Game extends React.Component {
 		}
 	}
 
+	drinks = () => {
+		if (this.props.game.drinks !== undefined && this.props.game.drinks.length > 0) {
+			return this.props.game.drinks.reverse().map(drink => {
+				if (drink.type === 'drink given') {
+					return (
+						<div style={{padding: '5px'}}>
+							<Card size='small' title='Drink Given'>
+								<Typography>{`From ${drink.from.username}`}</Typography>
+								<Typography>{`To ${drink.to.username}`}</Typography>
+							</Card>
+						</div>
+					)
+				}
+				else if (drink.type === 'drink drunk') {
+					return (
+						<div style={{padding: '5px'}}>
+							<Card size='small' title='Drink Drunk'>
+								{`By ${drink.user.username}`}
+							</Card>
+						</div>
+					)
+				}
+			})
+		}
+	}
+
 	handleOk = e => {
     this.setState({
       visible: false,
@@ -112,17 +171,42 @@ class Game extends React.Component {
 	};
 	
 	gameOverResults = () => {
-		let {players} = this.props.game;
-		players = players.map(player => 
-			<div>
-				<p>{player.user.username}</p>
-				<p>{player.nextGameRank.name}</p>
-				<p>{player.nextGameRank.name === 'President' ? 'Winner!' : ''}</p>
-			</div>
-		)
-		return <div>{players}</div>
+		const description = player => {
+			let desc = '';
+			if (player.politicalRank === undefined) {
+				desc = `Started as nothing`;
+			} 
+			else if (player.politicalRank.name === 'Asshole') {
+				desc = `Sharted from the bottom`;
+			} 
+			else {
+				desc = `Started as ${player.politicalRank.name}`
+			}
+			return desc
+		}
+		
+		return <List
+			itemLayout="horizontal"
+			dataSource={this.props.game.players}
+			renderItem={player => (
+				<List.Item>
+					<List.Item.Meta
+						avatar={
+							<Avatar>{player.user.username[0].toUpperCase()}</Avatar>
+						}
+						title={player.user.username}
+						description={description(player)}
+					/>
+					<div>{player.nextGameRank.name}</div>
+				</List.Item>
+			)}
+		/>
 	}
 	
+	toggleDrawer = () => {
+		this.setState({drawerOpen: !this.state.drawerOpen});
+	}
+
   render() {
 
     const { game } = this.props;
@@ -131,29 +215,43 @@ class Game extends React.Component {
 		let color = calculateColor(this.statusValue());
 		
 		let startTime = new Date(this.props.game.createdAt).toLocaleString().replace(/:\d+ /, ' ');
-
+		
     return (
       <Layout>
 
 				<Modal
-						title="Game Over!"
+						title="Game Complete"
 						visible={this.statusValue() === 'FINALIZED' && this.state.visible}
+						// visible={true}
 						onOk={this.handleOk}
 					>
 					{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
 				</Modal>
 
+				<Drawer
+          placement={this.state.placement}
+          closable={true}
+          onClose={this.toggleDrawer}
+          visible={this.state.drawerOpen}
+        >
+					<div style={{height: '100vh'}}>
+						<YouTubeSearch />
+						<ChatApp username={this.props.username} gameId={this.props.game._id}/>
+					</div>
+        </Drawer>
+
         <Layout>
+
           <PageHeader 
 						onBack={() => null} 
 						title={`Presidents`}
+						subTitle={this.props.username}
 					/>
 				          
 					<Content style={{ margin: '0 16px' }}>
 
 						<div style={{ padding: 20, background: '#fff' }}>
-
-							<Steps current={1}>
+							<Steps current={stepNumber(this.statusValue())}>
 								<Step title="Created" subTitle={startTime}/>
 								<Step title="In Progress" 
 									subTitle={
@@ -165,20 +263,34 @@ class Game extends React.Component {
 									/>
 								<Step title="Complete"/>
 							</Steps>
-
 						</div>
 						
 						<div style={{ marginTop:10, padding: 20, background: '#fff' }}>
-						{
-							this.statusValue() === 'NOT_STARTED' ? 
-							<Button onClick={() => this.start()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}}>Start</Button>
-							: null
-						}
-						{
-							this.statusValue() === 'FINALIZED' ? 
-							<Button onClick={() => this.props.rematch()} size='large' style={{margin: 10}} type='primary'>Rematch</Button>
-							: null
-						}
+
+							{
+								this.statusValue() === 'NOT_STARTED' ? 
+									<Button onClick={() => this.start()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}}>
+										Start
+									</Button>
+									: null
+							}
+							
+							{
+								this.statusValue() === 'FINALIZED' ? 
+									<Button onClick={() => this.props.rematch()} size='large' style={{margin: 10}} type='primary'>
+										Rematch
+									</Button>
+									: null
+							}
+
+							<Button onClick={() => this.toggleDrawer()} size='large' style={{margin: 10}} type='primary'>
+								YouTube & Chat
+							</Button>
+
+							<Button onClick={() => this.getVideoToken()} size='large' style={{margin: 10}} type='secondary'>
+								Video Chat
+							</Button>
+
 		  				{
 								this.state.showYourHand ? 
 									<PlayersHand 
@@ -207,31 +319,31 @@ class Game extends React.Component {
 
 							<Divider /> */}
 
-							<div style={{marginTop:10, padding: 20, background: '#fff'}}>
+							<div style={{marginTop:10, padding: 20, background: '#fff', display: 'flex'}}>
 
-								<Typography.Title level={4}>
-									Turns Taken
-								</Typography.Title>
+								<div style={{float:'left', width: '50%', padding: 10}}>
+									<Typography.Title level={4}>
+										Turns Taken
+									</Typography.Title>
 
-								<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
+									<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
+										{this.turnsTaken()}
+									</div>
+								</div>
 
-									{/* {
-										this.previousTurns().map(turn => {
-											return (
-												<Card size="small" title={turn.user.username}>
-													{
-														turn.cardsPlayed.map(card => 
-															<Button size='large' type='secondary'>
-																{card.cardRank.character} {card.suit.character}
-															</Button>
-														)
-													}
-												</Card>
-											)
-										})
-									} */}
-																							
-									{this.turnsTaken()}
+								<div style={{float:'none', width: '2', }}>
+									<Divider type="vertical" style={{ height: '100%' }}/>
+								</div>
+
+								<div style={{float:'right', width: '50%', padding: 10}}>
+
+									<Typography.Title level={4}>
+										Drinks
+									</Typography.Title>
+
+									<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
+											{this.drinks()}
+									</div>
 
 								</div>
 
@@ -239,7 +351,13 @@ class Game extends React.Component {
 
 					
             <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff'}}>
-              <GameArea game={game} giveDrink={this.props.giveDrink} />
+							<GameArea
+								game={game} 
+								giveDrink={this.props.giveDrink} 
+								roomName={game._id}
+								token={this.state.token}
+								videoLogout={this.videoLogout}
+							/>
             </div>
 
           </Content>
@@ -259,8 +377,9 @@ Game.defaultProps = {
 };
 
 function mapStateToProps(state) {
-	const { game } = state;
-	return { game };
+	const { game, user } = state;
+	const { username } = user;
+	return { game, username };
 }
 
 function mapDispatchToProps(dispatch) {

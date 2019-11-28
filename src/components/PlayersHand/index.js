@@ -79,10 +79,8 @@ export default class PlayersHand extends React.Component {
         <Button style={{marginRight:10, backgroundColor: '#fadb14', color: 'white'}} size='large' onClick={() => this.props.pass()}> Pass </Button>
         <Button style={{marginRight:10, backgroundColor: '#faad14', color: 'white'}} size='large' onClick={() => this.props.drinkDrink()}> Drink </Button>
 
-        <Divider />
-
-        <Collapse defaultActiveKey={['1']} style={{cursor: 'pointer'}} level={4} onClick={() => this.toggleYourHand()}>
-          <Panel header="Your Hand" key="1">
+        <Collapse defaultActiveKey={['1']} style={{cursor: 'pointer', marginTop: 10}} level={4} onClick={() => this.toggleYourHand()}>
+          <Panel header="Your Hand" key="1" >
           <Row type="flex" justify="start">
             {cardComponents}
           </Row>

@@ -17,6 +17,7 @@ function calculateColor(value) {
 export default class SearchTable extends React.Component {
 
   render() {
+    const b = <Button>None</Button>
 
     const columns = [
       {
@@ -36,9 +37,10 @@ export default class SearchTable extends React.Component {
               : game.status.value === 'NOT_STARTED' ?
                 <ActionableButton name='Join' id={game.id.toString()}/>
               : // they didnt't join and the game is in progress or over
-                <Button>None</Button>
+                <ActionableButton name='Go' id={game.id.toString()}/>
               }            
           </div>
+          
         ),
       },
       {
