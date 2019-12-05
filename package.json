@@ -54,9 +54,9 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "serve -s build -l 4000",
-    "build": "react-scripts build",
-    "app": "react-scripts start",
+    "start": "export NODE_ENV=prod && serve -s build -l 4000",
+    "build": "export NODE_ENV=prod && react-scripts build",
+    "start:dev": "export NODE_ENV=dev && react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "gcloud app deploy",

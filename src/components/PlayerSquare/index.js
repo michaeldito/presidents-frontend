@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Card, Typography, Tag, Button, Badge } from 'antd';
+import { Layout, Card, Typography, Tag, Button, Badge, Icon } from 'antd';
 
 
 
@@ -102,47 +102,61 @@ const PlayerSquare = ({player, currentPlayer, giveDrink, participant}) => {
 
   let style = player.user._id === currentPlayer ? {
     border: '2px solid cyan', 
-    padding: '10px'
+    backgroundColor: '#000000'
   } : {
-    padding: '10px'
+    backgroundColor: '#000000'
   }
 
 
   return (
-    <div style={{padding: '5px'}}>
-
       <Card size='medium' 
-        title={title}
+        //title={title}
         style={style}
         >
 
-        
-        {participant !== null ?
-          <div>
-            <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
-            <audio ref={audioRef} autoPlay={true} muted={true} />
-          </div> : null
-        }
+      <Layout.Content style={{display: 'flex', alignItems: 'flex-start'}}>
+        <Badge
+          count={`${seatPosition + 1}`}
+          style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', width: '10%' }}
+        />
+        <Typography.Title style={{color: 'white', textAlign: 'right', width:' 90%'}} level={4}>{player.user.username}</Typography.Title>
+      </Layout.Content>
+
+      {participant !== null ?
+        <div>
+          <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
+          <audio ref={audioRef} autoPlay={true} muted={true} />
+        </div> : null
+      }
         
 
-        <Layout style={{backgroundColor: 'white'}}>
-          <Typography.Title level={5} style={{textAlign: 'center'}}>
-            {drinksDrunk}-{drinksReceived.length}
-          </Typography.Title>
-        </Layout>
-
-        <Layout>
+        <Layout.Content style={{display: 'flex', alignItems: 'flex-start'}}>
+          {player.nextGameRank === undefined ? 
+            <Tag 
+              style={{textAlign: 'left', width: '33%'}} 
+              color='orange'>
+                {player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}
+            </Tag> : null }
+          {player.nextGameRank !== undefined ? 
+            <Tag 
+              color='green' 
+              style={{textAlign: 'left', width: '33%'}}>
+                {player.nextGameRank.name}
+            </Tag> : null}
           <Button 
-            style={{'overflow': 'hidden', 'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap'}} 
-            type='default' 
-            onClick={() => giveDrink(player.user._id)}>
-            Give Drink
-          </Button>
-        </Layout>
+            style={{'overflow': 'hidden', 'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', margin: 'auto'}} 
+            shape='circle' 
+            onClick={() => giveDrink(player.user._id)}
+            icon="coffee" 
+          />
+          <Typography 
+            style={{color: 'white', textAlign: 'right', width: '33%', fontSize: '1em'}}
+              >
+              {drinksDrunk}-{drinksReceived.length}
+          </Typography>
+        </Layout.Content>
       
       </Card>
-  
-    </div>
   )
 }
 export { PlayerSquare as default };
