@@ -33,11 +33,11 @@ export default class SearchTable extends React.Component {
               this.props.alreadyJoinedGames.find(joinedGame => joinedGame === game.id.toString()) && game.status.value === 'IN_PROGRESS'
               ? 
               <ActionableButton name='Go' id={game.id.toString()}/>
-              // if the game hasn't started they can Join
-              : game.status.value === 'NOT_STARTED' ?
+              // if the game hasn't started and they haven't joined they can Join
+              : game.status.value === 'NOT_STARTED' && ! this.props.alreadyJoinedGames.find(joinedGame => joinedGame === game.id.toString()) ?
                 <ActionableButton name='Join' id={game.id.toString()}/>
               : // they didnt't join and the game is in progress or over
-                <ActionableButton name='Go' id={game.id.toString()}/>
+                <Button>None</Button>
               }            
           </div>
           
