@@ -119,9 +119,13 @@ class Game extends React.Component {
 						border: '5px solid #d4380d', 
 						textAlign: 'center',
 						borderRadius: '5px',
+						display: 'flex',
+						flexDirection: 'column'
 					} : {
 						textAlign: 'center',
 						borderRadius: '5px',
+						display: 'flex',
+						flexDirection: 'column'
 					}
 				
 				return (
@@ -133,7 +137,7 @@ class Game extends React.Component {
 							turn.wasSkipped ? 
 								<Typography.Text strong>Skipped</Typography.Text> : 
 							turn.cardsPlayed.map(card =>
-								<Typography.Text code key={card._id}>{card.cardRank.character} {card.suit.character}</Typography.Text>
+								<Typography.Text style={{display:'flex', margin: 2}} code key={card._id}>{card.cardRank.character} {card.suit.character}</Typography.Text>
 							)
 						}
 						</Card>
