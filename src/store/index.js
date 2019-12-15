@@ -26,15 +26,18 @@ export const store = createStore(persistedReducer, enhancer)
 export const persistor = persistStore(store)
 
 // SOCKET
-const env = process.env.NODE_ENV;
-let io, baseURL;
-if (env === 'prod') {
-  baseURL = 'https://larry-presidents.herokuapp.com';
-} else {
-  baseURL = 'http://localhost:8080';
-}
+// const env = process.env.NODE_ENV;
+// let io, baseURL;
+// if (env === 'prod') {
+// 	baseURL = 'https://larry-presidents.herokuapp.com';
+// 	console.log('baseurl is larry prez')
+// } else {
+// 	console.log('baseurl is localhost')
+//   baseURL = 'http://localhost:8080';
+// }
 
-io = socket(baseURL);
+let baseURL = 'https://larry-presidents.herokuapp.com';
+let io = socket(baseURL);
 
 const addSocketListeners = (dispatch, getState) => {
 	io.on('game refresh', data => {

@@ -283,7 +283,6 @@ class Game extends React.Component {
 									<Button 
 										onClick={() => this.props.rematch()} 
 										icon='rollback' 
-										shape='circle'
 										style={{margin: 10}} 
 										type='primary'
 									>
