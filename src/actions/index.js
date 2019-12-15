@@ -63,11 +63,17 @@ export function loginUser(username, password) {
 export function login(username, password) {
 
   return async (dispatch, getState) => {
+
     try {
-      await dispatch(loginUser(username, password));
+
+      dispatch(loginUser(username, password));
       dispatch(successNotification('Log In Successful', 'Welcome back!'));
-    } catch (err) {
+
+    } 
+    catch (err) {
+
       dispatch(errorNotification('Log In Failed', err.response.data));
+
     }
   }
 }
@@ -79,7 +85,6 @@ export function logout() {
     type: LOGOUT
   }
 }
-
 
 
 
@@ -97,11 +102,17 @@ export function registerUser(payload) {
 export function register(payload) {
 
   return async (dispatch, getState) => {
+
     try {
-      await dispatch(registerUser(payload));
+
+      dispatch(registerUser(payload));
       dispatch(successNotification('Registration Successful', 'Welcome aboard!'));
-    } catch (err) {
+
+    } 
+    catch (err) {
+
       dispatch(errorNotification('Registration Failed', err.response.data));
+
     }
   }
 }
@@ -121,6 +132,7 @@ export function getUser(id) {
 
 }
 
+
 // GAME
 
 export const GET_GAME = 'GET_GAME'
@@ -133,20 +145,16 @@ export function getGame(id) {
 
     try {
 
-      await dispatch({
+      dispatch({
         type: GET_GAME,
         payload: request,
         userId
       });
-
       dispatch(successNotification('Game Rejoined', 'Good luck'));
-
-      
 
     }
     catch (err) {
 
-      console.log(err)
       dispatch(errorNotification('Unable to create the game', err.response.data));
 
     }
@@ -177,18 +185,15 @@ export function createGame(payload) {
       const userId = getState().user._id;
       const request = await axios.post(`/presidents/create`, payload);
   
-      await dispatch({
+      dispatch({
         type: CREATE_GAME,
         payload: request
       });
-  
-      await dispatch(getUser(userId));
-
+      dispatch(getUser(userId));
       dispatch(successNotification('Game Created', 'Great success!'))
 
     } catch (err) {
 
-      console.log(err)
       dispatch(errorNotification('Unable to create the game', err.response.data));
 
     }
@@ -213,12 +218,11 @@ export function joinGame(id) {
         payload: request,
         userId
       });
-
+      dispatch(getUser(userId));
       dispatch(successNotification('You have joined the game', 'Great success!'))
 
     } catch (err) {
       
-      console.log(err)
       dispatch(errorNotification('Unable to join the game', err.response.data));
 
     }
@@ -233,16 +237,16 @@ export function playCards(id, cardsPlayed) {
 
     try {
 
-      const user = getState().user;
+      const state = getState();
+      const user = state.user;
       const wasPassed = false;
       const request = await axios.put(`presidents/${id}/processTurn`, {user, cardsPlayed, wasPassed});
   
-      await dispatch({ 
+      dispatch({ 
         type: PLAY_CARDS, 
         payload: request,
         userId: user._id
       });
-
       dispatch(successNotification('Turn Accepted', 'Nice.'));
 
     } catch (err) {
@@ -263,7 +267,7 @@ export function pass() {
     try {
 
       const state = getState();
-      const {user} = state;
+      const { user } = state;
       const id = state.game._id;
       const wasPassed = true;
 
@@ -273,10 +277,10 @@ export function pass() {
         type: PASS, 
         payload: request
       });
-
       dispatch(infoNotification('You passed', 'nothing to see here.'));
 
-    } catch (err) {
+    } 
+    catch (err) {
 
       dispatch(errorNotification('You can\'t pass', err.response.data));
 
@@ -301,7 +305,8 @@ export function giveDrink(toUser) {
         payload: request
       });
 
-    } catch (err) {
+    } 
+    catch (err) {
 
       dispatch(errorNotification('Drink not given', err.response.data))
 
@@ -316,6 +321,7 @@ export function drinkDrink() {
   return async (dispatch, getState) => {
 
     try {
+
       const state = getState();
       const userId = state.user._id;
       const gameId = state.game._id;
@@ -325,16 +331,15 @@ export function drinkDrink() {
         type: DRINK_DRINK, 
         payload: request
       });
-
       dispatch(successNotification('Drink Dranken', 'gulp gulp'));
 
-    } catch (err) {
+    } 
+    catch (err) {
 
       dispatch(errorNotification('Drink Not Dranken', 'no drink for you'));
 
     }
     
-
   }
 }
 
@@ -356,12 +361,11 @@ export function startGame() {
         payload: request,
         userId
       });
-
       dispatch(successNotification('Game Started', 'May the best player win'));
 
-    } catch (err) {
+    } 
+    catch (err) {
 
-      console.log(err);
       dispatch(errorNotification('Game Not Started', err.response.data));
 
     }
@@ -373,13 +377,13 @@ export const UPDATE_GAME = 'UPDATE_GAME';
 export function updateGame(game) {
 
   return (dispatch, getState) => {
-    const userId = getState().user._id;
+
+    let state = getState();
+    const userId = state.user._id;
 
     return dispatch({
       type: UPDATE_GAME,
-      payload: {
-        data: game
-      },
+      payload: { data: game },
       userId
     });
 
@@ -390,6 +394,7 @@ export const REMATCH = 'REMATCH';
 export function rematch() {
 
   return async (dispatch, getState) => {
+
     const state = getState();
     const userId = state.user._id;
     const gameId = state.game._id;

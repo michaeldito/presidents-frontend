@@ -1,10 +1,9 @@
-
 import React from 'react';
 import 'antd/dist/antd.css';
 import axios from '../../config/axios';
-import { Layout, Modal, PageHeader, Typography, Button, List, Avatar, Card, Steps, Drawer, Divider } from 'antd';
-import { PlayersHand, VideoConnection } from '../../components';
-import { GameArea, ChatApp, YouTubeSearch } from './components';
+import { Layout, Modal, PageHeader, Typography, Button, List, Avatar, Card, Steps, Divider, Tooltip } from 'antd';
+import { PlayersHand, HoverArea } from '../../components';
+import { GameArea } from './components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from '../../actions';
@@ -12,20 +11,12 @@ import Moment from 'react-moment';
 const { Content } = Layout;
 const { Step } = Steps;
 
-function calculateColor(value) {
-  switch (value) {
-    case 'NOT_STARTED': return 'green';
-    case 'IN_PROGRESS': return 'blue';
-    case 'FINALIZED': return 'volcano';
-    default: return 'geekblue';
-  }
-}
 
 function stepNumber(value) {
 	switch (value) {
     case 'NOT_STARTED': return 0;
-    case 'IN_PROGRESS': return 1;
-    case 'FINALIZED': return 2;
+    case 'IN_PROGRESS': return 2;
+    case 'FINALIZED': return 3;
     default: return 0;
   }
 }
@@ -36,19 +27,30 @@ class Game extends React.Component {
 
 		this.state = {
 			visible: true,
-			drawerOpen: false,
+			hoverAreaSettings: {
+				open: false,
+				type: ''
+			},
 			showYourHand: true,
-			placement: 'right'
+			muteVideo: true
 		}
 	}
 
-	toggleDrawer = () => {
-    this.setState({
-      visible: ! this.state.visible
-    });
+	toggleHoverArea = type => {
+		let open = ! this.state.hoverAreaSettings.open;
+    this.setState({ 
+			hoverAreaSettings: {
+				open,
+				type
+			}
+		 });
 	};
 	
 	getVideoToken = async () => {
+		if (this.state.token) {
+			this.videoLogout();
+			return Promise.resolve()
+		}
 		let payload = {
 			identity: encodeURIComponent(this.props.username),
 			room: this.props.game._id
@@ -114,19 +116,24 @@ class Game extends React.Component {
 
 				let style = turnToBeat !== null && turn._id === turnToBeat._id ?
 					{
-						border: '2px solid #f5222d', 
-						padding: '10px'
+						border: '5px solid #d4380d', 
+						textAlign: 'center',
+						borderRadius: '5px',
 					} : {
-						padding: '10px'
+						textAlign: 'center',
+						borderRadius: '5px',
 					}
 				
 				return (
-					<div style={{padding: '5px'}}>
+					<div key={turn._id} style={{padding: '5px'}}>
 						<Card size="small" title={users[turn.user].username} style={style}>
 						{
-							turn.wasPassed ? 'Pass' : turn.wasSkipped ? 'Skipped' : 
+							turn.wasPassed ? 
+								<Typography.Text strong>Pass</Typography.Text> : 
+							turn.wasSkipped ? 
+								<Typography.Text strong>Skipped</Typography.Text> : 
 							turn.cardsPlayed.map(card =>
-								<Button>{card.cardRank.character} {card.suit.character}</Button>
+								<Typography.Text code key={card._id}>{card.cardRank.character} {card.suit.character}</Typography.Text>
 							)
 						}
 						</Card>
@@ -141,8 +148,9 @@ class Game extends React.Component {
 	drinks = () => {
 		if (this.props.game.drinks !== undefined && this.props.game.drinks.length > 0) {
 			return this.props.game.drinks.reverse().map(drink => {
+				let drinks;
 				if (drink.type === 'drink given') {
-					return (
+					drinks = (
 						<div style={{padding: '5px'}}>
 							<Card size='small' title='Drink Given'>
 								<Typography>{`From ${drink.from.username}`}</Typography>
@@ -151,8 +159,8 @@ class Game extends React.Component {
 						</div>
 					)
 				}
-				else if (drink.type === 'drink drunk') {
-					return (
+				else { // drink.type === 'drink drunk'
+					drinks = (
 						<div style={{padding: '5px'}}>
 							<Card size='small' title='Drink Drunk'>
 								{`By ${drink.user.username}`}
@@ -160,7 +168,8 @@ class Game extends React.Component {
 						</div>
 					)
 				}
-			})
+				return drinks;
+			});
 		}
 	}
 
@@ -180,20 +189,18 @@ class Game extends React.Component {
 				desc = `Sharted from the bottom`;
 			} 
 			else {
-				desc = `Started as ${player.politicalRank.name}`
+				desc = `Started as ${player.politicalRank.name}`;
 			}
-			return desc
+			return desc;
 		}
 		
-		return <List
+		let results = <List
 			itemLayout="horizontal"
 			dataSource={this.props.game.players}
 			renderItem={player => (
 				<List.Item>
 					<List.Item.Meta
-						avatar={
-							<Avatar>{player.user.username[0].toUpperCase()}</Avatar>
-						}
+						avatar={<Avatar>{player.user.username[0].toUpperCase()}</Avatar>}
 						title={player.user.username}
 						description={description(player)}
 					/>
@@ -201,6 +208,8 @@ class Game extends React.Component {
 				</List.Item>
 			)}
 		/>
+
+		return results;
 	}
 	
 	toggleDrawer = () => {
@@ -210,53 +219,42 @@ class Game extends React.Component {
   render() {
 
     const { game } = this.props;
-		const { playersHand, cardsRemaining } = game;
+		const { playersHand } = game;
 
-		let color = calculateColor(this.statusValue());
 		
-		let startTime = new Date(this.props.game.createdAt).toLocaleString().replace(/:\d+ /, ' ');
+		let createdTime = new Date(this.props.game.createdAt).toLocaleString().replace(/:\d+ /, ' ');
+		let startTime = new Date(this.props.game.startedAt).toLocaleString().replace(/:\d+ /, ' ');
 		
     return (
       <Layout>
 
 				<Modal
-						title="Game Complete"
-						visible={this.statusValue() === 'FINALIZED' && this.state.visible}
-						// visible={true}
-						onOk={this.handleOk}
-					>
+					title="Game Complete"
+					visible={this.statusValue() === 'FINALIZED' && this.state.visible}
+					onOk={this.handleOk}
+					mask={true}
+				>
 					{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
 				</Modal>
-
-				<Drawer
-          placement={this.state.placement}
-          closable={true}
-          onClose={this.toggleDrawer}
-          visible={this.state.drawerOpen}
-        >
-					<div style={{height: '100vh'}}>
-						<YouTubeSearch />
-						<ChatApp username={this.props.username} gameId={this.props.game._id}/>
-					</div>
-        </Drawer>
 
         <Layout>
 
           <PageHeader 
 						onBack={() => null} 
 						title={`Presidents`}
-						subTitle={this.props.username}
+						subTitle={this.props.game.name + ' - ' + this.props.username}
 					/>
 				          
 					<Content style={{ margin: '0 16px' }}>
 
 						<div style={{ padding: 20, background: '#fff' }}>
 							<Steps current={stepNumber(this.statusValue())}>
-								<Step title="Created" subTitle={startTime}/>
+								<Step title="Created" subTitle={createdTime}/>
+								<Step title="Started" subTitle={startTime}/>
 								<Step title="In Progress" 
 									subTitle={
 										<Moment 
-											date={this.props.game.createdAt}
+											date={this.props.game.startedAt}
 											durationFromNow
 										/>
 									}
@@ -269,7 +267,12 @@ class Game extends React.Component {
 
 							{
 								this.statusValue() === 'NOT_STARTED' ? 
-									<Button onClick={() => this.start()} size='large' style={{margin: 10, color: 'white', backgroundColor: '#a0d911'}}>
+									<Button 
+										onClick={() => this.start()} 
+										icon='play-square'
+										style={{margin: 10, color: 'white'}}
+										type='primary'
+									>
 										Start
 									</Button>
 									: null
@@ -277,19 +280,17 @@ class Game extends React.Component {
 							
 							{
 								this.statusValue() === 'FINALIZED' ? 
-									<Button onClick={() => this.props.rematch()} size='large' style={{margin: 10}} type='primary'>
+									<Button 
+										onClick={() => this.props.rematch()} 
+										icon='rollback' 
+										shape='circle'
+										style={{margin: 10}} 
+										type='primary'
+									>
 										Rematch
 									</Button>
 									: null
 							}
-
-							<Button onClick={() => this.toggleDrawer()} size='large' style={{margin: 10}} type='primary'>
-								YouTube & Chat
-							</Button>
-
-							<Button onClick={() => this.getVideoToken()} size='large' style={{margin: 10}} type='secondary'>
-								Video Chat
-							</Button>
 
 		  				{
 								this.state.showYourHand ? 
@@ -299,31 +300,16 @@ class Game extends React.Component {
 										playCards={this.props.playCards} 
 										pass={this.props.pass}
 										drinkDrink={this.props.drinkDrink}
-									/> : <div></div>
+									/> : null
 							}
 
 							</div>
-
-							{/* <div style={{marginTop:10}}>
-
-								<Typography.Title level={4}>
-									Cards Remaining 
-									<Switch style={{marginLeft:10}} size="small" checked={this.state.showCardsRemaining} onClick={() => this.toggleCardsRemaining()}/>
-								</Typography.Title>
-
-								{
-									this.state.showCardsRemaining ? <CardBoard cards={cardsRemaining}/> : <div></div>
-								}
-
-							</div>
-
-							<Divider /> */}
 
 							<div style={{marginTop:10, padding: 20, background: '#fff', display: 'flex'}}>
 
 								<div style={{float:'left', width: '50%', padding: 10}}>
 									<Typography.Title level={4}>
-										Turns Taken
+										Turns
 									</Typography.Title>
 
 									<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
@@ -356,10 +342,29 @@ class Game extends React.Component {
 								giveDrink={this.props.giveDrink} 
 								roomName={game._id}
 								token={this.state.token}
-								videoLogout={this.videoLogout}
 							/>
             </div>
 
+						{
+							this.state.hoverAreaSettings.open ? 
+								<HoverArea 
+									username={this.props.username} 
+									gameId={this.props.game._id} 
+									settings={this.state.hoverAreaSettings}
+								/> : null }
+
+						<div style={{cursor: 'pointer', position: 'fixed', bottom: '10px', right: '16px' }}>
+							<Tooltip placement='top' title='Chat'>
+								<Button style={{marginLeft: 2}} icon="wechat" shape="circle" onClick={() => this.toggleHoverArea('chat')} />
+							</Tooltip>
+							<Tooltip placement='top' title='Video Chat'>
+								<Button style={{marginLeft: 2}} icon="video-camera" shape="circle" onClick={() => this.getVideoToken()} />
+							</Tooltip>
+							<Tooltip placement='top' title='YouTube'>
+								<Button style={{marginLeft: 2}} icon="youtube" shape="circle" onClick={() => this.toggleHoverArea('youtube')} />
+							</Tooltip>
+						</div>
+							
           </Content>
 
 				</Layout>

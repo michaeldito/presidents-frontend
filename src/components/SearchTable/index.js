@@ -17,8 +17,6 @@ function calculateColor(value) {
 export default class SearchTable extends React.Component {
 
   render() {
-    const b = <Button>None</Button>
-
     const columns = [
       {
         title: 'Action',
@@ -58,7 +56,7 @@ export default class SearchTable extends React.Component {
           let color = calculateColor(value);
           return (
             <Tag color={color} key={status}>
-              {status.value.toUpperCase()}
+              {status.value.toUpperCase().replace(/_/g, ' ')}
             </Tag>
           );
         }

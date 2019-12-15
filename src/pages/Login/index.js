@@ -7,100 +7,84 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import { login } from '../../actions';
 
-import { Form, Icon, Input, Button, Layout, Card, PageHeader } from 'antd';
-import { NavLink, Redirect } from 'react-router-dom';
+import { Form, Icon, Input, Button, Layout, Card, Typography } from 'antd';
+import { NavLink } from 'react-router-dom';
 
-class NormalLoginForm extends React.Component {
-  constructor() {
-    super();
-    this.state= {
-      username: '',
-      password: ''
-    };
-  }
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-  handleSubmit = e => {
+let Login = props => {
+
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    console.log(props.form)
+    props.form.validateFields((err, values) => {
      if (!err) {
         console.log('Received values of form: ', values);
-        this.props.login(values.username, values.password);
-        
+        props.login(values.username, values.password);
      }
     });
   };
 
-  render() {
-    const { getFieldDecorator } = this.props.form;
+  const { getFieldDecorator } = props.form;
 
-    return (
-      <Layout>
+  return (
+    <Layout style={{backgroundColor: '#001529'}}>        
+      <div style={{margin: 'auto', textAlign:'center'}}>
+        <Card size='large' >
 
-          {/* {this.props.user.loggedIn ? <Redirect to={`/dashboard`}/> : null} */}
+          <Typography.Title level={3}>Log In</Typography.Title>
+
+
+          <Form onSubmit={handleSubmit} className="login-form">
+
+            <Form.Item>
+              {getFieldDecorator('username', {
+                rules: [{ required: true, message: 'Please input your username.' }],
+              })(
+                <Input
+                  prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="Username"
+                />
+              )}
+            </Form.Item>
+
+            <Form.Item>
+              {getFieldDecorator('password', {
+                rules: [{ required: true, message: 'Please input your Password.' }],
+              })(
+                <Input
+                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  type="password"
+                  placeholder="Password"
+                />
+              )}
+            </Form.Item>
+
+            <Form.Item>
+
+            <Button type="primary" htmlType="submit" className="login-form-button">
+              Log In
+            </Button>
+
+            <NavLink
+              key={`/register`}
+              to={`/register`}
+            >
+              Or Register
+            </NavLink>
+
+            </Form.Item>
+
+          </Form>
+
+        </Card>
         
+      </div>
 
-          <PageHeader title="Log In" />
-
-          <div style={{margin:'auto'}}>
-
-            <Card size='large' >
-
-              <Form onSubmit={this.handleSubmit} className="login-form">
-
-                <Form.Item>
-                  {getFieldDecorator('username', {
-                    rules: [{ required: true, message: 'Please input your username.' }],
-                  })(
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Username"
-                      onChange={(c) => this.handleChange(c)}
-                    />
-                  )}
-                </Form.Item>
-
-                <Form.Item>
-                  {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Please input your Password.' }],
-                  })(
-                    <Input
-                      prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="Password"
-                      onChange={(c) => this.handleChange(c)}
-                    />,
-                  )}
-                </Form.Item>
-
-                <Form.Item>
-
-                  <Button type="primary" htmlType="submit" className="login-form-button">
-                    Log In
-                  </Button>
-
-                  <NavLink
-                    key={`/register`}
-                    to={`/register`}
-                  >
-                    Or Register
-                  </NavLink>
-
-                </Form.Item>
-
-              </Form>
-
-            </Card>
-            
-          </div>
-
-        </Layout>
-    );
-  }
+    </Layout>
+  );
 }
 
-const Login = Form.create({ name: 'normal_login' })(NormalLoginForm);
+
+Login = Form.create({ name: 'normal_login' })(Login);
 
 function mapStateToProps(state) {
 	return {

@@ -6,7 +6,7 @@ import Moment from 'react-moment';
 import './index.css';
 import './assets/cards/cards.css';
 import { Provider } from 'react-redux';
-import {store, persistor} from './store'
+import { store, persistor } from './store'
 import { PersistGate } from 'redux-persist/integration/react'
 import * as serviceWorker from './serviceWorker';
 
@@ -16,7 +16,7 @@ window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true; // needed for redux chrom de
 
 ReactDOM.render(
   <Provider store={store}>
-    <PersistGate loading={<div>loading...</div>} persistor={persistor}>
+    <PersistGate persistor={persistor}>
       <Router>
         <App />
       </Router>

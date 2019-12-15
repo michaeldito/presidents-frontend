@@ -2,7 +2,6 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import { Layout, PageHeader, Typography } from 'antd';
-import Sidebar from '../../components/Sidebar';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 
@@ -31,7 +30,7 @@ class Profile extends React.Component {
           <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff', minHeight: 180 }}>
             <Typography>{username}</Typography>
             <Typography>Games Played: {gamesPlayed.length}</Typography>
-            <Typography>email: {email}</Typography>
+            <Typography>Wmail: {email}</Typography>
           </div>
         </Content>
     

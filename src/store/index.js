@@ -26,16 +26,15 @@ export const store = createStore(persistedReducer, enhancer)
 export const persistor = persistStore(store)
 
 // SOCKET
-// const env = process.env.NODE_ENV;
-let baseURL, io;
+const env = process.env.NODE_ENV;
+let io, baseURL;
+if (env === 'prod') {
+  baseURL = 'https://larry-presidents.herokuapp.com';
+} else {
+  baseURL = 'http://localhost:8080';
+}
 
-// if (env === 'prod') {
-//   baseURL = 'https://larry-presidents.herokuapp.com';
-// } else {
-//   baseURL = 'http://localhost:8080';
-// }
-
-io = socket('https://larry-presidents.herokuapp.com');
+io = socket(baseURL);
 
 const addSocketListeners = (dispatch, getState) => {
 	io.on('game refresh', data => {
@@ -96,7 +95,7 @@ const addSocketListeners = (dispatch, getState) => {
 
 		let userId = getState().user._id;
 
-		await dispatch({
+		dispatch({
 			type: 'UPDATE_GAME',
 			payload: {
 				data: {...data.game}
@@ -104,7 +103,7 @@ const addSocketListeners = (dispatch, getState) => {
 			userId
 		});
 
-		await dispatch(getUser(userId));
+		dispatch(getUser(userId));
 	});
 	
 	io.on('game join', data => {

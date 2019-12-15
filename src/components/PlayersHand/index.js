@@ -1,8 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Row, Divider, Button, Typography, Collapse } from 'antd';
-const { Panel } = Collapse;
+import { Row, Button, Typography } from 'antd';
 
 
 // TODO:
@@ -11,8 +10,13 @@ export default class PlayersHand extends React.Component {
   constructor() {
     super();
     this.state = {
-      selectedCards: []
+      selectedCards: [],
+      showCards: true
     };
+  }
+
+  toggleCards = () => {
+    this.setState({showCards: !this.state.showCards});
   }
 
   selectCard = (card) => {
@@ -75,19 +79,24 @@ export default class PlayersHand extends React.Component {
     return (
       <React.Fragment>
 
-        <Button style={{marginRight:10, backgroundColor: '#5cdbd3', color: 'white'}} size='large' onClick={() => this.playCards()}> Play Cards </Button>
-        <Button style={{marginRight:10, backgroundColor: '#fadb14', color: 'white'}} size='large' onClick={() => this.props.pass()}> Pass </Button>
-        <Button style={{marginRight:10, backgroundColor: '#faad14', color: 'white'}} size='large' onClick={() => this.props.drinkDrink()}> Drink </Button>
+        <Button style={{marginRight:10, backgroundColor: '#001529', color: 'white'}} icon='play-circle' onClick={() => this.playCards()}> Play Cards </Button>
+        <Button style={{marginRight:10, backgroundColor: '#001529', color: 'white'}} icon='forward' onClick={() => this.props.pass()}> Pass </Button>
+        <Button style={{marginRight:10, backgroundColor: '#001529', color: 'white'}} icon='coffee' onClick={() => this.props.drinkDrink()}> Drink </Button>
 
-        <Collapse defaultActiveKey={['1']} style={{cursor: 'pointer', marginTop: 10}} level={4} onClick={() => this.toggleYourHand()}>
-          <Panel header="Your Hand" key="1" >
-          <Row type="flex" justify="start">
-            {cardComponents}
-          </Row>
-          </Panel>
-        </Collapse>
+        <Typography.Title 
+          style={{cursor: 'pointer', marginTop: 10}} 
+          level={4}
+          onClick={() => this.toggleCards()}
+        >
+          Your Hand
+        </Typography.Title>
 
-        
+        {
+          this.state.showCards ? 
+            <Row type="flex" justify="start">
+              {cardComponents}
+            </Row> : null
+        }
 
       </React.Fragment>
     )

@@ -7,130 +7,120 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import { register } from '../../actions';
 
-import { Form, Icon, Input, Button, Layout, Card, PageHeader } from 'antd';
+import { Form, Icon, Input, Button, Layout, Card, Typography } from 'antd';
 import { Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
-const { Header } = Layout;
 
-class RegisterForm extends React.Component {
-  constructor() {
-    super();
-    this.state= {
-      username: '',
-      email: '',
-      password: '',
-      verify: ''
-    };
-  }
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-  
-  handleSubmit = e => {
+let RegisterForm = props => {
+
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        this.props.register(values);
+        props.register(values);
       }
     });
   };
 
-  render() {
-    const { getFieldDecorator } = this.props.form;
+  const { getFieldDecorator } = props.form;
 
-    return (
-      <Layout>
+  return (
+    <Layout style={{backgroundColor: '#001529'}}>        
 
-          {this.props.user.registered ? <Redirect to={`/dashboard`}/> : null}
+      {props.user.registered ? <Redirect to={`/dashboard`}/> : null}
 
-          <PageHeader onBack={() => null} title="Register" />
+      <div style={{margin: 'auto', textAlign:'center'}}>
+        <Card size='large' >
 
-          <div style={{margin:'auto'}}>
+          <Typography.Title level={3}>Register</Typography.Title>
 
-            <Card size='large' >
+          <Form onSubmit={handleSubmit} className="login-form">
 
-              <Form onSubmit={this.handleSubmit} className="login-form">
+            <Form.Item>
+              {getFieldDecorator('username', {
+                rules: [{ required: true, message: 'Please input your username.' }],
+              })(
+                <Input
+                  prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="username"
+                />,
+              )}
+            </Form.Item>
 
-                <Form.Item>
-                  {getFieldDecorator('username', {
-                    rules: [{ required: true, message: 'Please input your username.' }],
-                  })(
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="username"
-                      onChange={(c) => this.handleChange(c)}
-                    />,
-                  )}
-                </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('email', {
+                rules: [{ required: true, message: 'Please input your email.' }],
+              })(
+                <Input
+                  prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  placeholder="email"
+                />
+              )}
+            </Form.Item>
 
-                <Form.Item>
-                  {getFieldDecorator('email', {
-                    rules: [{ required: true, message: 'Please input your email.' }],
-                  })(
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="email"
-                      onChange={(c) => this.handleChange(c)}
-                    />,
-                  )}
-                </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('password', {
+                rules: [{ required: true, message: 'Please input your Password.' }]
+              })(
+                <Input
+                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  type="password"
+                  placeholder="Password"
+                />
+              )}
+            </Form.Item>
 
-                <Form.Item>
-                  {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Please input your password.' }],
-                  })(
-                    <Input
-                      prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="password"
-                      onChange={(c) => this.handleChange(c)}
-                    />,
-                  )}
-                </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('verify', {
+                rules: [{ 
+                  required: true, message: 'Please input your verify password.'
+                }, {
+                  validator: (rule, value, callback) => {
+                    const { getFieldValue } = props.form;
+                    let password = getFieldValue('password');
+                    let verify = getFieldValue('verify');
+                    console.log('password');
+                    console.log(password);
+                    console.log('verify')
+                    console.log(verify)
+                    password !== verify ? callback('Your passwords do not match, please try again.') : callback();
+                  }
+                }],
+              })(
+                <Input
+                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                  type="password"
+                  placeholder="password"
+                />
+              )}
+            </Form.Item>
 
-                <Form.Item>
-                  {getFieldDecorator('verify', {
-                    rules: [{ required: true, message: 'Please input your verify password.' }],
-                  })(
-                    <Input
-                      prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      type="password"
-                      placeholder="password"
-                      onChange={(c) => this.handleChange(c)}
-                    />,
-                  )}
-                </Form.Item>
+            <Form.Item>
 
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" className="login-form-button">
-                    {/* 
-                    
-                    if (registration is successful)
-                      clear state
-                      <Redirect to={`/game`} />
-                      
-                    else
-                      notifications.error()
-                    
-                    */}
-                    Register
-                  </Button>
-                </Form.Item>
+              <Button type="primary" htmlType="submit" className="login-form-button">
+                Register
+              </Button>
 
-              </Form>
-              
-            </Card>
-            
-          </div>
+              <NavLink
+                key={`/login`}
+                to={`/login`}
+              >
+                Or Login
+              </NavLink>
 
+            </Form.Item>
 
-        </Layout>
-    );
-  }
+          </Form>
+          
+        </Card>
+      </div>
+    </Layout>
+  );
 }
 
-const AntForm = Form.create({ name: 'normal_login' })(RegisterForm);
+RegisterForm = Form.create({ name: 'normal_login' })(RegisterForm);
 
 function mapStateToProps(state) {
 	return {
@@ -147,4 +137,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps,
-)(AntForm);
+)(RegisterForm);

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Row, Col, Typography } from 'antd';
+import { Row, Typography } from 'antd';
 const { Text } = Typography;
 
 function groupBy(list, keyGetter) {

@@ -1,17 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import {
-  Form,
-  Input,
-  Button,
-  Layout,
-  PageHeader,
-  Dropdown,
-  Menu,
-  Typography,
-  Row, Col
-} from 'antd';
+import { Layout, PageHeader } from 'antd';
 import {SearchTable} from '../../components';
 
 import {getGamesToJoin} from '../../actions';

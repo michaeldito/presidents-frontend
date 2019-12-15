@@ -1,9 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Card, Typography, Tag, Button, Badge, Icon } from 'antd';
-
-
+import { Layout, Card, Typography, Tag, Button } from 'antd';
 
 // TODO:
 // convert to function
@@ -11,6 +9,7 @@ const PlayerSquare = ({player, currentPlayer, giveDrink, participant}) => {
   
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
+  let [muted, setMuted] = useState(true);
 
   const videoRef = useRef();
   const audioRef = useRef();
@@ -76,86 +75,91 @@ const PlayerSquare = ({player, currentPlayer, giveDrink, participant}) => {
     }
   }, [audioTracks]);
 
-  let { seatPosition, drinksDrunk, drinksReceived } = player;
+  const { drinksDrunk, drinksReceived } = player;
 
-  let title = (
-    <Layout.Content>
+  const style = player.user._id === currentPlayer ? {
+    border: '5px solid #1890ff', 
+    backgroundColor: '#000000',
+    borderRadius: '5px',
+  } : {
+    border: '5px solid #000000', 
+    backgroundColor: '#000000',
+    borderRadius: '5px',
+  }
 
-      <Badge
-        count={`${seatPosition + 1}`}
-        style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset' }}
-      />
+  const title = (
+    <div style={{display: 'flex', justifyContent: 'space-between'}} >
 
-      <Layout style={{backgroundColor: 'white'}}>
-        <Typography.Title style={{textAlign: 'center'}} level={4}>{player.user.username}</Typography.Title>
-        <Tag style={{textAlign: 'center'}} color='orange'>{player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}</Tag>
-        
-        {
-          player.nextGameRank !== undefined ? <Tag color='green' style={{textAlign: 'center'}}>{player.nextGameRank.name}</Tag> : null
-        }
+      <h4 style={{ color: 'white'}}>
+        {player.user.username}
+      </h4>
 
-      </Layout>
+      <Button 
+        size='small'
+        onClick={() => giveDrink(player.user._id)}
+        icon="coffee" 
+      >
+        Give Drink
+      </Button>
+      
+      {
+        participant ? 
+          <Button 
+            size='small' 
+            icon={muted ? 'sound' : 'notification'}
+            onClick={() => setMuted(!muted)}
+          >
+            {muted ? 'Unmute': 'Mute'}
+          </Button> : null
+      }
 
-    </Layout.Content>
+    </div>
   );
 
 
-  let style = player.user._id === currentPlayer ? {
-    border: '2px solid cyan', 
-    backgroundColor: '#000000'
-  } : {
-    backgroundColor: '#000000'
-  }
-
-
   return (
-      <Card size='medium' 
-        //title={title}
+      <Card 
+        size='large' 
         style={style}
-        >
+        title={title}>
 
-      <Layout.Content style={{display: 'flex', alignItems: 'flex-start'}}>
-        <Badge
-          count={`${seatPosition + 1}`}
-          style={{ backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset', width: '10%' }}
-        />
-        <Typography.Title style={{color: 'white', textAlign: 'right', width:' 90%'}} level={4}>{player.user.username}</Typography.Title>
-      </Layout.Content>
-
-      {participant !== null ?
-        <div>
-          <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
-          <audio ref={audioRef} autoPlay={true} muted={true} />
-        </div> : null
-      }
         
+      
+        <div style={{width: '100%', height: '100%'}}>
 
-        <Layout.Content style={{display: 'flex', alignItems: 'flex-start'}}>
+          {participant !== null ?
+            <div>
+              <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
+              <audio ref={audioRef} autoPlay={true} muted={muted} />
+            </div> : null
+          }
+
+        </div>
+ 
+        <Layout.Content style={{paddingBottom: '5px', width: '100%', position: 'absolute', bottom: 0, display: 'flex', alignItems: 'flex-start'}}>
+
           {player.nextGameRank === undefined ? 
             <Tag 
-              style={{textAlign: 'left', width: '33%'}} 
+              style={{textAlign: 'center', width: '33%'}} 
               color='orange'>
                 {player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}
             </Tag> : null }
+
           {player.nextGameRank !== undefined ? 
             <Tag 
               color='green' 
-              style={{textAlign: 'left', width: '33%'}}>
+              style={{textAlign: 'center', width: '33%'}}>
                 {player.nextGameRank.name}
             </Tag> : null}
-          <Button 
-            style={{'overflow': 'hidden', 'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', margin: 'auto'}} 
-            shape='circle' 
-            onClick={() => giveDrink(player.user._id)}
-            icon="coffee" 
-          />
+
           <Typography 
             style={{color: 'white', textAlign: 'right', width: '33%', fontSize: '1em'}}
               >
               {drinksDrunk}-{drinksReceived.length}
           </Typography>
+
         </Layout.Content>
-      
+
       </Card>
   )
 }
