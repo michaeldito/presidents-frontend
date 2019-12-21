@@ -7,36 +7,21 @@ import { connect } from 'react-redux'
 
 const { Content } = Layout;
 
-class Profile extends React.Component {
-  state = {
-    collapsed: false,
-  };
+const Profile = ({ user }) => {
+  let { username, gamesPlayed, email } = user;
 
-  onCollapse = collapsed => {
-    console.log(collapsed);
-    this.setState({ collapsed });
-  };
-
-  render() {
-    let {username, gamesPlayed, email } = this.props.user;
-    console.log(gamesPlayed)
-
-    return (
-      <Layout>
-
-        <PageHeader onBack={() => null} title="Profile"/>
-        
-        <Content style={{ margin: '0 16px' }}>
-          <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff', minHeight: 180 }}>
-            <Typography>{username}</Typography>
-            <Typography>Games Played: {gamesPlayed.length}</Typography>
-            <Typography>Wmail: {email}</Typography>
-          </div>
-        </Content>
-    
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <PageHeader onBack={() => null} title="Profile"/>
+      <Content style={{ margin: '0 16px' }}>
+        <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff', minHeight: 180 }}>
+          <Typography>{username}</Typography>
+          <Typography>Games Played: {gamesPlayed.length}</Typography>
+          <Typography>Wmail: {email}</Typography>
+        </div>
+      </Content>
+    </Layout>
+  );
 }
 
 function mapStateToProps(state) {

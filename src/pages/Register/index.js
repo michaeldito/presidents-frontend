@@ -1,11 +1,10 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import './index.css';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import { register } from '../../actions';
+import { register } from './actions';
 
 import { Form, Icon, Input, Button, Layout, Card, Typography } from 'antd';
 import { Redirect } from 'react-router-dom';
@@ -36,7 +35,7 @@ let RegisterForm = props => {
 
           <Typography.Title level={3}>Register</Typography.Title>
 
-          <Form onSubmit={handleSubmit} className="login-form">
+          <Form onSubmit={handleSubmit} style={{maxWidth: 300}}>
 
             <Form.Item>
               {getFieldDecorator('username', {
@@ -99,7 +98,7 @@ let RegisterForm = props => {
 
             <Form.Item>
 
-              <Button type="primary" htmlType="submit" className="login-form-button">
+              <Button type="primary" htmlType="submit" style={{width: '100%'}}>
                 Register
               </Button>
 

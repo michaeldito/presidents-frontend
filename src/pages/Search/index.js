@@ -2,22 +2,24 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import { Layout, PageHeader } from 'antd';
-import {SearchTable} from '../../components';
-
-import {getGamesToJoin} from '../../actions';
+import { SearchTable } from './components';
+import { joinGame, getGame } from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 
 
-class Search extends React.Component {
-  render() {
-    return (
-      <Layout>
-        <PageHeader onBack={() => null} title="Search" />
-        <SearchTable data={this.props.data} alreadyJoinedGames={this.props.user.gamesPlayed}/>
-      </Layout>
-    );
-  }
+const Search = ({user, data, joinGame, getGame}) => {
+  return (
+    <Layout>
+      <PageHeader onBack={() => null} title="Search" />
+      <SearchTable 
+        data={data} 
+        alreadyJoinedGames={user.gamesPlayed}
+        joinGame={joinGame}
+        getGame={getGame}
+      />
+    </Layout>
+  );
 }
 
 
@@ -30,7 +32,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return bindActionCreators({
-		getGamesToJoin
+    joinGame,
+    getGame
 	}, dispatch);
 }
 

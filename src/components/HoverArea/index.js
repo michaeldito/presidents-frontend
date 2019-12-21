@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'antd/dist/antd.css';
 import { ChatApp, YouTubeSearch, FadeIn } from './components';
 import ReactDOM from 'react-dom';
 
 const HoverArea = ({username, gameId, settings}) => {  
-  console.log('hoverareatype settings');
-  console.log(settings)
 
   let _root = document.getElementById('hover-area-root');
 

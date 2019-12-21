@@ -1,12 +1,15 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import axios from '../../config/axios';
-import { Layout, Modal, PageHeader, Typography, Button, List, Avatar, Card, Steps, Divider, Tooltip } from 'antd';
-import { PlayersHand, HoverArea } from '../../components';
-import { GameArea } from './components';
+import { Layout, Modal, PageHeader, Typography, List, Avatar, Card, Steps } from 'antd';
+import { HoverArea } from '../../components';
+import { HoverButtons, HoverButton, PlayerArea, WithFlex, PullLeft, PullRight, 
+	Title, HorizontallyScrollable, VerticalDivider, GameButton, Container, StepsArea } from './components';
+import Players from './Players';
+import PlayersHand from './PlayersHand';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from '../../actions';
+import { playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from './actions';
 import Moment from 'react-moment';
 const { Content } = Layout;
 const { Step } = Steps;
@@ -78,7 +81,6 @@ class Game extends React.Component {
 		return status;
 	}
 
-
 	name = () => {
 		let name = '';
 		if (this.props.game !== undefined) {
@@ -133,11 +135,17 @@ class Game extends React.Component {
 						<Card size="small" title={users[turn.user].username} style={style}>
 						{
 							turn.wasPassed ? 
-								<Typography.Text strong>Pass</Typography.Text> : 
+								<Typography.Text strong>
+									Pass
+								</Typography.Text> : 
 							turn.wasSkipped ? 
-								<Typography.Text strong>Skipped</Typography.Text> : 
+								<Typography.Text strong>
+									Skipped
+								</Typography.Text> : 
 							turn.cardsPlayed.map(card =>
-								<Typography.Text style={{display:'flex', margin: 2}} code key={card._id}>{card.cardRank.character} {card.suit.character}</Typography.Text>
+								<Typography.Text style={{display:'flex', margin: 2}} code key={card._id}>
+									{card.cardRank.character} {card.suit.character}
+								</Typography.Text>
 							)
 						}
 						</Card>
@@ -151,11 +159,11 @@ class Game extends React.Component {
 
 	drinks = () => {
 		if (this.props.game.drinks !== undefined && this.props.game.drinks.length > 0) {
-			return this.props.game.drinks.reverse().map(drink => {
+			return this.props.game.drinks.reverse().map((drink, idx) => {
 				let drinks;
 				if (drink.type === 'drink given') {
 					drinks = (
-						<div style={{padding: '5px'}}>
+						<div key={idx} style={{padding: '5px'}}>
 							<Card size='small' title='Drink Given'>
 								<Typography>{`From ${drink.from.username}`}</Typography>
 								<Typography>{`To ${drink.to.username}`}</Typography>
@@ -165,7 +173,7 @@ class Game extends React.Component {
 				}
 				else { // drink.type === 'drink drunk'
 					drinks = (
-						<div style={{padding: '5px'}}>
+						<div key={idx} style={{padding: '5px'}}>
 							<Card size='small' title='Drink Drunk'>
 								{`By ${drink.user.username}`}
 							</Card>
@@ -184,192 +192,167 @@ class Game extends React.Component {
 	};
 	
 	gameOverResults = () => {
-		const description = player => {
-			let desc = '';
-			if (player.politicalRank === undefined) {
-				desc = `Started as nothing`;
-			} 
-			else if (player.politicalRank.name === 'Asshole') {
-				desc = `Sharted from the bottom`;
-			} 
-			else {
-				desc = `Started as ${player.politicalRank.name}`;
-			}
-			return desc;
+		const description = ({ politicalRank }) => {
+			return politicalRank === undefined ?
+				`Started as nothing`
+				: politicalRank.name === 'Asshole' ?
+					`Sharted from the bottom`
+					: `Started as ${politicalRank.name}`;
 		}
 		
-		let results = <List
-			itemLayout="horizontal"
-			dataSource={this.props.game.players}
-			renderItem={player => (
-				<List.Item>
-					<List.Item.Meta
-						avatar={<Avatar>{player.user.username[0].toUpperCase()}</Avatar>}
-						title={player.user.username}
-						description={description(player)}
-					/>
-					<div>{player.nextGameRank.name}</div>
-				</List.Item>
-			)}
-		/>
+		let results = (
+			<List
+				itemLayout="horizontal"
+				dataSource={this.props.game.players}
+				renderItem={player => (
+					<List.Item>
+						<List.Item.Meta
+							avatar={<Avatar>{player.user.username[0].toUpperCase()}</Avatar>}
+							title={player.user.username}
+							description={description(player)}
+						/>
+						<div>{player.nextGameRank.name}</div>
+					</List.Item>
+				)}
+			/>
+		);
 
 		return results;
-	}
-	
-	toggleDrawer = () => {
-		this.setState({drawerOpen: !this.state.drawerOpen});
 	}
 
   render() {
 
     const { game } = this.props;
 		const { playersHand } = game;
-
 		
 		let createdTime = new Date(this.props.game.createdAt).toLocaleString().replace(/:\d+ /, ' ');
 		let startTime = new Date(this.props.game.startedAt).toLocaleString().replace(/:\d+ /, ' ');
 		
+		let GameOverModal = () =>
+			<Modal
+				title="Game Complete"
+				visible={this.statusValue() === 'FINALIZED' && this.state.visible}
+				onOk={this.handleOk}
+				mask={true}
+			>
+				{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
+			</Modal>
+
+		let GamePageHeader = () =>
+			<PageHeader 
+				onBack={() => null} 
+				title={`Presidents`}
+				subTitle={this.props.game.name + ' - ' + this.props.username}
+			/>
+
+		let GameProgress = () => 
+			<StepsArea>
+				<Steps current={stepNumber(this.statusValue())}>
+					<Step title="Created" subTitle={createdTime}/>
+					<Step title="Started" subTitle={startTime}/>
+					<Step title="In Progress" 
+						subTitle={
+							<Moment 
+								date={this.props.game.startedAt}
+								durationFromNow
+							/>
+						}
+						/>
+					<Step title="Complete"/>
+				</Steps>
+			</StepsArea>
+
+		let ActionButtons = () =>
+			<Container>
+				{
+					this.statusValue() === 'NOT_STARTED' ? 
+						<GameButton title='Start' action={this.props.startGame} icon='rollback' />
+						: null
+				}
+				{
+					this.statusValue() === 'FINALIZED' ?
+						<GameButton title='Rematch' action={this.props.rematch} icon='rollback' />
+						: null
+				}
+				<GameButton title='Button' onClick={null} icon='rollback' />
+			</Container>
+
+		let YourHand = () =>
+			<Container>
+				{
+					this.state.showYourHand ? 
+						<PlayersHand 
+							cards={playersHand} 
+							gameId={game._id} 
+							playCards={this.props.playCards} 
+							pass={this.props.pass}
+							drinkDrink={this.props.drinkDrink}
+						/> : null
+				}
+			</Container>
+
+		let TurnsAndDrinks = () =>
+			<Container>
+				<WithFlex>
+					<PullLeft>
+						<Title value='Turns' />
+						<HorizontallyScrollable>
+							{this.turnsTaken()}
+						</HorizontallyScrollable>
+					</PullLeft>
+					<VerticalDivider />
+					<PullRight>
+						<Title value='Drinks' />
+							<HorizontallyScrollable>
+								{this.drinks()}
+							</HorizontallyScrollable>
+					</PullRight>
+				</WithFlex>
+			</Container>
+
+		let Larrys = () =>
+			<PlayerArea>
+				<Players
+					game={game} 
+					giveDrink={this.props.giveDrink} 
+					roomName={game._id}
+					token={this.state.token}
+				/>
+			</PlayerArea>
+
+		let Hover = () =>
+			<React.Fragment>
+				{
+						this.state.hoverAreaSettings.open ? 
+							<HoverArea 
+								username={this.props.username} 
+								gameId={this.props.game._id} 
+								settings={this.state.hoverAreaSettings}
+							/> : null
+					}
+			</React.Fragment>
+
+		let HoverActionButtons = () =>
+			<HoverButtons>
+				<HoverButton title='Chat' icon='wechat' onClick={() => this.toggleHoverArea('chat')} />
+				<HoverButton title='Video Chat' icon='video-camera' onClick={() => this.getVideoToken()} />
+				<HoverButton title='YouTube' icon='youtube' onClick={() => this.toggleHoverArea('youtube')} />
+			</HoverButtons>
+
     return (
       <Layout>
-
-				<Modal
-					title="Game Complete"
-					visible={this.statusValue() === 'FINALIZED' && this.state.visible}
-					onOk={this.handleOk}
-					mask={true}
-				>
-					{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
-				</Modal>
-
+				<GameOverModal />
         <Layout>
-
-          <PageHeader 
-						onBack={() => null} 
-						title={`Presidents`}
-						subTitle={this.props.game.name + ' - ' + this.props.username}
-					/>
-				          
-					<Content style={{ margin: '0 16px' }}>
-
-						<div style={{ padding: 20, background: '#fff' }}>
-							<Steps current={stepNumber(this.statusValue())}>
-								<Step title="Created" subTitle={createdTime}/>
-								<Step title="Started" subTitle={startTime}/>
-								<Step title="In Progress" 
-									subTitle={
-										<Moment 
-											date={this.props.game.startedAt}
-											durationFromNow
-										/>
-									}
-									/>
-								<Step title="Complete"/>
-							</Steps>
-						</div>
-						
-						<div style={{ marginTop:10, padding: 20, background: '#fff' }}>
-
-							{
-								this.statusValue() === 'NOT_STARTED' ? 
-									<Button 
-										onClick={() => this.start()} 
-										icon='play-square'
-										style={{margin: 10, color: 'white'}}
-										type='primary'
-									>
-										Start
-									</Button>
-									: null
-							}
-							
-							{
-								this.statusValue() === 'FINALIZED' ? 
-									<Button 
-										onClick={() => this.props.rematch()} 
-										icon='rollback' 
-										style={{margin: 10}} 
-										type='primary'
-									>
-										Rematch
-									</Button>
-									: null
-							}
-
-		  				{
-								this.state.showYourHand ? 
-									<PlayersHand 
-										cards={playersHand} 
-										gameId={game._id} 
-										playCards={this.props.playCards} 
-										pass={this.props.pass}
-										drinkDrink={this.props.drinkDrink}
-									/> : null
-							}
-
-							</div>
-
-							<div style={{marginTop:10, padding: 20, background: '#fff', display: 'flex'}}>
-
-								<div style={{float:'left', width: '50%', padding: 10}}>
-									<Typography.Title level={4}>
-										Turns
-									</Typography.Title>
-
-									<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
-										{this.turnsTaken()}
-									</div>
-								</div>
-
-								<div style={{float:'none', width: '2', }}>
-									<Divider type="vertical" style={{ height: '100%' }}/>
-								</div>
-
-								<div style={{float:'right', width: '50%', padding: 10}}>
-
-									<Typography.Title level={4}>
-										Drinks
-									</Typography.Title>
-
-									<div style={{overflowY: 'hidden', overflow: 'scroll', width: '100%', display: 'flex', flexWrap: 'nowrap'}}>
-											{this.drinks()}
-									</div>
-
-								</div>
-
-							</div>
-
-					
-            <div style={{ padding: 24, marginTop: 10, marginBottom: 10, background: '#fff'}}>
-							<GameArea
-								game={game} 
-								giveDrink={this.props.giveDrink} 
-								roomName={game._id}
-								token={this.state.token}
-							/>
-            </div>
-
-						{
-							this.state.hoverAreaSettings.open ? 
-								<HoverArea 
-									username={this.props.username} 
-									gameId={this.props.game._id} 
-									settings={this.state.hoverAreaSettings}
-								/> : null }
-
-						<div style={{cursor: 'pointer', position: 'fixed', bottom: '10px', right: '16px' }}>
-							<Tooltip placement='top' title='Chat'>
-								<Button style={{marginLeft: 2}} icon="wechat" shape="circle" onClick={() => this.toggleHoverArea('chat')} />
-							</Tooltip>
-							<Tooltip placement='top' title='Video Chat'>
-								<Button style={{marginLeft: 2}} icon="video-camera" shape="circle" onClick={() => this.getVideoToken()} />
-							</Tooltip>
-							<Tooltip placement='top' title='YouTube'>
-								<Button style={{marginLeft: 2}} icon="youtube" shape="circle" onClick={() => this.toggleHoverArea('youtube')} />
-							</Tooltip>
-						</div>
-							
+          <GamePageHeader />
+					<Content>
+						<GameProgress />
+						<ActionButtons />
+						<YourHand />
+						<TurnsAndDrinks />
+						<Larrys />
+						<Hover />
+						<HoverActionButtons />
           </Content>
-
 				</Layout>
       </Layout>
     );

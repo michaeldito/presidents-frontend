@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import rootReducer from './../reducers';
 import socket from 'socket.io-client'
 import { getUser } from '../actions';
+import { _updateGame } from '../pages/Game/actions';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 import { loadingBarMiddleware } from 'react-redux-loading-bar'
@@ -44,68 +45,32 @@ const addSocketListeners = (dispatch, getState) => {
 		console.log(`[socket.io-client] game refresh`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-
 		let userId = getState().user._id;
-
-		dispatch({
-			type: 'UPDATE_GAME',
-			payload: {
-				data: {...data.game}
-			},
-			userId
-		});
+		dispatch(_updateGame(data.game, userId));
 	});
 	
 	io.on('drink given', data => {
-
 		console.log(`[socket.io-client] drink given`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-
 		let userId = getState().user._id;
-
-		dispatch({
-			type: 'UPDATE_GAME',
-			payload: {
-				data: {...data.game}
-			},
-			userId
-		});
+		dispatch(_updateGame(data.game, userId));
 	});
 	
 	io.on('drink drunk', data => {
-
 		console.log(`[socket.io-client] drink drunk`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-
 		let userId = getState().user._id;
-
-		dispatch({
-			type: 'UPDATE_GAME',
-			payload: {
-				data: {...data.game}
-			},
-			userId
-		});
+		dispatch(_updateGame(data.game, userId));
 	});
 	
 	io.on('rematch started', async data => {
-
 		console.log(`[socket.io-client] rematch started`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-
 		let userId = getState().user._id;
-
-		dispatch({
-			type: 'UPDATE_GAME',
-			payload: {
-				data: {...data.game}
-			},
-			userId
-		});
-
+		dispatch(_updateGame(data.game, userId));
 		dispatch(getUser(userId));
 	});
 	
@@ -113,16 +78,8 @@ const addSocketListeners = (dispatch, getState) => {
 		console.log(`[socket.io-client] game join`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-
 		let userId = getState().user._id;
-
-		dispatch({
-			type: 'UPDATE_GAME',
-			payload: {
-				data: {...data.game}
-			},
-			userId
-		});
+		dispatch(_updateGame(data.game, userId));
 	})
 }
 

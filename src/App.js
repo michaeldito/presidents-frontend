@@ -1,20 +1,19 @@
 
 import React from 'react';
 import { connect } from 'react-redux'
-import { PublicRoute, PrivateRoute } from './components';
+import { PublicRoute, PrivateRoute, Sidebar } from './components';
 import * as Pages from './pages'
 import routes from './config/routes';
-import { Layout} from 'antd';
-import Sidebar from './components/Sidebar';
+import { Layout } from 'antd';
 
-const AppPresentation = ({children}) =>
+const AppPresentation = ({ children }) =>
   <Layout style={{ minHeight: '100vh', minWidth: '100vw'}}>
     {children}
   </Layout>
 
-const App = ({loggedIn}) => {
+const App = ({ loggedIn }) => {
 
-  const PublicRoutes = routes.public.map(route => {
+  const PublicRoutes = () => routes.public.map(route => {
     const CurrentComponent = Pages[route.name] || <div>Welcome 2 larryprez</div>
     return (
       <PublicRoute
@@ -26,7 +25,7 @@ const App = ({loggedIn}) => {
     />);    
   });
 
-  const PrivateRoutes = routes.private.map(route => {
+  const PrivateRoutes = () => routes.private.map(route => {
     const CurrentComponent = Pages[route.name] || Pages.LandingPage;
     return (
       <PrivateRoute
@@ -39,12 +38,12 @@ const App = ({loggedIn}) => {
   )})
     
   const App = (
-    ! loggedIn ? PublicRoutes : (
-      <AppPresentation>
-        <Sidebar />
-        {PrivateRoutes}
-      </AppPresentation>  
-    )
+    ! loggedIn ? 
+      <PublicRoutes /> :
+        <AppPresentation>
+          <Sidebar />
+          <PrivateRoutes />
+        </AppPresentation>  
   );
 
   return App;

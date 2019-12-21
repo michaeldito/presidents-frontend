@@ -3,16 +3,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Card, Typography, Tag, Button } from 'antd';
 
-// TODO:
-// convert to function
-const PlayerSquare = ({player, currentPlayer, giveDrink, participant}) => {
+
+const Player = ({ player, currentPlayer, giveDrink, participant }) => {
   
-  const [videoTracks, setVideoTracks] = useState([]);
-  const [audioTracks, setAudioTracks] = useState([]);
+  let [videoTracks, setVideoTracks] = useState([]);
+  let [audioTracks, setAudioTracks] = useState([]);
   let [muted, setMuted] = useState(true);
 
-  const videoRef = useRef();
-  const audioRef = useRef();
+  let videoRef = useRef();
+  let audioRef = useRef();
 
   useEffect(() => {
     if (! participant) {
@@ -77,7 +76,7 @@ const PlayerSquare = ({player, currentPlayer, giveDrink, participant}) => {
 
   const { drinksDrunk, drinksReceived } = player;
 
-  const style = player.user._id === currentPlayer ? {
+  const cardStyle = player.user._id === currentPlayer ? {
     border: '5px solid #1890ff', 
     backgroundColor: '#000000',
     borderRadius: '5px',
@@ -116,51 +115,47 @@ const PlayerSquare = ({player, currentPlayer, giveDrink, participant}) => {
     </div>
   );
 
+  const contentStyle = {paddingBottom: '5px', width: '100%', position: 'absolute', bottom: 0, display: 'flex', alignItems: 'flex-start'};
 
   return (
-      <Card 
-        size='large' 
-        style={style}
-        title={title}>
+    <Card 
+      size='large' 
+      style={cardStyle}
+      title={title}>
 
-        
+      <div style={{width: '100%', height: '100%'}}>
+        {participant !== null ?
+          <div>
+            <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
+            <audio ref={audioRef} autoPlay={true} muted={muted} />
+          </div> : null
+        }
+      </div>
+
+      <Layout.Content style={contentStyle}>
+        {
+          player.nextGameRank === undefined ? 
+          <Tag 
+            style={{textAlign: 'center', width: '33%'}} 
+            color='orange'>
+              {player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}
+          </Tag> : null 
+        }
+        {
+          player.nextGameRank !== undefined ? 
+          <Tag 
+            color='green' 
+            style={{textAlign: 'center', width: '33%'}}>
+              {player.nextGameRank.name}
+          </Tag> : null
+        }
+        <Typography style={{color: 'white', textAlign: 'right', width: '33%', fontSize: '1em'}}>
+          {drinksDrunk}-{drinksReceived.length}
+        </Typography>
+      </Layout.Content>
       
-        <div style={{width: '100%', height: '100%'}}>
-
-          {participant !== null ?
-            <div>
-              <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
-              <audio ref={audioRef} autoPlay={true} muted={muted} />
-            </div> : null
-          }
-
-        </div>
- 
-        <Layout.Content style={{paddingBottom: '5px', width: '100%', position: 'absolute', bottom: 0, display: 'flex', alignItems: 'flex-start'}}>
-
-          {player.nextGameRank === undefined ? 
-            <Tag 
-              style={{textAlign: 'center', width: '33%'}} 
-              color='orange'>
-                {player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}
-            </Tag> : null }
-
-          {player.nextGameRank !== undefined ? 
-            <Tag 
-              color='green' 
-              style={{textAlign: 'center', width: '33%'}}>
-                {player.nextGameRank.name}
-            </Tag> : null}
-
-          <Typography 
-            style={{color: 'white', textAlign: 'right', width: '33%', fontSize: '1em'}}
-              >
-              {drinksDrunk}-{drinksReceived.length}
-          </Typography>
-
-        </Layout.Content>
-
-      </Card>
+    </Card>
   )
 }
-export { PlayerSquare as default };
+
+export { Player as default };
