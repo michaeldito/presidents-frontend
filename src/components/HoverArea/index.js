@@ -1,16 +1,19 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import { ChatApp, YouTubeSearch, FadeIn } from './components';
+import styled from 'styled-components';
 import ReactDOM from 'react-dom';
 
-const HoverArea = ({username, gameId, settings}) => {  
+export const FadeIn = styled.div`
+	@keyframes FadeIn {
+		0% { opacity: 0; }
+		100% { opacity: 1; }
+	}
+	animation: FadeIn ${props => props.speed || 1}s;
+`;
+
+const HoverArea = ({ children }) => {  
 
   let _root = document.getElementById('hover-area-root');
-
-  let component = settings.type === 'youtube' ? 
-    <YouTubeSearch /> 
-    : 
-    <ChatApp username={username} gameId={gameId}/>;
 
   let content = (
       <FadeIn 
@@ -21,14 +24,17 @@ const HoverArea = ({username, gameId, settings}) => {
           border: '1px solid #505370',
           borderRadius: '5px',
           backgroundColor: 'white',
-          margin: 2,
+          margin: '2px',
           zIndex: 999,
           maxHeight: '88%',
+          maxWidth: '25%',
+          overflowX: 'hidden',
+          overflow: 'scroll',
           display: 'flex',
           flexFlow: 'column',
         }}
         >
-        {component}
+        {children}
     </FadeIn>
   )
   return ReactDOM.createPortal(content, _root);

@@ -2,16 +2,22 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Row, Button, Typography } from 'antd';
+import { GameButton } from './components';
+import styled from 'styled-components';
+
+const FadeIn = styled.div`
+	@keyframes FadeIn {
+		0% { opacity: 0; }
+		100% { opacity: 1; }
+	}
+	animation: FadeIn ${props => props.speed || 2}s;
+  margin: 10px;
+`;
 
 
 const PlayersHand = ({ cards = [], gameId, playCards, pass, drinkDrink }) => {
 
   let [selectedCards, setSelectedCards] = useState([]);
-  let [showCards, setShowCards] = useState(true);
-
-  const toggleCards = () => {
-    setShowCards(! showCards);
-  }
 
   const selectCard = card => {
     console.log(`[PlayersHand@selectCard] card selected: ${card.shortHand}`);
@@ -35,42 +41,30 @@ const PlayersHand = ({ cards = [], gameId, playCards, pass, drinkDrink }) => {
     setSelectedCards([]);
   }
 
-  const cardComponents = () => {
-    return cards.map((card, idx) =>  {
-      let cardIsSelected = selectedCards.find(c => c.shortHand === card.shortHand);
-      let type = cardIsSelected ? 'danger' : 'secondary';
-      return (
-        <div style={{margin: '10px'}} key={idx} onClick={() => selectCard(card)}>
-          <Button size='large' type={type}>
-            <Typography.Text strong>
+  const CardComponents = () => cards.map((card, idx) =>  {
+    let cardIsSelected = selectedCards.find(c => c.shortHand === card.shortHand);
+    let type = cardIsSelected ? 'danger' : 'secondary';
+    return (
+      <FadeIn key={idx} onClick={() => selectCard(card)}>
+        <Button size='large' type={type}>
+          <Typography.Text strong>
             {card.cardRank.character} {card.suit.character}
-            </Typography.Text>
-          </Button>
-        </div>)
-    });
-  }
+          </Typography.Text>
+        </Button>
+      </FadeIn>)
+  });
+  
     
   return (
     <React.Fragment>
 
-      <Button style={{marginRight:10, backgroundColor: '#001529', color: 'white'}} icon='play-circle' onClick={() => submitCards()}> Play Cards </Button>
-      <Button style={{marginRight:10, backgroundColor: '#001529', color: 'white'}} icon='forward' onClick={() => pass()}> Pass </Button>
-      <Button style={{marginRight:10, backgroundColor: '#001529', color: 'white'}} icon='coffee' onClick={() => drinkDrink()}> Drink </Button>
-      
-      <Typography.Title 
-        style={{cursor: 'pointer', marginTop: 10}} 
-        level={4}
-        onClick={() => toggleCards()}
-      >
-        Your Hand
-      </Typography.Title>
+      <GameButton icon='play-circle' action={() => submitCards} title='Play Cards' />
+      <GameButton icon='forward' action={() => pass()} title='Pass' />
+      <GameButton icon='coffee' action={() => drinkDrink()} title='Drink' />
 
-      {
-        showCards ? 
-          <Row type="flex" justify="start">
-            {cardComponents()}
-          </Row> : null
-      }
+      <Row type="flex" justify="start">
+        <CardComponents />
+      </Row>
       
     </React.Fragment>
   )

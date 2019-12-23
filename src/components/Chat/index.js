@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Chat from 'twilio-chat';
 import axios from '../../config/axios';
-import YouTube from 'react-youtube';
-import { YoutubeDataAPI } from 'youtube-v3-api';
-import { List, Typography, Input, Button, Comment, Avatar } from 'antd';
-import _ from 'lodash';
+import { Typography, Input, Button, Comment, Avatar } from 'antd';
 import styled from 'styled-components';
-const API_KEY = 'AIzaSyDCPJJTkT8pg_m4WoLI7JjmAMbY6F8rNY8';
 
 const { TextArea } = Input;
 
@@ -18,7 +14,7 @@ export const FadeIn = styled.div`
 	animation: FadeIn ${props => props.speed || 1}s;
 `;
 
-export class ChatApp extends React.Component {
+export default class ChatApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -161,162 +157,3 @@ export class ChatApp extends React.Component {
 }
 
 
-
-export class YouTubeSearch extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-      videos: [],
-      selectedVideoId: 'hHW1oY26kxQ',
-      newVideoSelected: false,
-      error: ''
-    };
-    this.api = new YoutubeDataAPI(API_KEY);
-  }
-
-  setVideo = selectedVideoId => {
-    console.log('new video selected');
-    console.log(selectedVideoId)
-    this.setState({selectedVideoId});
-    this.setState({newVideoSelected: true});
-  } 
-
-  videoSearch = async term => {
-    const options = {
-      q: term,
-      type: 'video'
-    }
-
-    try {
-
-      if (term === '') {
-        this.setState({videos:[]});
-        return
-      }
-
-      let videos = await this.api.searchAll(options, 5);
-      console.log(`videos returned`)
-      console.log(videos.items)
-
-      videos = videos.items.filter(video => video.id.kind !== 'youtube#playlist')
-      console.log(`actual videos`)
-      console.log(videos)
-
-      videos = videos.map(v => {
-        let videoId = v.id.videoId;
-        let title = v.snippet.title;
-        return {videoId, title};
-      })
-      this.setState({videos});
-
-    } catch (error) {
-      console.dir(error)
-      this.setState({error: error.response.data.error.message})
-    }
-
-  }
-
-
-  render() {
-
-    const videoSearch = _.debounce((term) => { this.videoSearch(term)}, 500);
-
-    const { selectedVideoId, newVideoSelected } = this.state;
-    console.log('selectedVideoId')
-    console.log(selectedVideoId)
-
-    let video;
-    if (newVideoSelected) {
-      video = <YouTubeVideo key={1} videoId={this.state.selectedVideoId} />
-    }
-    else if (selectedVideoId !== '') {
-      video = <YouTubeVideo key={2} videoId={this.state.selectedVideoId} />
-    } 
-    else {
-      video = null;
-    }
-
-    return (
-      <div style={{margin: 5}}>
-
-        {video}
-        
-        <div style={{margin: 'auto', width: '95%'}}>
-          <Input 
-            onChange={event => videoSearch(event.target.value) }
-            placeholder='Search YouTube'
-          />
-        </div>
-
-        <Typography style={{color:'#f5222d'}}>{this.state.error}</Typography>
-
-        {
-          this.state.videos.length !== 0 ?
-          <List
-            style={{margin: 5}}
-            size='small'
-            bordered
-            dataSource={this.state.videos}
-            renderItem={video => {
-
-              console.log('rendering video')
-              console.log(video);
-
-              return (
-                <List.Item onClick={() => this.setVideo(video.videoId) }>
-                  {video.title}
-                </List.Item>
-              )
-            }}
-          /> : null
-        }
-          
-      </div>
-    )
-  }
-}
-
-
-class YouTubeVideo extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      videoId: props.videoId,
-      player: null,
-    };
-
-    this.onReady = this.onReady.bind(this);
-    this.onPlayVideo = this.onPlayVideo.bind(this);
-    this.onPauseVideo = this.onPauseVideo.bind(this);
-  }
-
-  onReady(event) {
-    console.log(`YouTube Player object for videoId: '${this.state.videoId}' has been saved to state.`);
-    this.setState({
-      player: event.target,
-    });
-  }
-
-  onPlayVideo() {
-    this.state.player.playVideo();
-  }
-
-  onPauseVideo() {
-    this.state.player.pauseVideo();
-  }
-
-  render() {
-    const opts = {
-      height: '100%',
-      width: '100%',
-      playerVars: {
-        autoplay: 1
-      }
-    };
-
-    return <YouTube videoId={this.state.videoId} onReady={this.onReady} opts={opts}/>
-  }
-}

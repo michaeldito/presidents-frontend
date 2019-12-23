@@ -76,10 +76,10 @@ const Players = ({ game, giveDrink, roomName, token }) => {
         gutter: 12,
         xs: 1,
         sm: 2,
-        md: 4,
+        md: 3,
         lg: 4,
-        xl: 4,
-        xxl: 4,
+        xl: 5,
+        xxl: 8,
       }}
       dataSource={game.players}
       renderItem={player => (

@@ -2,8 +2,8 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import axios from '../../config/axios';
 import { Layout, Modal, PageHeader, Typography, List, Avatar, Card, Steps } from 'antd';
-import { HoverArea } from '../../components';
-import { HoverButtons, HoverButton, PlayerArea, WithFlex, PullLeft, PullRight, 
+import { HoverArea, Chat, YouTubePlayer } from '../../components';
+import { HoverButtons, HoverButton, PlayerArea, Flex, PullLeft, PullRight, 
 	Title, HorizontallyScrollable, VerticalDivider, GameButton, Container, StepsArea } from './components';
 import Players from './Players';
 import PlayersHand from './PlayersHand';
@@ -15,7 +15,7 @@ const { Content } = Layout;
 const { Step } = Steps;
 
 
-function stepNumber(value) {
+const stepNumber = value => {
 	switch (value) {
     case 'NOT_STARTED': return 0;
     case 'IN_PROGRESS': return 2;
@@ -228,7 +228,7 @@ class Game extends React.Component {
 		let createdTime = new Date(this.props.game.createdAt).toLocaleString().replace(/:\d+ /, ' ');
 		let startTime = new Date(this.props.game.startedAt).toLocaleString().replace(/:\d+ /, ' ');
 		
-		let GameOverModal = () =>
+		const GameOverModal = () =>
 			<Modal
 				title="Game Complete"
 				visible={this.statusValue() === 'FINALIZED' && this.state.visible}
@@ -238,14 +238,14 @@ class Game extends React.Component {
 				{this.statusValue() === 'FINALIZED' && this.state.visible ? this.gameOverResults() : null}
 			</Modal>
 
-		let GamePageHeader = () =>
+		const GamePageHeader = () =>
 			<PageHeader 
 				onBack={() => null} 
 				title={`Presidents`}
 				subTitle={this.props.game.name + ' - ' + this.props.username}
 			/>
 
-		let GameProgress = () => 
+		const GameProgress = () => 
 			<StepsArea>
 				<Steps current={stepNumber(this.statusValue())}>
 					<Step title="Created" subTitle={createdTime}/>
@@ -262,8 +262,9 @@ class Game extends React.Component {
 				</Steps>
 			</StepsArea>
 
-		let ActionButtons = () =>
+		const ActionButtons = () =>
 			<Container>
+				<Title value='Actions' />
 				{
 					this.statusValue() === 'NOT_STARTED' ? 
 						<GameButton title='Start' action={this.props.startGame} icon='rollback' />
@@ -277,8 +278,9 @@ class Game extends React.Component {
 				<GameButton title='Button' onClick={null} icon='rollback' />
 			</Container>
 
-		let YourHand = () =>
+		const YourHand = () =>
 			<Container>
+				<Title value='Your Hand' />
 				{
 					this.state.showYourHand ? 
 						<PlayersHand 
@@ -291,9 +293,9 @@ class Game extends React.Component {
 				}
 			</Container>
 
-		let TurnsAndDrinks = () =>
+		const TurnsAndDrinks = () =>
 			<Container>
-				<WithFlex>
+				<Flex>
 					<PullLeft>
 						<Title value='Turns' />
 						<HorizontallyScrollable>
@@ -307,11 +309,12 @@ class Game extends React.Component {
 								{this.drinks()}
 							</HorizontallyScrollable>
 					</PullRight>
-				</WithFlex>
+				</Flex>
 			</Container>
 
 		let Larrys = () =>
 			<PlayerArea>
+				<Title value='Larrys' />
 				<Players
 					game={game} 
 					giveDrink={this.props.giveDrink} 
@@ -320,7 +323,7 @@ class Game extends React.Component {
 				/>
 			</PlayerArea>
 
-		let Hover = () =>
+		const Hover = () =>
 			<React.Fragment>
 				{
 						this.state.hoverAreaSettings.open ? 
@@ -328,11 +331,17 @@ class Game extends React.Component {
 								username={this.props.username} 
 								gameId={this.props.game._id} 
 								settings={this.state.hoverAreaSettings}
-							/> : null
+							>
+								{
+									this.state.hoverAreaSettings.type === 'youtube' ?
+										<YouTubePlayer /> :
+										<Chat username={this.props.username} gameId={this.props.game._id}/>
+								}
+							</HoverArea> : null
 					}
 			</React.Fragment>
 
-		let HoverActionButtons = () =>
+		const HoverActionButtons = () =>
 			<HoverButtons>
 				<HoverButton title='Chat' icon='wechat' onClick={() => this.toggleHoverArea('chat')} />
 				<HoverButton title='Video Chat' icon='video-camera' onClick={() => this.getVideoToken()} />

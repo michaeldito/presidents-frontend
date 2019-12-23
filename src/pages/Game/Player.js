@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Card, Typography, Tag, Button } from 'antd';
+import { Card, Icon, Avatar, Tooltip } from 'antd';
+import { CenteredTitle } from './components';
+import NoVideoImage from '../../assets/novideo.png';
 
 
 const Player = ({ player, currentPlayer, giveDrink, participant }) => {
@@ -74,86 +76,58 @@ const Player = ({ player, currentPlayer, giveDrink, participant }) => {
     }
   }, [audioTracks]);
 
-  const { drinksDrunk, drinksReceived } = player;
-
-  const cardStyle = player.user._id === currentPlayer ? {
-    border: '5px solid #1890ff', 
-    backgroundColor: '#000000',
-    borderRadius: '5px',
-  } : {
-    border: '5px solid #000000', 
-    backgroundColor: '#000000',
-    borderRadius: '5px',
-  }
-
-  const title = (
-    <div style={{display: 'flex', justifyContent: 'space-between'}} >
-
-      <h4 style={{ color: 'white'}}>
-        {player.user.username}
-      </h4>
-
-      <Button 
-        size='small'
+  const GiveDrinkButton = ( 
+    <Tooltip placement='top' title={`Give ${player.user.username} a drink`}>
+      <Icon 
         onClick={() => giveDrink(player.user._id)}
-        icon="coffee" 
-      >
-        Give Drink
-      </Button>
-      
-      {
-        participant ? 
-          <Button 
-            size='small' 
-            icon={muted ? 'sound' : 'notification'}
-            onClick={() => setMuted(!muted)}
-          >
-            {muted ? 'Unmute': 'Mute'}
-          </Button> : null
-      }
+        type="coffee" 
+      />
+    </Tooltip>
+  )
 
-    </div>
-  );
+  const MuteButton = participant ? 
+    <Tooltip placement='top' title={`${muted ? 'Unmute' : 'Mute'} ${player.user.username}`}>
+      <Icon 
+        type={muted ? 'sound' : 'notification'}
+        onClick={() => setMuted(!muted)}
+      />
+    </Tooltip> : 
+    <Tooltip placement='top' title={`${muted ? 'Unmute' : 'Mute'} ${player.user.username}`}>
+      <Icon type={muted ? 'sound' : 'notification'} />
+    </Tooltip>
 
-  const contentStyle = {paddingBottom: '5px', width: '100%', position: 'absolute', bottom: 0, display: 'flex', alignItems: 'flex-start'};
+  const AudioVideo = participant !== null ?
+      <div style={{width: '100%', height: '100%', backgroundColor: 'black'}}>
+        <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
+        <audio ref={audioRef} autoPlay={true} muted={muted} /> 
+      </div> : <img width='100%' height='100%' src={NoVideoImage} alt='no video'/>
+
+  const cardStyle = {
+    border: `8px solid ${player.user._id === currentPlayer ? '#1890ff' : '#000000'}`, 
+    borderRadius: '5px',
+    width: '100%', 
+    height: '100%',
+  };
+
+  const title = player.politicalRank !== undefined ? 
+    <CenteredTitle value={player.politicalRank.name} /> :
+    <CenteredTitle value='No Rank' />
 
   return (
     <Card 
+      bordered
       size='large' 
+      title={title}
       style={cardStyle}
-      title={title}>
-
-      <div style={{width: '100%', height: '100%'}}>
-        {participant !== null ?
-          <div>
-            <video width='100%' height='100%' ref={videoRef} autoPlay={true} />
-            <audio ref={audioRef} autoPlay={true} muted={muted} />
-          </div> : null
-        }
-      </div>
-
-      <Layout.Content style={contentStyle}>
-        {
-          player.nextGameRank === undefined ? 
-          <Tag 
-            style={{textAlign: 'center', width: '33%'}} 
-            color='orange'>
-              {player.politicalRank !== undefined ? player.politicalRank.name : 'no rank'}
-          </Tag> : null 
-        }
-        {
-          player.nextGameRank !== undefined ? 
-          <Tag 
-            color='green' 
-            style={{textAlign: 'center', width: '33%'}}>
-              {player.nextGameRank.name}
-          </Tag> : null
-        }
-        <Typography style={{color: 'white', textAlign: 'right', width: '33%', fontSize: '1em'}}>
-          {drinksDrunk}-{drinksReceived.length}
-        </Typography>
-      </Layout.Content>
-      
+      actions={[
+        GiveDrinkButton,
+        <Avatar>{player.user.username}</Avatar>,
+        MuteButton
+      ]}
+      bodyStyle={{padding: '0px'}}
+      headStyle={{backgroundColor: ''}}
+    >
+      {AudioVideo}
     </Card>
   )
 }

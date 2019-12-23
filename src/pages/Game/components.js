@@ -29,7 +29,7 @@ export const StepsArea = styled.div`
   background: #fff;
 `;
 
-export const WithFlex = styled.div`
+export const Flex = styled.div`
   display: flex;
 `;
 
@@ -59,9 +59,10 @@ export const HoverButton = ({title, icon, onClick}) =>
     <Button style={{marginLeft: 2}} icon={icon} shape="circle" onClick={() => onClick()} />
   </Tooltip>
 
-export const Title = ({value}) =>
-  <Typography.Title level={4}>
+export const Title = ({value, children}) =>
+  <Typography.Title level={4} style={{margin: 10}}>
     {value}
+    {children}
   </Typography.Title>
 
 export const VerticalDivider = () => 
@@ -78,3 +79,8 @@ export const GameButton = ({icon, action, title}) =>
   >
     {title}
   </Button>
+
+export const CenteredTitle = ({ value }) => 
+  <Typography.Title level={4} style={{textAlign: 'center'}}>
+    {value}
+  </Typography.Title>
