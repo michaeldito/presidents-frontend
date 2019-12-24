@@ -1,7 +1,34 @@
 
 import axios from '../../config/axios';
 import { successNotification, errorNotification, infoNotification } from '../../actions';
-import { PLAY_CARDS, PASS, GIVE_DRINK, DRINK_DRINK, START_GAME, UPDATE_GAME, REMATCH } from '../../actions/constants';
+import { PLAY_CARDS, PASS, GIVE_DRINK, DRINK_DRINK, START_GAME, UPDATE_GAME, REMATCH,
+  SELECT_CARD, DESELECT_CARD, CLEAR_SELECTED_CARDS } from '../../actions/constants';
+
+export const clearSelectedCards = () => {
+  return {
+    type: CLEAR_SELECTED_CARDS
+  }
+}
+
+export const _selectCard = card => {
+  return {
+    type: SELECT_CARD,
+    card
+  }
+}
+export const _deselectCard = card => {
+  return {
+    type: DESELECT_CARD,
+    card
+  }
+};
+export const selectCard = card => {
+  return async (dispatch, getState) => {
+    const { game } = getState();
+    const alreadyAdded = game.selectedCards.find(c => c.shortHand === card.shortHand);
+    return alreadyAdded ? dispatch(_deselectCard(card)) : dispatch(_selectCard(card));
+  }
+};
 
 export const _playCard = async (id, payload, userId) => {
   const request = await axios.put(`presidents/${id}/processTurn`, payload);
@@ -22,6 +49,7 @@ export const playCards = (id, cardsPlayed) => {
       const wasPassed = false;
       let payload = {user, cardsPlayed, wasPassed};
       await dispatch(_playCard(id, payload, userId));
+      dispatch(clearSelectedCards());
       dispatch(successNotification('Turn Accepted', 'Nice.'));
     } catch (err) {
       dispatch(errorNotification('Invalid Turn', err.response.data));

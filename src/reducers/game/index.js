@@ -33,43 +33,60 @@ export default function gameReducer(state = {}, action) {
     const game = action.payload.data;
     let newState = Object.assign({}, game);
     newState.wasGameCreated = true;
+    newState.selectedCards = [];
     return newState;
-
-  } else if (action.type === 'JOIN_GAME') {
-
+  } 
+  else if (action.type === 'JOIN_GAME') {
     let game = action.payload.data;
     let newState = Object.assign({}, game);
+    newState.selectedCards = [];
     return newState;
-
-
-  } else if (action.type === 'GET_GAME') {
-
+  } 
+  else if (action.type === 'GET_GAME') {
     let game = action.payload.data;
+    game.selectedCards = [];
     const { userId } = action;
     return computedState(game, userId)
-
-  } else if (action.type === 'GET_GAMES_TO_JOIN') {
-
+  } 
+  else if (action.type === 'GET_GAMES_TO_JOIN') {
     const data = action.payload.data;
     let newState = deepCopy(state);
     newState.allGameData = data;
     return newState;
-
-  } else if (action.type === 'START_GAME') {
-
+  } 
+  else if (action.type === 'START_GAME') {
+    let game = action.payload.data;
+    const { userId } = action;
+    game.selectedCards = [];
+    return computedState(game, userId)
+  } 
+  else if (action.type === 'PLAY_CARDS') {
     let game = action.payload.data;
     const { userId } = action;
     return computedState(game, userId)
-    
-  } else if (action.type === 'PLAY_CARDS') {
-
-    let game = action.payload.data;
-    const { userId } = action;
-    return computedState(game, userId)
+  } 
+  else if (action.type === 'SELECT_CARD') {
+    let newState = Object.assign({}, state);
+    let { card } = action;
+    let updatedSelectedCards = state.selectedCards.concat([card]);
+    newState.selectedCards = updatedSelectedCards;
+    return newState;
+  } 
+  else if (action.type === 'DESELECT_CARD') {
+    let newState = Object.assign({}, state);
+    let { card } = action;
+    let updatedSelectedCards = state.selectedCards.filter(c => c.shortHand !== card.shortHand);
+    newState.selectedCards = updatedSelectedCards;
+    return newState;
+  }
+  else if (action.type === 'CLEAR_SELECTED_CARDS') {
+    let newState = Object.assign({}, state);
+    newState.selectedCards = [];
+    return newState;
   }
   else if (action.type === 'UPDATE_GAME') {
-
     let game = action.payload.data;
+    game.selectedCards = state.selectedCards;
     const { userId } = action;
     return computedState(game, userId)
   }
@@ -77,6 +94,7 @@ export default function gameReducer(state = {}, action) {
 
     let game = action.payload.data;
     const { userId } = action;
+    game.selectedCards = [];
     return computedState(game, userId)
   }
 

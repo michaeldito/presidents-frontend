@@ -121,7 +121,7 @@ const Player = ({ player, currentPlayer, giveDrink, participant }) => {
       style={cardStyle}
       actions={[
         GiveDrinkButton,
-        <Avatar>{player.user.username}</Avatar>,
+        <Avatar>{player.user.username[0].toUpperCase()}</Avatar>,
         MuteButton
       ]}
       bodyStyle={{padding: '0px'}}

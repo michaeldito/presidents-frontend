@@ -12,7 +12,7 @@ export const HoverButtons = styled.div`
 `;
 
 export const PlayerArea = styled.div`
-  padding: 24px;
+  padding: 20px;
   margin-top: 10px;
   margin-bottom: 10px; 
   background: #fff;
@@ -36,13 +36,11 @@ export const Flex = styled.div`
 export const PullLeft = styled.div`
   float: left;
   width: 50%;
-  padding: 10px;
 `;
 
 export const PullRight = styled.div`
   float: right;
   width: 50%;
-  padding: 10px;
 `;
 
 export const HorizontallyScrollable = styled.div`

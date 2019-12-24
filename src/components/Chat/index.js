@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Chat from 'twilio-chat';
 import axios from '../../config/axios';
 import { Typography, Input, Button, Comment, Avatar } from 'antd';
@@ -29,14 +29,12 @@ export default class ChatApp extends React.Component {
     this.messageAdded = this.messageAdded.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.handleError = this.handleError.bind(this);
-
   }
 
   async componentDidMount() {
+    const { username } = this.props;
     try {
-      let token = await axios.post('/chat/token', {'identity': encodeURIComponent(this.props.username)});
-      console.log('INSIDE CHAT APP')
-      console.log(token);      
+      let token = await axios.post('/chat/token', {'identity': encodeURIComponent(username)});   
       let client = await Chat.create(token.data);
       await this.setupChatClient(client);
     } catch (err) {
@@ -45,20 +43,20 @@ export default class ChatApp extends React.Component {
   }
 
   handleError(error) {
-    console.error(error);
     this.setState({
       error: 'Could not load chat.'
     });
   }
 
   setupChatClient(client) {
+    const { gameId } = this.props;
     this.client = client;
     this.client
-      .getChannelByUniqueName(this.props.gameId)
+      .getChannelByUniqueName(gameId)
       .then(channel => channel)
       .catch(error => {
         if (error.body.code === 50300) {
-          return this.client.createChannel({ uniqueName: this.props.gameId });
+          return this.client.createChannel({ uniqueName: gameId });
         } else {
           this.handleError(error);
         }
@@ -82,44 +80,37 @@ export default class ChatApp extends React.Component {
   }
 
   messageAdded(message) {
-    this.setState(prevState => ({
-      messages: [
-        ...prevState.messages,
-        message
-      ]
-    }));
+    this.setState(prevState => ({ messages: [ ...prevState.messages, message] }));
   }
 
   componentWillUnmount() {
     this.client.shutdown();
   }
 
-
-  sendMessage = (event) => {
+  sendMessage = event => {
+    const { newMessage } = this.state;
     event.preventDefault();
-    let msg = this.state.newMessage.replace(/[\r\n]+/gm,"").trim(); 
+    let msg = newMessage.replace(/[\r\n]+/gm,"").trim(); 
 
     if (msg !== '') {
       this.channel.sendMessage(msg);
-      this.setState({newMessage: ''});
+      this.setState({ newMessage: '' });
     }
   }
 
   
   handleChange = event => {
-    console.log('handling change')
-    console.log(event.target.value)
     this.setState({ [event.target.name]: event.target.value });
   }
 
   render() {
-    console.log(this.state.messages)
-    if (this.state.error) {
-      return <p>{this.state.error}</p>;
-    } else if (this.state.isLoading) {
+    const { error, isLoading, messages, newMessage } = this.state;
+    if (error) {
+      return <p>{error}</p>;
+    } else if (isLoading) {
       return <Typography.Title style={{margin: 5}} level={4}>Loading chat...</Typography.Title>;
     }
-    let comments = this.state.messages.map(message =>
+    let comments = messages.map(message =>
       <Comment
         key={message.state.sid}
         avatar={<Avatar size='small'>{message.state.author}</Avatar>}
@@ -133,23 +124,21 @@ export default class ChatApp extends React.Component {
           margin: 5
         }}>
           <TextArea 
-              value={this.state.newMessage} 
+              value={newMessage} 
               placeholder='Enter a message' 
-              onChange={(c) => this.handleChange(c)}
-              onPressEnter={(e) => this.sendMessage(e)}
+              onChange={c => this.handleChange(c)}
+              onPressEnter={e => this.sendMessage(e)}
               name='newMessage'
               style={{marginTop:3, marginBottom:3}}
             />
-
           <Button 
             icon='right'
             style={{padding: 3, margin: 3, height: 'auto', backgroundColor:'#003a8c', color:'white'}}
-            onClick={(e) => this.sendMessage(e)}
+            onClick={e => this.sendMessage(e)}
           />
         </FadeIn>
-
         <FadeIn style={{margin: 5, flexGrow: 1, overflowX: 'hidden', overflow: 'auto'}}>
-            {comments.reverse()}
+          {comments.reverse()}
         </FadeIn>
       </React.Fragment>
     );
