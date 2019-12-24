@@ -131,23 +131,21 @@ export const drinkDrink = () => {
   }
 }
 
-export const _startGame = async (id, userId) => {
+export const _startGame = async (id) => {
   const request = await axios.put(`/presidents/${id}/initialize`);
 
   return { 
     type: START_GAME, 
-    payload: request,
-    userId
+    payload: request
   }
 }
 
 export const startGame = () => {
   return async (dispatch, getState) => {
     const state = getState();
-    const userId = state.user._id;
     const id = state.game._id
     try {
-      await dispatch(_startGame(id, userId));
+      await dispatch(_startGame(id));
       dispatch(successNotification('Game Started', 'May the best player win'));
     } 
     catch (err) {
@@ -157,37 +155,29 @@ export const startGame = () => {
 }
 
 
-export const _updateGame = (game, userId) => {
+export const updateGame = game => {
   return {
     type: UPDATE_GAME,
-    payload: { data: game },
-    userId
-  }
-}
-
-export const updateGame = game => {
-  return async (dispatch, getState) => {
-    let state = getState();
-    const userId = state.user._id;
-    await dispatch(_updateGame(game, userId));
+    payload: { data: game }
   }
 }
 
 
-export const _rematch = async (gameId, userId) => {
+
+
+export const _rematch = async gameId => {
   const request = await axios.post(`/presidents/${gameId}/rematch`);
 
   return {
     type: REMATCH,
-    payload: request,
-    userId
+    payload: request
   }
 }
+
 export const rematch = () => {
   return async (dispatch, getState) => {
     const state = getState();
-    const userId = state.user._id;
     const gameId = state.game._id;
-    await dispatch(_rematch(gameId, userId));
+    await dispatch(_rematch(gameId));
   }
 }

@@ -27,7 +27,7 @@ const dateToString = date => new Date(date).toLocaleString().replace(/:\d+ /, ' 
 
 const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDrink, startGame, rematch }) => {
 
-	let [visible, setVisible] = useState(false);
+	let [visible, setVisible] = useState(true);
 	let [hoverArea, setHoverArea] = useState({ open: false, type: '' });
 	let [showYourHand, setShowYourHand] = useState(true);
 	let [token, setToken] = useState('');
@@ -56,7 +56,16 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 		setToken('');
 	}
 
-	const statusValue = () => game.status !== undefined ? game.status.value : '';
+	const rematchHandler = () => {
+		rematch();
+		setTimeout(() => {
+			setVisible(true);
+		}, 2000);
+	}
+
+	const handleOk = e => {
+    setVisible(false);
+	};
 
 	const TurnsTaken = () => {
 		if (game.turnToBeat !== undefined) {
@@ -142,10 +151,6 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 		}
 		return null
 	}
-
-	const handleOk = e => {
-    setVisible(false);
-	};
 	
 	const GameOverResults = () => {
 		const description = ({ politicalRank }) => {
@@ -176,8 +181,9 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 		return results;
 	}
 	
-	let createdTime = dateToString(game.createdAt);
-	let startTime = dateToString(game.startedAt);
+	const statusValue = () => game.status !== undefined ? game.status.value : '';
+	const createdTime = dateToString(game.createdAt);
+	const startTime = dateToString(game.startedAt);
 		
 	const GameOverModal = () =>
 		<Modal
@@ -223,7 +229,7 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 			}
 			{
 				statusValue() === 'FINALIZED' ?
-					<GameButton title='Rematch' action={rematch} icon='rollback' />
+					<GameButton title='Rematch' action={rematchHandler} icon='rollback' />
 					: null
 			}
 			<GameButton icon='play-circle' action={() => playCards(game._id, game.selectedCards)} title='Play Cards' />
@@ -265,7 +271,7 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 			</Flex>
 		</Container>
 
-	let Larrys = () =>
+	const Larrys = () =>
 		<PlayerArea>
 			<Title value='Larrys' />
 			<Players
@@ -325,6 +331,10 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 function mapStateToProps(state) {
 	const { game, user } = state;
 	const { username } = user;
+	if (game.status.value === 'IN_PROGRESS') {
+		let player = game.players.find(player => player.user._id === user._id);
+		game.playersHand = player.hand;
+	}
 	return { game, username };
 }
 

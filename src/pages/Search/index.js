@@ -8,12 +8,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 
 
-const Search = ({user, data, joinGame, getGame}) => {
+const Search = ({user, gamesToJoin, joinGame, getGame}) => {
   return (
     <Layout>
       <PageHeader onBack={() => null} title="Search" />
       <SearchTable 
-        data={data} 
+        data={gamesToJoin} 
         alreadyJoinedGames={user.gamesPlayed}
         joinGame={joinGame}
         getGame={getGame}
@@ -26,7 +26,7 @@ const Search = ({user, data, joinGame, getGame}) => {
 function mapStateToProps(state) {
 	return {
     user: state.user,
-    data: state.game.allGameData
+    gamesToJoin: state.search.gamesToJoin
   };
 }
 

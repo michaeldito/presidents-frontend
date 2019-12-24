@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
-import gameReducer from './game';
-import userReducer from './user';
+import game from './game';
+import user from './user';
+import search from './search';
 
 const rootReducer = combineReducers({
-  game: gameReducer,
-  user: userReducer
+  game,
+  user,
+  search 
 });
 
 export default rootReducer

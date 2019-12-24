@@ -11,7 +11,7 @@ const AppPresentation = ({ children }) =>
     {children}
   </Layout>
 
-const App = ({ loggedIn }) => {
+const App = ({ user }) => {
 
   const PublicRoutes = () => routes.public.map(route => {
     const CurrentComponent = Pages[route.name] || <div>Welcome 2 larryprez</div>
@@ -21,7 +21,6 @@ const App = ({ loggedIn }) => {
         path={route.route}
         component={(props) => <CurrentComponent {...props} />}
         key={`navroute-${route.route}`}
-        loggedIn={loggedIn}
     />);    
   });
 
@@ -33,12 +32,13 @@ const App = ({ loggedIn }) => {
         path={route.route}
         component={(props) => <CurrentComponent {...props} />}
         key={`navroute-${route.route}`}
-        loggedIn={loggedIn}
+        user={user}
+        allowedRoles={route.allowedRoles}
       />
   )})
     
   const App = (
-    ! loggedIn ? 
+    ! user.loggedIn ? 
       <PublicRoutes /> :
         <AppPresentation>
           <Sidebar />
@@ -51,7 +51,7 @@ const App = ({ loggedIn }) => {
 
 function mapStateToProps(state) {
 	return {
-    loggedIn: state.user.loggedIn
+    user: state.user
   };
 }
 

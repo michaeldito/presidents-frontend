@@ -30,37 +30,41 @@ const SideBar = ({getGamesToJoin, logout}) => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-      <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline">
+      <Menu theme='dark' defaultSelectedKeys={['0']} mode='inline'>
 
-        <Menu.Item key="0">
-          <Link destination='dashboard' icon='home' text='Dashboard' />
+        <Menu.Item key='0'>
+          <Link destination='dashboard' icon='dashboard' text='Dashboard' />
         </Menu.Item> 
 
-        <Menu.Item key="1">
+        <Menu.Item key='1'>
           <Link destination='game' icon='play-circle' text='Game' />
         </Menu.Item>
 
-        <Menu.Item key="2">
+        <Menu.Item key='2'>
           <Link destination='create-game' icon='plus-circle' text='Create' />
         </Menu.Item>
 
-        <Menu.Item key="3">
+        <Menu.Item key='3'>
           <Link destination='inbox' icon='message' text='Inbox' />
         </Menu.Item>
 
-        <Menu.Item key="4">
+        <Menu.Item key='4'>
           <Link destination='friends' icon='team' text='Friends' />
         </Menu.Item>
 
-        <Menu.Item key="5" onClick={() => getGamesToJoin()}>
+        <Menu.Item key='5' onClick={() => getGamesToJoin()}>
           <Link destination='search' icon='search' text='Search' />
         </Menu.Item>
 
-        <Menu.Item key="6">
+        <Menu.Item key='6'>
           <Link destination='profile' icon='profile' text='Profile' />
         </Menu.Item>
 
-        <Menu.Item key="7" onClick={() => logout()}>
+        <Menu.Item key='7'>
+          <Link destination='admin' icon='safety' text='Admin' />
+        </Menu.Item>
+
+        <Menu.Item key='8' onClick={() => logout()}>
           <Link destination='' icon='logout' text='Logout' />
         </Menu.Item>
 

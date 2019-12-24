@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Tag, Button } from 'antd';
 import { Link } from 'react-router-dom';
 
-function calculateColor(value) {
+const calculateColor = value => {
   switch (value) {
     case 'NOT_STARTED': return 'green';
     case 'IN_PROGRESS': return 'blue';
@@ -28,16 +28,16 @@ export const SearchTable = ({data, alreadyJoinedGames, joinGame, getGame}) => {
       key: 'id',
       render: game => {
         let userHasJoined = alreadyJoinedGames.find(joinedGame => joinedGame === game.id);
-        if (userHasJoined && game.status.value === 'IN_PROGRESS'){
+        if (userHasJoined && (game.status.value === 'IN_PROGRESS' || game.status.value === 'NOT_STARTED')) {
           return <ActionButton name='Go' id={game.id} action={getGame}/>
         }
         else if (! userHasJoined && game.status.value === 'NOT_STARTED') {
           return <ActionButton name='Join' id={game.id} action={joinGame}/>
         }
-        else if (game.status.value === 'FINALIZED') {
+        else if (userHasJoined && game.status.value === 'FINALIZED') {
           return <ActionButton name='Review' id={game.id} action={getGame}/>
         }
-        return <Button>None</Button>
+        return <ActionButton name='Watch' id={game.id} action={getGame}/>
       }
     },
     {

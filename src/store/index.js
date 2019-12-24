@@ -4,11 +4,10 @@ import { createLogger } from 'redux-logger'
 import thunk from 'redux-thunk';
 import rootReducer from './../reducers';
 import socket from 'socket.io-client'
-import { getUser } from '../actions';
-import { _updateGame } from '../pages/Game/actions';
+import { getUser, infoNotification } from '../actions';
+import { updateGame } from '../pages/Game/actions';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
-import { loadingBarMiddleware } from 'react-redux-loading-bar'
 
 const persistConfig = {
   key: 'root',
@@ -17,7 +16,7 @@ const persistConfig = {
  
 const persistedReducer = persistReducer(persistConfig, rootReducer)
  
-const middleware = [promise, createLogger(), thunk, loadingBarMiddleware()]
+const middleware = [promise, thunk, createLogger()]
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -27,17 +26,8 @@ export const store = createStore(persistedReducer, enhancer)
 export const persistor = persistStore(store)
 
 // SOCKET
-// const env = process.env.NODE_ENV;
-// let io, baseURL;
-// if (env === 'prod') {
-// 	baseURL = 'https://larry-presidents.herokuapp.com';
-// 	console.log('baseurl is larry prez')
-// } else {
-// 	console.log('baseurl is localhost')
-//   baseURL = 'http://localhost:8080';
-// }
-
 let baseURL = 'https://larry-presidents.herokuapp.com';
+//baseURL = 'http://localhost:8080/api/v1';
 let io = socket(baseURL);
 
 const addSocketListeners = (dispatch, getState) => {
@@ -45,24 +35,28 @@ const addSocketListeners = (dispatch, getState) => {
 		console.log(`[socket.io-client] game refresh`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-		let userId = getState().user._id;
-		dispatch(_updateGame(data.game, userId));
+		let state = getState();
+		const userId = state.user._id;
+		dispatch(updateGame(data.game));
+		state = getState();
+		const { currentPlayer } = state.game;
+		if (currentPlayer === userId) {
+			dispatch(infoNotification('It\'s your turn', 'Good luck'))
+		}
 	});
 	
 	io.on('drink given', data => {
 		console.log(`[socket.io-client] drink given`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-		let userId = getState().user._id;
-		dispatch(_updateGame(data.game, userId));
+		dispatch(updateGame(data.game));
 	});
 	
 	io.on('drink drunk', data => {
 		console.log(`[socket.io-client] drink drunk`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-		let userId = getState().user._id;
-		dispatch(_updateGame(data.game, userId));
+		dispatch(updateGame(data.game));
 	});
 	
 	io.on('rematch started', async data => {
@@ -70,7 +64,7 @@ const addSocketListeners = (dispatch, getState) => {
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
 		let userId = getState().user._id;
-		dispatch(_updateGame(data.game, userId));
+		dispatch(updateGame(data.game));
 		dispatch(getUser(userId));
 	});
 	
@@ -78,8 +72,7 @@ const addSocketListeners = (dispatch, getState) => {
 		console.log(`[socket.io-client] game join`);
 		console.log(`[socket.io-client] data`);
 		console.log(`[socket.io-client] ${data}`);
-		let userId = getState().user._id;
-		dispatch(_updateGame(data.game, userId));
+		dispatch(updateGame(data.game));
 	})
 }
 

@@ -18,11 +18,11 @@ const PlayersHand = ({ cards = [], selectedCards = [], selectCard }) => {
 
   const CardComponents = () => cards.map((card, idx) =>  {
     let cardIsSelected = selectedCards.find(c => c.shortHand === card.shortHand);
-    let type = cardIsSelected ? 'danger' : 'secondary';
+    let style = { backgroundColor: `${! cardIsSelected ? card.suit.color : 'green'}` };
     return (
       <FadeIn key={idx} onClick={() => selectCard(card)}>
-        <Button size='large' type={type}>
-          <Typography.Text strong>
+        <Button size='large' style={style}>
+          <Typography.Text strong style={{color: 'white'}}>
             {card.cardRank.character} {card.suit.character}
           </Typography.Text>
         </Button>
