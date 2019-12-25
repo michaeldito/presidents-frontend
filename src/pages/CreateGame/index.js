@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import { Form, Input, Button, Layout, PageHeader, Dropdown, Menu } from 'antd';
 import { createGame } from './actions';
@@ -13,10 +14,12 @@ let CreateGame = ({ userId, createGame }) => {
 
   let [gameType, setGameType] = useState('');
   let [name, setName] = useState('');
+  let [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
     createGame({ name,gameType, createdBy: userId });
+    setSubmitted(true);
   };
 
   const menu = (
@@ -31,6 +34,7 @@ let CreateGame = ({ userId, createGame }) => {
 
   return (      
     <Layout>
+      {submitted ? <Redirect to='/game' /> : null}
       <Content>
         <PageHeader onBack={() => null} title="Create Game" />
         <Layout>
@@ -65,7 +69,7 @@ let CreateGame = ({ userId, createGame }) => {
   );
 }
 
-CreateGame = Form.create({ name: 'search' })(CreateGame);
+CreateGame = Form.create({ name: 'create' })(CreateGame);
 
 function mapStateToProps(state) {
 	return {

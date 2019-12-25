@@ -1,6 +1,3 @@
-import { deepCopy } from '../../utils';
-
-
 export default function gameReducer(state = {}, action) {
   if (action.type === 'CREATE_GAME') {
     const game = action.payload.data;
@@ -62,6 +59,9 @@ export default function gameReducer(state = {}, action) {
     game.selectedCards = [];
     let newState = Object.assign({}, game);
     return newState;
+  } 
+  else if (action.type === 'LOGOUT') {
+    return {};
   }
 
   return state;

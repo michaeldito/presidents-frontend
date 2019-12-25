@@ -12,19 +12,13 @@ export function registerUser(payload) {
 }
 
 export function register(payload) {
-
   return async (dispatch, getState) => {
-
     try {
-
-      dispatch(registerUser(payload));
+      await dispatch(registerUser(payload));
       dispatch(successNotification('Registration Successful', 'Welcome aboard!'));
-
     } 
     catch (err) {
-
       dispatch(errorNotification('Registration Failed', err.response.data));
-
     }
   }
 }

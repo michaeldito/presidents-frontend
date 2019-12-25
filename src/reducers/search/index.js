@@ -6,5 +6,8 @@ export default function searchReducer(state = {}, action) {
     newState.gamesToJoin = gamesToJoin;
     return newState;
   } 
+  else if (action.type === 'LOGOUT') {
+    return {};
+  }
   return state;
 }

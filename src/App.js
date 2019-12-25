@@ -26,6 +26,7 @@ const App = ({ user }) => {
 
   const PrivateRoutes = () => routes.private.map(route => {
     const CurrentComponent = Pages[route.name] || Pages.LandingPage;
+    console.log(route.allowedRoles)
     return (
       <PrivateRoute
         exact={route.exact}

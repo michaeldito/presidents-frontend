@@ -25,7 +25,7 @@ const stepNumber = value => {
 }
 const dateToString = date => new Date(date).toLocaleString().replace(/:\d+ /, ' ');
 
-const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDrink, startGame, rematch }) => {
+const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, startGame, rematch }) => {
 
 	let [visible, setVisible] = useState(true);
 	let [hoverArea, setHoverArea] = useState({ open: false, type: '' });
@@ -43,7 +43,7 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 	
 	const getVideoToken = async () => {
 		let payload = {
-			identity: encodeURIComponent(username),
+			identity: encodeURIComponent(user.username),
 			room: game._id
 		};
 		console.log(`[Game@getVideoToken] payload: ${JSON.stringify(payload)}`)
@@ -199,7 +199,7 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 		<PageHeader 
 			onBack={() => null} 
 			title={`Presidents`}
-			subTitle={game.name + ' - ' + username}
+			subTitle={game.name + ' - ' + user.username}
 		/>
 
 	const GameProgress = () => 
@@ -245,7 +245,8 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 			{
 				showYourHand ? 
 					<PlayersHand 
-						cards={game.playersHand} 
+						cards={[]}
+						// cards={game.players.find(player => player.user._id === user._id).hand} 
 						selectedCards={game.selectedCards}
 						selectCard={selectCard}
 					/> : null
@@ -284,14 +285,14 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 
 	const Hover = () => hoverArea.open ? 
 		<HoverArea 
-			username={username} 
+			username={user.username} 
 			gameId={game._id} 
 			settings={hoverArea}
 		>
 			{
 				hoverArea.type === 'youtube' ?
 					<YouTubePlayer /> :
-					<Chat username={username} gameId={game._id}/>
+					<Chat username={user.username} gameId={game._id}/>
 			}
 		</HoverArea> : null
 			
@@ -306,7 +307,7 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 			}
 			<HoverButton title='YouTube' icon='youtube' onClick={() => toggleHoverArea('youtube')} />
 		</HoverButtons>
-
+	
 	return (
 		<Layout>
 			<GameOverModal />
@@ -330,12 +331,11 @@ const Game = ({ game, username, selectCard, playCards, pass, giveDrink, drinkDri
 
 function mapStateToProps(state) {
 	const { game, user } = state;
-	const { username } = user;
-	if (game.status.value === 'IN_PROGRESS') {
-		let player = game.players.find(player => player.user._id === user._id);
-		game.playersHand = player.hand;
-	}
-	return { game, username };
+	// if (game.status.value === 'IN_PROGRESS') {
+	// 	let player = game.players.find(player => player.user._id === user._id);
+	// 	game.playersHand = player.hand;
+	// }
+	return { game, user };
 }
 
 function mapDispatchToProps(dispatch) {

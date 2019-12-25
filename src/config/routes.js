@@ -22,48 +22,48 @@ module.exports.private = [
 		text: 'Inbox',
 		name: 'Inbox',
 		route: '/inbox',
-		allowedRoles: ['admin', 'player']
+		allowedRoles: ['Admin', 'Player']
 	},
 	{
 		text: 'Dashboard',
 		name: 'Dashboard',
 		route: '/dashboard',
-		allowedRoles: ['admin', 'player']
+		allowedRoles: ['Admin', 'Player']
 	},
 	{
 		text: 'Search',
 		name: 'Search',
 		route: '/search',
-		allowedRoles: ['admin', 'player']
+		allowedRoles: ['Admin', 'Player']
 	},
 	{
 		text: 'Friends',
 		name: 'Friends',
 		route: '/friends',
-		allowedRoles: ['admin', 'player']
+		allowedRoles: ['Admin', 'Player']
 	},
 	{
 		text: 'Profile',
 		name: 'Profile',
 		route: '/profile',
-		allowedRoles: ['admin', 'player']
+		allowedRoles: ['Admin', 'Player']
 	},
 	{
 		text: 'Create Game',
 		name: 'CreateGame',
 		route: '/create-game',
-		allowedRoles: ['admin', 'player']
+		allowedRoles: ['Admin', 'Player']
 	},
 	{
 		text: 'Game',
 		name: 'Game',
 		route: '/game',
-		allowedRoles: ['player']
+		allowedRoles: ['Player']
 	},
 	{
 		text: 'Admin',
 		name: 'Admin',
 		route: '/admin',
-		allowedRoles: ['admin']
+		allowedRoles: ['Admin']
 	}
 ];
