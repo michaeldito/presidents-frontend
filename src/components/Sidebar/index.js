@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom';
-import { getGamesToJoin, logout } from './actions';
+import { getGamesToJoin, logout, getSchemas } from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 const { Sider } = Layout;
@@ -20,7 +20,7 @@ const Link = ({destination, icon, text}) =>
   </NavLink>
 
 
-const SideBar = ({getGamesToJoin, logout}) => {
+const SideBar = ({getGamesToJoin, logout, getSchemas}) => {
 
   let [collapsed, setCollapsed] = useState(true);
 
@@ -60,7 +60,7 @@ const SideBar = ({getGamesToJoin, logout}) => {
           <Link destination='profile' icon='profile' text='Profile' />
         </Menu.Item>
 
-        <Menu.Item key='7'>
+        <Menu.Item key='7' onClick={() => getSchemas()}>
           <Link destination='admin' icon='safety' text='Admin' />
         </Menu.Item>
 
@@ -81,7 +81,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return bindActionCreators({
     getGamesToJoin,
-    logout
+    logout,
+    getSchemas
 	}, dispatch);
 }
 

@@ -27,7 +27,7 @@ export const persistor = persistStore(store)
 
 // SOCKET
 let baseURL = 'https://larry-presidents.herokuapp.com';
-baseURL = 'http://localhost:8080/api/v1';
+//baseURL = 'http://localhost:8080/api/v1';
 let io = socket(baseURL);
 
 const addSocketListeners = (dispatch, getState) => {
