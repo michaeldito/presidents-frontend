@@ -271,7 +271,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 			</Flex>
 		</Container>
 
-	const Larrys = () =>
+	const Larrys = (
 		<PlayerArea>
 			<Title value='Larrys' />
 			<Players
@@ -281,6 +281,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 				token={token}
 			/>
 		</PlayerArea>
+	)
 
 	const Hover = () => hoverArea.open ? 
 		<HoverArea 
@@ -317,7 +318,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 					<ActionButtons />
 					<YourHand />
 					<TurnsAndDrinks />
-					<Larrys />
+					{Larrys}
 					<Hover />
 					<HoverActionButtons />
 				</Content>
