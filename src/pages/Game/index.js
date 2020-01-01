@@ -297,7 +297,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 		</HoverArea> : null
 			
 
-	const HoverActionButtons = () =>
+	const HoverActionButtons = (
 		<HoverButtons>
 			<HoverButton title='Chat' icon='wechat' onClick={() => toggleHoverArea('chat')} />
 			{
@@ -307,6 +307,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 			}
 			<HoverButton title='YouTube' icon='youtube' onClick={() => toggleHoverArea('youtube')} />
 		</HoverButtons>
+	)
 	
 	return (
 		<Layout>
@@ -320,7 +321,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 					<TurnsAndDrinks />
 					{Larrys}
 					<Hover />
-					<HoverActionButtons />
+					{HoverActionButtons}
 				</Content>
 			</Layout>
 		</Layout>
