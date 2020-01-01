@@ -245,8 +245,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 			{
 				showYourHand ? 
 					<PlayersHand 
-						cards={[]}
-						// cards={game.players.find(player => player.user._id === user._id).hand} 
+						cards={game.playersHand} 
 						selectedCards={game.selectedCards}
 						selectCard={selectCard}
 					/> : null
@@ -328,13 +327,12 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 }
 
 
-
 function mapStateToProps(state) {
 	const { game, user } = state;
-	// if (game.status.value === 'IN_PROGRESS') {
-	// 	let player = game.players.find(player => player.user._id === user._id);
-	// 	game.playersHand = player.hand;
-	// }
+	if (game.status && game.status.value === 'IN_PROGRESS') {
+		let player = game.players.find(player => player.user._id === user._id);
+		game.playersHand = player.hand;
+	}
 	return { game, user };
 }
 

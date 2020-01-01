@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import './index.css';
-import { Typography, List, Layout, Descriptions, Tree, Icon, Input, AutoComplete, Tabs } from 'antd';
+import { Typography, Table, List, Layout, Descriptions, Tree, Icon, Input, AutoComplete, Tabs } from 'antd';
 const { TabPane } = Tabs;
 const { TreeNode } = Tree;
 const { Option, OptGroup } = AutoComplete;
@@ -59,15 +59,82 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
       getInstanceSet(service.name)
     }
   }
+  const columns = [{
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: name => <a>{name}</a>,
+  }, {
+    title: 'Value',
+    dataIndex: 'value',
+    key: 'value',
+    render: value => <a>{value}</a>,
+  }, {
+    title: 'Required',
+    dataIndex: 'required',
+    key: 'required',
+    render: required => <a>{required ? 'True' : 'False'}</a>,
+  }, {
+    title: 'Unique',
+    dataIndex: 'unique',
+    key: 'unique',
+    render: unique => <a>{unique ? 'True' : 'False'}</a>,
+  }];
+  let attributes = [];
+  let relationships = [];
+  const relationshipColumns = [{
+      title: 'Class',
+      dataIndex: 'class',
+      key: 'class',
+      render: c => <a>{c ? c : ''}</a>
+    },
+    ...columns,
+    {
+      title: 'Singular',
+      dataIndex: 'singular',
+      key: 'singular',
+      render: singular => <a>{singular ? 'True' : 'False'}</a>
+    },
+  ]
+  Object.keys(schema).forEach(key => {
+    if (schema[key].ref) {
+      relationships.push({
+        key, 
+        name:key, 
+        value:schema[key].type, 
+        unique:schema[key].unique, 
+        required:schema[key].required, 
+        class:schema[key].ref,
+        singular:schema[key].type !== 'Array'
+      });
+    } else {
+      if (key !== 'extends') {
+        attributes.push({
+          key, 
+          name:key, 
+          value:schema[key].type, 
+          unique:schema[key].unique, 
+          required:schema[key].required
+        });
+      }
+    }
+  });
+  console.table(attributes)
+  console.table(relationships)
   return (
     <Layout.Content style={{paddingTop: '10px'}}>
       <Descriptions title={<Typography.Title>{className}</Typography.Title>}>
-        {Object.keys(schema).map(key =>
-          <Descriptions.Item key={key} label={key}>{schema[key].type}</Descriptions.Item>
-        )}
+        {schema['extends'] !== undefined ? <Descriptions.Item key={'extends'} label={'extends'}>{schema['extends'].type}</Descriptions.Item> : null}
       </Descriptions>
       <Tabs onChange={(key) => handleTabChange(key)}>
 
+        <TabPane tab='Schema' key='Schema'>
+          <Typography.Title level={3}>Attributes</Typography.Title>
+          <Table pagination={false} columns={columns} dataSource={attributes} />
+          <Typography.Title level={3}>Relationships</Typography.Title>
+          <Table pagination={false} columns={relationshipColumns} dataSource={relationships} />
+        </TabPane>
+        
         <TabPane tab='Services' key='Services'>
           <List 
             size='large'
@@ -89,6 +156,7 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
         </TabPane>
 
       </Tabs>
+
     </Layout.Content>
   );
 }
