@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import './index.css';
-import { Typography, Table, List, Layout, Descriptions, Tree, Icon, Input, AutoComplete, Tabs } from 'antd';
+import { Typography, Table, List, Layout, Descriptions, Tree, Icon, Input, 
+  AutoComplete, Tabs, Card, Form, Collapse } from 'antd';
 const { TabPane } = Tabs;
 const { TreeNode } = Tree;
+const { Panel } = Collapse;
 const { Option, OptGroup } = AutoComplete;
-
 
 const options = dataSource => dataSource.map(group =>
   <OptGroup key={group.title} label={group.title}>
@@ -54,6 +55,7 @@ const Instance = ({ instance }) => {
 }
 
 export const Class = ({ className, schema, service, instanceSet = {data:[]}, getInstanceSet }) => {
+
   const handleTabChange = key => {
     if (key === 'Instances') {
       getInstanceSet(service.name)
@@ -63,22 +65,22 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-    render: name => <a>{name}</a>,
+    render: name => <p>{name}</p>,
   }, {
     title: 'Value',
     dataIndex: 'value',
     key: 'value',
-    render: value => <a>{value}</a>,
+    render: value => <p>{value}</p>,
   }, {
     title: 'Required',
     dataIndex: 'required',
     key: 'required',
-    render: required => <a>{required ? 'True' : 'False'}</a>,
+    render: required => <p>{required ? 'True' : 'False'}</p>,
   }, {
     title: 'Unique',
     dataIndex: 'unique',
     key: 'unique',
-    render: unique => <a>{unique ? 'True' : 'False'}</a>,
+    render: unique => <p>{unique ? 'True' : 'False'}</p>,
   }];
   let attributes = [];
   let relationships = [];
@@ -86,14 +88,14 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
       title: 'Class',
       dataIndex: 'class',
       key: 'class',
-      render: c => <a>{c ? c : ''}</a>
+      render: c => <p>{c ? c : ''}</p>
     },
     ...columns,
     {
       title: 'Singular',
       dataIndex: 'singular',
       key: 'singular',
-      render: singular => <a>{singular ? 'True' : 'False'}</a>
+      render: singular => <p>{singular ? 'True' : 'False'}</p>
     },
   ]
   Object.keys(schema).forEach(key => {
@@ -119,13 +121,24 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
       }
     }
   });
-  console.table(attributes)
-  console.table(relationships)
+
+  console.table(attributes);
+  console.table(relationships);
+
+  const formItemLayout = {
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 16 },
+    },
+  };
+
   return (
     <Layout.Content style={{paddingTop: '10px'}}>
+
       <Descriptions title={<Typography.Title>{className}</Typography.Title>}>
         {schema['extends'] !== undefined ? <Descriptions.Item key={'extends'} label={'extends'}>{schema['extends'].type}</Descriptions.Item> : null}
       </Descriptions>
+
       <Tabs onChange={(key) => handleTabChange(key)}>
 
         <TabPane tab='Schema' key='Schema'>
@@ -149,9 +162,101 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
         <TabPane tab={`Instances${instanceSet.total ? ` (${instanceSet.total})` : ''}`} key='Instances'>
           <List
             size='large'
-            bordered
+            bordered={false}
             dataSource={instanceSet.data}
-            renderItem={instance => <List.Item key={instance._id}>{instance.displayId}</List.Item>}
+            renderItem={instance => 
+                <Collapse key={instance._id} bordered={false} style={{width: '100%'}}>
+                  <Panel header={instance.displayId}>
+                    {Object.keys(instance).map(key =>
+                      <Collapse key={`${instance._id}-${key}`} bordered={false}>
+                        <Panel header={key}>
+                          {
+
+                          // STRING OR NUMBER OR BOOLEAN
+                          typeof instance[key] === 'string' || typeof instance[key] === 'number' || typeof instance[key] === 'boolean' ? 
+                            JSON.stringify(instance[key]) :
+
+                          // OBJECT
+                          typeof instance[key] === 'object' && ! Array.isArray(instance[key]) ? 
+                            <Card style={{width: '100%'}}>
+                              <Descriptions>
+                                {Object.keys(instance[key]).map(subKey =>
+                                  <Descriptions.Item key={`${instance[key]._id}-${subKey}`} label={subKey}>
+                                    {
+                                      // ARRAY IN OBJECT
+                                      Array.isArray(instance[key][subKey]) ? 
+                                        instance[key][subKey].map(i => 
+
+                                          // OBJECT IN ARRAY IN OBJECT
+                                          typeof i === 'object' && ! Array.isArray(i) ?
+                                            <div>{i.displayId}</div> :
+
+                                          // STRING OR NUMBER OR BOOLEAN IN ARRAY IN OBJECT
+                                          typeof i === 'string' || typeof i === 'number' || typeof i === 'boolean' ?
+                                            <div>{i}</div> :
+                                            <div>unknown type in array in object</div>
+                                        ) :
+                                    <div>{JSON.stringify(instance[key][subKey])}</div>
+                                    }
+                                  </Descriptions.Item>)}
+                              </Descriptions>
+                            </Card> :
+                          
+                          // ARRAY
+                          Array.isArray(instance[key]) ? 
+                            <Collapse bordered={false} style={{width: '100%'}}>
+                              {instance[key].map((item, idx) =>
+                                <Panel header={item.displayId} key={idx}>
+                                  {
+
+                                  // STRING OR NUMBER IN ARRAY
+                                  typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean' ? 
+                                    JSON.stringify(item) : 
+
+                                  // OBJECT IN ARRAY
+                                  typeof item === 'object' && ! Array.isArray(item) ? 
+                                    <Card style={{width: '100%'}}>
+                                      <Descriptions>
+                                        {Object.keys(item).map(subKey =>
+                                          <Descriptions.Item key={`${item._id}-${subKey}`} label={subKey}>
+                                            {
+                                              // string | bool | number
+                                              typeof item[subKey] === 'string' || typeof item === 'number' ? 
+                                                JSON.stringify(item[subKey]) :
+
+                                              // OBJECT IN OBJECT IN ARRAY
+                                              // instance = [ outer: { inner: {} } ]
+                                              typeof item[subKey] === 'object' && ! Array.isArray(item[subKey]) ? 
+                                                item[subKey].displayId :
+
+                                              // ARRAY IN OBJECT IN ARRAY
+                                              // instance = [ obj: { arr: [] } ]
+                                              Array.isArray(item[subKey]) ? 
+                                                item[subKey].map(i => <div>{i.displayId}</div>) :
+
+                                              JSON.stringify(item[subKey])
+                                            }
+                                          </Descriptions.Item>)
+                                        }
+                                      </Descriptions>
+                                    </Card> :
+                                    
+                                    <div>unknown in array</div>
+                                  }
+                                </Panel>
+                              )}
+                            </Collapse> :
+
+                            // ERROR OCCURED
+                            <div>unknown instance</div> 
+
+                          }
+                        </Panel>
+                      </Collapse>
+                    )}
+                  </Panel>
+                </Collapse>
+            }
           />
         </TabPane>
 
