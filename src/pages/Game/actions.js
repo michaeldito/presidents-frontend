@@ -1,6 +1,6 @@
 
 import axios from '../../config/axios';
-import { successNotification, errorNotification, infoNotification } from '../../actions';
+import { getUser, successNotification, errorNotification, infoNotification } from '../../actions';
 import { PLAY_CARDS, PASS, GIVE_DRINK, DRINK_DRINK, START_GAME, UPDATE_GAME, REMATCH,
   SELECT_CARD, DESELECT_CARD, CLEAR_SELECTED_CARDS } from '../../actions/constants';
 
@@ -126,7 +126,7 @@ export const drinkDrink = () => {
       dispatch(successNotification('Drink Dranken', 'gulp gulp'));
     } 
     catch (err) {
-      dispatch(errorNotification('Drink Not Dranken', 'no drink for you'));
+      dispatch(errorNotification('Drink Not Dranken', err.response.data));
     }
   }
 }
@@ -178,6 +178,8 @@ export const rematch = () => {
   return async (dispatch, getState) => {
     const state = getState();
     const gameId = state.game._id;
+    const userId = state.user._id;
     await dispatch(_rematch(gameId));
+    await dispatch(getUser(userId));
   }
 }

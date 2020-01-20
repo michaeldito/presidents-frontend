@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux'
+import { Switch } from 'react-router-dom';
 import { PublicRoute, PrivateRoute, Sidebar } from './components';
 import * as Pages from './pages'
 import routes from './config/routes';
@@ -13,7 +14,7 @@ const AppPresentation = ({ children }) =>
 
 const App = ({ user }) => {
 
-  const PublicRoutes = () => routes.public.map(route => {
+  const PublicPages = () => routes.public.map(route => {
     const CurrentComponent = Pages[route.name] || <div>Welcome 2 larryprez</div>
     return (
       <PublicRoute
@@ -24,9 +25,8 @@ const App = ({ user }) => {
     />);    
   });
 
-  const PrivateRoutes = () => routes.private.map(route => {
+  const PrivatePages = () => routes.private.map(route => {
     const CurrentComponent = Pages[route.name] || Pages.LandingPage;
-    console.log(route.allowedRoles)
     return (
       <PrivateRoute
         exact={route.exact}
@@ -39,12 +39,14 @@ const App = ({ user }) => {
   )})
     
   const App = (
-    ! user.loggedIn ? 
-      <PublicRoutes /> :
-        <AppPresentation>
-          <Sidebar />
-          <PrivateRoutes />
-        </AppPresentation>  
+    <Switch>
+      {! user.loggedIn ? 
+        <PublicPages /> :
+          <AppPresentation>
+            <Sidebar />
+            <PrivatePages />
+          </AppPresentation>  }
+    </Switch>
   );
 
   return App;

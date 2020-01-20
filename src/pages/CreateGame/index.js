@@ -18,7 +18,7 @@ let CreateGame = ({ userId, createGame }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    createGame({ name,gameType, createdBy: userId });
+    createGame({ name, gameType, createdBy: userId });
     setSubmitted(true);
   };
 
@@ -34,7 +34,7 @@ let CreateGame = ({ userId, createGame }) => {
 
   return (      
     <Layout>
-      {submitted ? <Redirect to='/game' /> : null}
+      {submitted && <Redirect to='/game' />}
       <Content>
         <PageHeader onBack={() => null} title="Create Game" />
         <Layout>

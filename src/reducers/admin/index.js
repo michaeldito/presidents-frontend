@@ -1,5 +1,4 @@
 export default function adminReducer(state = {}, action) {
-  console.log('adminReducer')
   if (action.type === 'GET_INSTANCE_SET') {
     const instances  = action.payload.data;
     let newState = Object.assign({}, state);

@@ -13,10 +13,8 @@ let Login = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(props.form)
     props.form.validateFields((err, values) => {
      if (!err) {
-        console.log('Received values of form: ', values);
         props.login(values.username, values.password);
      }
     });
@@ -28,12 +26,8 @@ let Login = props => {
     <Layout style={{backgroundColor: '#001529'}}>        
       <div style={{margin: 'auto', textAlign:'center'}}>
         <Card size='large' >
-
           <Typography.Title level={3}>Log In</Typography.Title>
-
-
           <Form onSubmit={handleSubmit} style={{maxWidth: 300}}>
-
             <Form.Item>
               {getFieldDecorator('username', {
                 rules: [{ required: true, message: 'Please input your username.' }],
@@ -58,26 +52,19 @@ let Login = props => {
             </Form.Item>
 
             <Form.Item>
-
-            <Button type="primary" htmlType="submit" style={{width: '100%'}}>
-              Log In
-            </Button>
-
-            <NavLink
-              key={`/register`}
-              to={`/register`}
-            >
-              Or Register
-            </NavLink>
-
+              <Button type="primary" htmlType="submit" style={{width: '100%'}}>
+                Log In
+              </Button>
+              <NavLink
+                key={`/register`}
+                to={`/register`}
+              >
+                Or Register
+              </NavLink>
             </Form.Item>
-
           </Form>
-
         </Card>
-        
       </div>
-
     </Layout>
   );
 }

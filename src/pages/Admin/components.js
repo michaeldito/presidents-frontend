@@ -172,6 +172,14 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
                         <Panel header={key}>
                           {
 
+                          // NULL
+                          instance[key] === null ?
+                            'null' :
+
+                          // UNDEFINED
+                          instance[key] === undefined ?
+                            'undefined' :
+
                           // STRING OR NUMBER OR BOOLEAN
                           typeof instance[key] === 'string' || typeof instance[key] === 'number' || typeof instance[key] === 'boolean' ? 
                             JSON.stringify(instance[key]) :
@@ -220,8 +228,8 @@ export const Class = ({ className, schema, service, instanceSet = {data:[]}, get
                                         {Object.keys(item).map(subKey =>
                                           <Descriptions.Item key={`${item._id}-${subKey}`} label={subKey}>
                                             {
-                                              // string | bool | number
-                                              typeof item[subKey] === 'string' || typeof item === 'number' ? 
+                                              // STRING OR BOOLEAN OR NUMBER IN OBJECT IN ARRAY
+                                              typeof item[subKey] === 'string' || typeof item === 'number' || typeof item === 'boolean' ? 
                                                 JSON.stringify(item[subKey]) :
 
                                               // OBJECT IN OBJECT IN ARRAY

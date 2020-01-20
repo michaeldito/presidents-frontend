@@ -17,7 +17,6 @@ let RegisterForm = props => {
     e.preventDefault();
     props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
         props.register(values);
       }
     });
@@ -28,7 +27,7 @@ let RegisterForm = props => {
   return (
     <Layout style={{backgroundColor: '#001529'}}>        
 
-      {props.user.registered ? <Redirect to={`/dashboard`}/> : null}
+      {props.user.registered && <Redirect to={`/dashboard`}/>}
 
       <div style={{margin: 'auto', textAlign:'center'}}>
         <Card size='large' >
@@ -80,10 +79,6 @@ let RegisterForm = props => {
                     const { getFieldValue } = props.form;
                     let password = getFieldValue('password');
                     let verify = getFieldValue('verify');
-                    console.log('password');
-                    console.log(password);
-                    console.log('verify')
-                    console.log(verify)
                     password !== verify ? callback('Your passwords do not match, please try again.') : callback();
                   }
                 }],

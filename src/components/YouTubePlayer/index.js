@@ -15,8 +15,6 @@ const YouTubePlayer = () => {
   const api = new YoutubeDataAPI(API_KEY);
 
   const setVideo = selectedVideoId => {
-    console.log(`[YouTubeSearch@setVideo] new video selected`);
-    console.log(selectedVideoId);
     setSelectedVideoId(selectedVideoId);
   } 
 
@@ -30,13 +28,7 @@ const YouTubePlayer = () => {
       }
 
       let videos = await api.searchAll(options, 5);
-      console.log(`[YouTubeSearch@_videoSearch] videos returned`);
-      console.log(videos.items);
-
       videos = videos.items.filter(video => video.id.kind !== 'youtube#playlist');
-      console.log(`[YouTubeSearch@_videoSearch] actual videos (playlists filtered out)`);
-      console.log(videos);
-
       videos = videos.map(v => {
         let videoId = v.id.videoId;
         let title = v.snippet.title;
@@ -45,8 +37,6 @@ const YouTubePlayer = () => {
       setVideos(videos);
 
     } catch (error) {
-      console.log(`[YouTubeSearch@_videoSearch] videos returned`);
-      console.log(error);
       setError(error.response.data.error.message);
     }
   }
@@ -54,24 +44,18 @@ const YouTubePlayer = () => {
   const videoSearch = _.debounce((term) => { _videoSearch(term)}, 500);
 
   const VideoList = () => 
-    videos.length !== 0 ?
-    <List
-      style={{margin: 5}}
-      size='small'
-      bordered
-      dataSource={videos}
-      renderItem={video => {
-
-        console.log('rendering video')
-        console.log(video);
-
-        return (
+    videos.length !== 0 &&
+      <List
+        style={{margin: 5}}
+        size='small'
+        bordered
+        dataSource={videos}
+        renderItem={video =>
           <List.Item onClick={() => setVideo(video.videoId) }>
             {video.title}
           </List.Item>
-        )
-      }}
-    /> : null
+        }
+      />
 
   const SearchInput = (
     <div style={{margin: 'auto', width: '95%'}}>

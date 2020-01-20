@@ -1,7 +1,7 @@
 
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Tooltip, Button, Typography, Divider } from 'antd';
+import { Tooltip, Button, Typography, Divider, Tag } from 'antd';
 import styled from 'styled-components';
 
 export const HoverButtons = styled.div`

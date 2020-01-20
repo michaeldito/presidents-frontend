@@ -19,8 +19,7 @@ const Player = ({ player, currentPlayer, giveDrink, participant }) => {
     if (! participant) {
       return f=>f
     }
-
-    console.log(participant);
+    
     setVideoTracks(Array.from(participant.videoTracks.values()));
     setAudioTracks(Array.from(participant.audioTracks.values()));
 

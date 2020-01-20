@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import axios from '../../config/axios';
-import { Layout, Modal, PageHeader, Typography, List, Avatar, Card, Steps } from 'antd';
+import { Layout, Modal, PageHeader, Typography, List, Avatar, Card, Steps, Checkbox } from 'antd';
 import { HoverArea, Chat, YouTubePlayer } from '../../components';
 import { HoverButtons, HoverButton, PlayerArea, Flex, PullLeft, PullRight, 
 	Title, HorizontallyScrollable, VerticalDivider, GameButton, Container, StepsArea } from './components';
@@ -9,7 +9,8 @@ import Players from './Players';
 import PlayersHand from './PlayersHand';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
-import { selectCard, playCards, pass, giveDrink, drinkDrink, startGame, updateGame, rematch } from './actions';
+import { selectCard, playCards, pass, giveDrink, drinkDrink, startGame, 
+	updateGame, rematch } from './actions';
 import Moment from 'react-moment';
 const { Content } = Layout;
 const { Step } = Steps;
@@ -46,10 +47,8 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 			identity: encodeURIComponent(user.username),
 			room: game._id
 		};
-		console.log(`[Game@getVideoToken] payload: ${JSON.stringify(payload)}`)
 		const token = await axios.post('/video/token', payload);
 		setToken(token.data);
-		console.log(`[Game@getVideoToken] token: ${token}`)
 	};
 
 	const videoLogout = () => {
@@ -76,15 +75,9 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 				round.turns.forEach(turn => {
 					turns.push(turn);
 				});
-			});
-			console.log(`[Game@<TurnsTaken/>] turns`);
-			console.log(turns);
-			
+			});			
 			let users = {};
 			game.players.forEach(player => { users[player.user._id] = player.user; });
-			console.log(`[Game@<TurnsTaken/>] users`);
-			console.log(users);
-
 			turns = turns.reverse().map(turn => {
 				let turnToBeat = game.turnToBeat;
 				let style = {
@@ -94,7 +87,6 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 					display: 'flex',
 					flexDirection: 'column'
 				};
-			
 				return (
 					<div key={turn._id} style={{padding: '5px'}}>
 						<Card size="small" title={users[turn.user].username} style={style}>
@@ -131,8 +123,8 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 					drinks = (
 						<div key={idx} style={{padding: '5px'}}>
 							<Card size='small' title='Drink Given'>
-								<Typography>{`From ${drink.from.username}`}</Typography>
-								<Typography>{`To ${drink.to.username}`}</Typography>
+								<Typography>{`From ${drink.from}`}</Typography>
+								<Typography>{`To ${drink.to}`}</Typography>
 							</Card>
 						</div>
 					)
@@ -141,7 +133,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 					drinks = (
 						<div key={idx} style={{padding: '5px'}}>
 							<Card size='small' title='Drink Drunk'>
-								{`By ${drink.user.username}`}
+								{`By ${drink.user}`}
 							</Card>
 						</div>
 					)
@@ -192,7 +184,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 			onOk={handleOk}
 			mask={true}
 		>
-			{statusValue() === 'FINALIZED' && visible ? <GameOverResults /> : null}
+			{statusValue() === 'FINALIZED' && visible && <GameOverResults />}
 		</Modal>
 
 	const GamePageHeader = () =>
@@ -223,14 +215,12 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 		<Container>
 			<Title value='Actions' />
 			{
-				statusValue() === 'NOT_STARTED' ? 
+				statusValue() === 'NOT_STARTED' && 
 					<GameButton title='Start' action={startGame} icon='rollback' />
-					: null
 			}
 			{
-				statusValue() === 'FINALIZED' ?
+				statusValue() === 'FINALIZED' &&
 					<GameButton title='Rematch' action={rematchHandler} icon='rollback' />
-					: null
 			}
 			<GameButton icon='play-circle' action={() => playCards(game._id, game.selectedCards)} title='Play Cards' />
       <GameButton icon='forward' action={() => pass()} title='Pass' />
@@ -239,16 +229,16 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 
 	const YourHand = () =>
 		<Container>
-			<span onClick={() => toggleYourHand()} style={{cursor: 'pointer'}}>
-				<Title value='Your Hand'/>
+			<span style={{cursor: 'pointer'}} onClick={() => toggleYourHand()}>
+				<Title value='Your Hand' />
 			</span>
 			{
-				showYourHand ? 
+				showYourHand &&
 					<PlayersHand 
 						cards={game.playersHand} 
 						selectedCards={game.selectedCards}
 						selectCard={selectCard}
-					/> : null
+					/>
 			}
 		</Container>
 
@@ -283,7 +273,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 		</PlayerArea>
 	)
 
-	const Hover = () => hoverArea.open ? 
+	const Hover = () => hoverArea.open && 
 		<HoverArea 
 			username={user.username} 
 			gameId={game._id} 
@@ -294,7 +284,7 @@ const Game = ({ game, user, selectCard, playCards, pass, giveDrink, drinkDrink, 
 					<YouTubePlayer /> :
 					<Chat username={user.username} gameId={game._id}/>
 			}
-		</HoverArea> : null
+		</HoverArea>
 			
 
 	const HoverActionButtons = (

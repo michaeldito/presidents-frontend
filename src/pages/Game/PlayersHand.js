@@ -14,8 +14,11 @@ const FadeIn = styled.div`
 `;
 
 
-const PlayersHand = ({ cards = [], selectedCards = [], selectCard }) => {
-
+const PlayersHand = ({ cards = [], selectedCards = [], selectCard, sortKey }) => {
+  const ascending = (a, b) => (a.cardRank.value > b.cardRank.value ? 1 : -1);
+  cards = cards.sort(ascending);
+  cards = sortKey === 'asc' ? cards : cards.reverse();
+  
   const CardComponents = () => cards.map((card, idx) =>  {
     let cardIsSelected = selectedCards.find(c => c.shortHand === card.shortHand);
     let style = { backgroundColor: `${! cardIsSelected ? card.suit.color : 'green'}` };
