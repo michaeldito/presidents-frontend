@@ -1,12 +1,10 @@
-
-import React, { useState, useEffect } from 'react';
-import 'antd/dist/antd.css';
-import Player from './Player';
-import { List } from 'antd';
-import Video from 'twilio-video';
+import React, { useState, useEffect } from "react";
+import "antd/dist/antd.css";
+import Player from "./Player";
+import { List } from "antd";
+import Video from "twilio-video";
 
 const Players = ({ game, giveDrink, roomName, token }) => {
-  
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
@@ -24,18 +22,23 @@ const Players = ({ game, giveDrink, roomName, token }) => {
     if (token) {
       Video.connect(token, {
         name: roomName
-      }).then(room => {
-        setRoom(room);
-        room.on('participantConnected', participantConnected);
-        room.on('participantDisconnected', participantDisconnected);
-        participantConnected(room.localParticipant);
-        room.participants.forEach(participantConnected);
-      }).catch(err =>{
-        console.log(err)
       })
+        .then(room => {
+          setRoom(room);
+          room.on("participantConnected", participantConnected);
+          room.on("participantDisconnected", participantDisconnected);
+          participantConnected(room.localParticipant);
+          room.participants.forEach(participantConnected);
+        })
+        .catch(err => {
+          console.log(err);
+        });
       return () => {
         setRoom(currentRoom => {
-          if (currentRoom && currentRoom.localParticipant.state === 'connected') {
+          if (
+            currentRoom &&
+            currentRoom.localParticipant.state === "connected"
+          ) {
             currentRoom.disconnect();
             return null;
           } else {
@@ -46,19 +49,18 @@ const Players = ({ game, giveDrink, roomName, token }) => {
     } else {
       if (room) {
         room.participants.forEach(participantDisconnected);
-        participantDisconnected(room.localParticipant)
+        participantDisconnected(room.localParticipant);
         room.disconnect();
-        setRoom(null)
+        setRoom(null);
       }
     }
-  }, [roomName, token]);
+  }, [room, roomName, token]);
 
   const findParticipantByUsername = username => {
     let p = participants.find(participant => participant.identity === username);
     return p;
-  }
+  };
 
-  
   return (
     <List
       grid={{
@@ -68,22 +70,26 @@ const Players = ({ game, giveDrink, roomName, token }) => {
         md: 3,
         lg: 4,
         xl: 5,
-        xxl: 8,
+        xxl: 8
       }}
       dataSource={game.players}
       renderItem={player => (
         <List.Item>
-          <Player 
+          <Player
             key={player._id}
-            player={player} 
-            currentPlayer={game.currentPlayer} 
+            player={player}
+            currentPlayer={game.currentPlayer}
             giveDrink={giveDrink}
-            participant={findParticipantByUsername(player.user.username) === undefined ? null : findParticipantByUsername(player.user.username)}
+            participant={
+              findParticipantByUsername(player.user.username) === undefined
+                ? null
+                : findParticipantByUsername(player.user.username)
+            }
           />
         </List.Item>
       )}
     />
-  )
-}
+  );
+};
 
-export default Players
+export default Players;

@@ -1,12 +1,11 @@
+import React from "react";
+import "antd/dist/antd.css";
+import { Layout, PageHeader } from "antd";
 
-import React from 'react';
-import 'antd/dist/antd.css';
-import { Layout,  PageHeader } from 'antd';
-
-const Inbox = () =>
+const Inbox = () => (
   <Layout>
-    <PageHeader onBack={() => null} title="Inbox"/>
+    <PageHeader onBack={() => null} title="Inbox" />
   </Layout>
+);
 
-        
 export default Inbox;

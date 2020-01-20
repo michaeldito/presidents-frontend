@@ -1,6 +1,6 @@
-import axios from '../../config/axios';
-import { CREATE_GAME } from '../../actions/constants'
-import { getUser, successNotification, errorNotification } from '../../actions';
+import axios from "../../config/axios";
+import { CREATE_GAME } from "../../actions/constants";
+import { getUser, successNotification, errorNotification } from "../../actions";
 
 const _createGame = async payload => {
   const request = await axios.post(`/presidents/create`, payload);
@@ -8,8 +8,8 @@ const _createGame = async payload => {
   return {
     type: CREATE_GAME,
     payload: request
-  }
-}
+  };
+};
 
 export const createGame = payload => {
   return async (dispatch, getState) => {
@@ -17,9 +17,11 @@ export const createGame = payload => {
       const userId = getState().user._id;
       await dispatch(_createGame(payload));
       await dispatch(getUser(userId));
-      dispatch(successNotification('Game Created', 'Great success!'))
+      dispatch(successNotification("Game Created", "Great success!"));
     } catch (err) {
-      dispatch(errorNotification('Unable to create the game', err.response.data));
+      dispatch(
+        errorNotification("Unable to create the game", err.response.data)
+      );
     }
-  }
-}
+  };
+};

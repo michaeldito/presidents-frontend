@@ -1,17 +1,21 @@
-import React from 'react';
-import Chat from 'twilio-chat';
-import axios from '../../config/axios';
-import { Typography, Input, Button, Comment, Avatar } from 'antd';
-import styled from 'styled-components';
+import React from "react";
+import Chat from "twilio-chat";
+import axios from "../../config/axios";
+import { Typography, Input, Button, Comment, Avatar } from "antd";
+import styled from "styled-components";
 
 const { TextArea } = Input;
 
 export const FadeIn = styled.div`
-	@keyframes FadeIn {
-		0% { opacity: 0; }
-		100% { opacity: 1; }
-	}
-	animation: FadeIn ${props => props.speed || 1}s;
+  @keyframes FadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  animation: FadeIn ${props => props.speed || 1}s;
 `;
 
 export default class ChatApp extends React.Component {
@@ -21,7 +25,7 @@ export default class ChatApp extends React.Component {
       error: null,
       isLoading: true,
       messages: [],
-      newMessage: ''
+      newMessage: ""
     };
 
     this.setupChatClient = this.setupChatClient.bind(this);
@@ -34,7 +38,9 @@ export default class ChatApp extends React.Component {
   async componentDidMount() {
     const { username } = this.props;
     try {
-      let token = await axios.post('/chat/token', {'identity': encodeURIComponent(username)});   
+      let token = await axios.post("/chat/token", {
+        identity: encodeURIComponent(username)
+      });
       let client = await Chat.create(token.data);
       await this.setupChatClient(client);
     } catch (err) {
@@ -44,7 +50,7 @@ export default class ChatApp extends React.Component {
 
   handleError(error) {
     this.setState({
-      error: 'Could not load chat.'
+      error: "Could not load chat."
     });
   }
 
@@ -68,7 +74,7 @@ export default class ChatApp extends React.Component {
       .then(() => {
         this.setState({ isLoading: false });
         this.channel.getMessages().then(this.messagesLoaded);
-        this.channel.on('messageAdded', this.messageAdded);
+        this.channel.on("messageAdded", this.messageAdded);
       })
       .catch(this.handleError);
   }
@@ -80,26 +86,27 @@ export default class ChatApp extends React.Component {
   }
 
   messageAdded(message) {
-    this.setState(prevState => ({ messages: [ ...prevState.messages, message] }));
+    this.setState(prevState => ({
+      messages: [...prevState.messages, message]
+    }));
   }
 
   componentWillUnmount() {
     this.client.shutdown();
   }
 
-  sendMessage = event => {
+  sendMessage(event) {
     const { newMessage } = this.state;
     event.preventDefault();
-    let msg = newMessage.replace(/[\r\n]+/gm,"").trim(); 
+    let msg = newMessage.replace(/[\r\n]+/gm, "").trim();
 
-    if (msg !== '') {
+    if (msg !== "") {
       this.channel.sendMessage(msg);
-      this.setState({ newMessage: '' });
+      this.setState({ newMessage: "" });
     }
   }
 
-  
-  handleChange = event => {
+  handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
 
@@ -108,41 +115,58 @@ export default class ChatApp extends React.Component {
     if (error) {
       return <p>{error}</p>;
     } else if (isLoading) {
-      return <Typography.Title style={{margin: 5}} level={4}>Loading chat...</Typography.Title>;
+      return (
+        <Typography.Title style={{ margin: 5 }} level={4}>
+          Loading chat...
+        </Typography.Title>
+      );
     }
-    let comments = messages.map(message =>
+    let comments = messages.map(message => (
       <Comment
         key={message.state.sid}
-        avatar={<Avatar size='small'>{message.state.author}</Avatar>}
+        avatar={<Avatar size="small">{message.state.author}</Avatar>}
         content={message.state.body}
       />
-    );
+    ));
     return (
       <React.Fragment>
-        <FadeIn style={{
-          display: 'flex',
-          margin: 5
-        }}>
-          <TextArea 
-              value={newMessage} 
-              placeholder='Enter a message' 
-              onChange={c => this.handleChange(c)}
-              onPressEnter={e => this.sendMessage(e)}
-              name='newMessage'
-              style={{marginTop:3, marginBottom:3}}
-            />
-          <Button 
-            icon='right'
-            style={{padding: 3, margin: 3, height: 'auto', backgroundColor:'#003a8c', color:'white'}}
+        <FadeIn
+          style={{
+            display: "flex",
+            margin: 5
+          }}
+        >
+          <TextArea
+            value={newMessage}
+            placeholder="Enter a message"
+            onChange={c => this.handleChange(c)}
+            onPressEnter={e => this.sendMessage(e)}
+            name="newMessage"
+            style={{ marginTop: 3, marginBottom: 3 }}
+          />
+          <Button
+            icon="right"
+            style={{
+              padding: 3,
+              margin: 3,
+              height: "auto",
+              backgroundColor: "#003a8c",
+              color: "white"
+            }}
             onClick={e => this.sendMessage(e)}
           />
         </FadeIn>
-        <FadeIn style={{margin: 5, flexGrow: 1, overflowX: 'hidden', overflow: 'auto'}}>
+        <FadeIn
+          style={{
+            margin: 5,
+            flexGrow: 1,
+            overflowX: "hidden",
+            overflow: "auto"
+          }}
+        >
           {comments.reverse()}
         </FadeIn>
       </React.Fragment>
     );
   }
 }
-
-

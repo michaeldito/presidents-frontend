@@ -1,12 +1,11 @@
+import React from "react";
+import "antd/dist/antd.css";
+import { Layout, PageHeader } from "antd";
 
-import React from 'react';
-import 'antd/dist/antd.css';
-import { Layout, PageHeader } from 'antd';
-
-
-const Friends = () =>
+const Friends = () => (
   <Layout>
-    <PageHeader onBack={() => null} title="Friends"/>
+    <PageHeader onBack={() => null} title="Friends" />
   </Layout>
-  
+);
+
 export default Friends;
