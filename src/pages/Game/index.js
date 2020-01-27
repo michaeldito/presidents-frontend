@@ -236,7 +236,6 @@ const Game = ({
 
   const GamePageHeader = () => (
     <PageHeader
-      onBack={() => null}
       title={`Presidents`}
       subTitle={game.name + " - " + user.username}
     />

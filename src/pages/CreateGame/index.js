@@ -29,44 +29,69 @@ let CreateGame = ({ userId, createGame, configs = [] }) => {
     </Menu>
   );
 
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 4 },
+      sm: { span: 4 }
+    },
+    wrapperCol: {
+      xs: { span: 4 },
+      sm: { span: 4 }
+    }
+  };
+
   return (
-    <Layout>
+    <React.Fragment>
       {submitted && <Redirect to="/game" />}
-      <Content>
-        <PageHeader onBack={() => null} title="Create Game" />
-        <Layout>
-          <Layout.Content style={{ marginLeft: 10 }}>
-            <Form layout="inline" onSubmit={handleSubmit}>
-              <Form.Item>
-                <Dropdown overlay={menu}>
-                  <Button>{gameType !== "" ? gameType : "Select Type"}</Button>
-                </Dropdown>
-              </Form.Item>
+      <Layout style={{ height: "100vh", width: "100vw" }}>
+        <PageHeader title="Create Game" />
 
-              <Form.Item>
-                <Form.Item>
-                  <Input
-                    name="name"
-                    placeholder="Enter Name"
-                    onChange={e => setName(e.target.value)}
-                  />
-                </Form.Item>
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ margin: "auto" }}
-                >
-                  Create
+        <Layout.Content style={{ paddingLeft: "20px", paddingTop: "10px" }}>
+          <Form {...formItemLayout} layout="vertical">
+            <Form.Item
+              label={
+                <span>
+                  <b>Game Type</b>
+                </span>
+              }
+            >
+              <Dropdown overlay={menu}>
+                <Button style={{ minWidth: "100px" }}>
+                  {gameType === "" ? "Select Type" : gameType}
                 </Button>
-              </Form.Item>
-            </Form>
-          </Layout.Content>
-        </Layout>
-      </Content>
-    </Layout>
+              </Dropdown>
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span>
+                  <b>Game Name</b>
+                </span>
+              }
+            >
+              <Input
+                name="name"
+                placeholder="Enter Name"
+                onChange={e => setName(e.target.value)}
+              />
+            </Form.Item>
+          </Form>
+        </Layout.Content>
+
+        <Layout.Footer style={{ bottom: "0px" }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            shape="round"
+            size="large"
+            style={{ margin: "auto" }}
+            onClick={e => handleSubmit(e)}
+          >
+            Create
+          </Button>
+        </Layout.Footer>
+      </Layout>
+    </React.Fragment>
   );
 };
 

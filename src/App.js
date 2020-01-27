@@ -11,46 +11,41 @@ const AppPresentation = ({ children }) => (
 );
 
 const App = ({ user }) => {
-  const PublicPages = () =>
-    routes.public.map(route => {
-      const CurrentComponent = Pages[route.name] || (
-        <div>Welcome 2 larryprez</div>
-      );
-      return (
-        <PublicRoute
-          exact={route.exact}
-          path={route.route}
-          component={props => <CurrentComponent {...props} />}
-          key={`navroute-${route.route}`}
-        />
-      );
-    });
+  const PublicPages = routes.public.map(route => {
+    const CurrentComponent = Pages[route.name] || (
+      <div>Welcome 2 larryprez</div>
+    );
+    return (
+      <PublicRoute
+        exact={route.exact}
+        path={route.route}
+        component={props => <CurrentComponent {...props} />}
+        key={`navroute-${route.route}`}
+      />
+    );
+  });
 
-  const PrivatePages = () =>
-    routes.private.map(route => {
-      const CurrentComponent = Pages[route.name] || Pages.LandingPage;
-      return (
-        <PrivateRoute
-          exact={route.exact}
-          path={route.route}
-          component={props => <CurrentComponent {...props} />}
-          key={`navroute-${route.route}`}
-          user={user}
-          allowedRoles={route.allowedRoles}
-        />
-      );
-    });
+  const PrivatePages = routes.private.map(route => {
+    const CurrentComponent = Pages[route.name] || Pages.LandingPage;
+    return (
+      <PrivateRoute
+        exact={route.exact}
+        path={route.route}
+        component={props => <CurrentComponent {...props} />}
+        key={`navroute-${route.route}`}
+        user={user}
+        allowedRoles={route.allowedRoles}
+      />
+    );
+  });
 
   const App = (
     <Switch>
-      {!user.loggedIn ? (
-        <PublicPages />
-      ) : (
-        <AppPresentation>
-          <Sidebar />
-          <PrivatePages />
-        </AppPresentation>
-      )}
+      {PublicPages}
+      <AppPresentation>
+        <Sidebar />
+        {PrivatePages}
+      </AppPresentation>
     </Switch>
   );
 

@@ -19,12 +19,6 @@ module.exports.public = [
 
 module.exports.private = [
   {
-    text: "Inbox",
-    name: "Inbox",
-    route: "/inbox",
-    allowedRoles: ["Admin", "Player"]
-  },
-  {
     text: "Dashboard",
     name: "Dashboard",
     route: "/dashboard",
@@ -34,18 +28,6 @@ module.exports.private = [
     text: "Search",
     name: "Search",
     route: "/search",
-    allowedRoles: ["Admin", "Player"]
-  },
-  {
-    text: "Friends",
-    name: "Friends",
-    route: "/friends",
-    allowedRoles: ["Admin", "Player"]
-  },
-  {
-    text: "Profile",
-    name: "Profile",
-    route: "/profile",
     allowedRoles: ["Admin", "Player"]
   },
   {

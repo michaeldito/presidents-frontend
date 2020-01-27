@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 const Search = ({ user, gamesToJoin, joinGame, getGame }) => {
   return (
     <Layout>
-      <PageHeader onBack={() => null} title="Search" />
+      <PageHeader title="Search" />
       <SearchTable
         data={gamesToJoin}
         alreadyJoinedGames={user.gamesPlayed}
