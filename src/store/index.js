@@ -10,7 +10,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 
 // SOCKET
-let baseURL = "http://larry-presidents.herokuapp.com";
+let baseURL = "https://larry-presidents.herokuapp.com";
 // baseURL = "http://localhost:8080";
 let io = socket(baseURL);
 
