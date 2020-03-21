@@ -68,7 +68,7 @@
   },
   "scripts": {
     "serve": "serve -s build -l 4000",
-    "build": "react-scripts build",
+    "build": "export SKIP_PREFLIGHT_CHECK=true && react-scripts build",
     "start": "export SKIP_PREFLIGHT_CHECK=true && react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
