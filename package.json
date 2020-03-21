@@ -61,10 +61,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.0",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "nock": "^9.1.6",
-    "prop-types": "^15.6.0",
-    "redux-mock-store": "^1.5.4",
-    "sinon": "^4.1.2"
+    "prop-types": "^15.6.0"
   },
   "engines": {
     "node": ">=10"
@@ -72,13 +69,19 @@
   "scripts": {
     "serve": "serve -s build -l 4000",
     "build": "react-scripts build",
-    "start": "react-scripts start",
+    "start": "export SKIP_PREFLIGHT_CHECK=true && react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "gcloud app deploy",
-    "clean": "rm -r node_modules",
+    "clean": "rm -r node_modules && rm -r build",
     "count:src": "find src -name '*.js' | xargs wc -l",
-    "lint": "eslint --fix \"src/**/*.js\""
+    "lint": "eslint --fix \"src/**/*.js\"",
+    "docker:build": "docker build . -t prez-ui:1.0",
+    "docker:run": "docker container run -p 3000:80 --detach --name prez-ui prez-ui:1.0",
+    "docker:remove": "docker container rm --force prez-ui",
+    "kube:deploy": "kubectl apply -f prez-ui.yaml",
+    "kube:get": "kubectl get services",
+    "kube:delete": "kubectl delete -f prez-ui.yaml"
   },
   "eslintConfig": {
     "extends": "react-app"
