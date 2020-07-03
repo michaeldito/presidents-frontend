@@ -11,7 +11,7 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 
 // SOCKET
 let baseURL = "https://larry-presidents.herokuapp.com";
-// baseURL = "http://localhost:8080";
+//baseURL = "http://localhost:8080";
 let io = socket(baseURL);
 
 // PERSIST

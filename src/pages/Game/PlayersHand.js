@@ -17,7 +17,8 @@ const FadeIn = styled.div`
 `;
 
 const PlayersHand = ({ cards = [], selectedCards = [], selectCard }) => {
-  const ascending = (a, b) => (a.cardRank.value > b.cardRank.value ? 1 : -1);
+  const ascending = (a, b) => (a.cardRank.value > b.cardRank.value || a.suit.value > b.suit.value ? 1 : -1);
+  
   cards = cards.sort(ascending);
 
   const CardComponents = () =>

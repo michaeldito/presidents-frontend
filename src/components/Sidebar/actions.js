@@ -28,8 +28,8 @@ export const getSchemas = () => {
   };
 };
 
-export const getConfigNames = async payload => {
-  const request = await axios.get(`/gameConfigurations`);
+export const getConfigNames = () => {
+  const request = axios.get(`/gameConfigurations`);
 
   return {
     type: "GET_CONFIG_NAMES",

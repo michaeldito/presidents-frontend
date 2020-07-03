@@ -13,7 +13,6 @@
     "enzyme": "^3.10.0",
     "express": "^4.17.1",
     "history": "^4.10.1",
-    "jest": "24.7.1",
     "lodash": "^4.17.15",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
@@ -28,7 +27,6 @@
     "react-redux-loading-bar": "^4.5.0",
     "react-router-dom": "latest",
     "react-scripts": "3.0.0",
-    "react-test-renderer": "^16.12.0",
     "react-typing-animation": "^1.6.2",
     "react-youtube": "^7.9.0",
     "recharts": "^2.0.0-beta.1",
@@ -47,22 +45,6 @@
     "youtube-api-v3-search": "^1.2.1",
     "youtube-v3-api": "^1.1.1"
   },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.16.0",
-    "@typescript-eslint/parser": "^2.16.0",
-    "axios-mock-adapter": "^1.17.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-config-react-app": "^5.1.0",
-    "eslint-plugin-flowtype": "^3.13.0",
-    "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-react": "^7.18.0",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "prop-types": "^15.6.0"
-  },
   "engines": {
     "node": ">=10"
   },
@@ -75,16 +57,12 @@
     "deploy": "gcloud app deploy",
     "clean": "rm -r node_modules && rm -r build",
     "count:src": "find src -name '*.js' | xargs wc -l",
-    "lint": "eslint --fix \"src/**/*.js\"",
     "docker:build": "docker build . -t prez-ui:1.0",
     "docker:run": "docker container run -p 3000:80 --detach --name prez-ui prez-ui:1.0",
     "docker:remove": "docker container rm --force prez-ui",
     "kube:deploy": "kubectl apply -f prez-ui.yaml",
     "kube:get": "kubectl get services",
     "kube:delete": "kubectl delete -f prez-ui.yaml"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [

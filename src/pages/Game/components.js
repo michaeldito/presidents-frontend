@@ -43,12 +43,10 @@ export const PullRight = styled.div`
 `;
 
 export const HorizontallyScrollable = styled.div`
-  height: 100%;
-  overflow-y: hidden;
-  overflow: scroll;
+  overflow-x: hidden;
   width: 100%;
   display: flex;
-  flex-wrap: nowrap;
+  white-space: nowrap;
 `;
 
 export const HoverButton = ({ title, icon, onClick }) => (

@@ -274,7 +274,7 @@ const Game = ({
     </Container>
   );
 
-  const YourHand = () => (
+  const YourHand = (
     <Container>
       <span style={{ cursor: "pointer" }} onClick={() => toggleYourHand()}>
         <Title value="Your Hand" />
@@ -372,11 +372,11 @@ const Game = ({
         <Content>
           <GameProgress />
           <ActionButtons />
-          <YourHand />
+          {YourHand}
           <TurnsAndDrinks />
           {Larrys}
           <Hover />
-          {HoverActionButtons}
+          {/* {HoverActionButtons} */}
         </Content>
       </Layout>
     </Layout>
